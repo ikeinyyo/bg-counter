@@ -1,12 +1,7 @@
 "use client";
 import { useState } from "react";
 import { CounterContainer } from "@/features/layouts/CounterContainer";
-import {
-  COLORS,
-  getColorByKey,
-  getIconByKey,
-  ICONS,
-} from "@/features/layouts/CounterConfig";
+import { COLORS, getColorByKey, ICONS } from "@/features/layouts/CounterConfig";
 import { faker } from "@faker-js/faker";
 
 // Tipos de datos para los contadores
@@ -19,6 +14,7 @@ type CounterConfig = {
 };
 
 const templates: Record<string, CounterConfig[]> = {
+  empty: [],
   marvel: [
     {
       id: "villain",
@@ -32,7 +28,7 @@ const templates: Record<string, CounterConfig[]> = {
       initialValue: 0,
       name: "Amenaza",
       backgroundColor: getColorByKey("yellow"),
-      icon: "shield",
+      icon: "warning",
     },
     {
       id: "hero",
@@ -48,14 +44,14 @@ const templates: Record<string, CounterConfig[]> = {
       initialValue: 20,
       name: "Ajani",
       backgroundColor: getColorByKey("yellow"),
-      icon: "lion",
+      icon: "sun",
     },
     {
       id: "player2",
       initialValue: 20,
       name: "Jace",
       backgroundColor: getColorByKey("blue"),
-      icon: "drop",
+      icon: "water",
     },
     {
       id: "player3",
@@ -82,8 +78,8 @@ const templates: Record<string, CounterConfig[]> = {
 };
 
 export default function Home() {
-  const [counters, setCounters] = useState<CounterConfig[]>(templates.marvel); // Cargar template por defecto
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("marvel");
+  const [counters, setCounters] = useState<CounterConfig[]>(templates.empty); // Cargar template por defecto
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("empty");
 
   // Función para cambiar el template
   const handleTemplateChange = (
@@ -124,7 +120,16 @@ export default function Home() {
     <div>
       {/* Barra superior */}
       <div className="flex items-center justify-between p-4 bg-gray-800 text-white">
-        <div className="text-2xl font-bold">BG Counter</div>
+        <a
+          className="text-2xl font-bold"
+          onClick={() => {
+            setCounters(templates.empty);
+            setSelectedTemplate("empty");
+          }}
+          href="/"
+        >
+          BG Counter
+        </a>
 
         <div className="flex items-center gap-4">
           {/* Selector de plantilla */}
@@ -138,6 +143,7 @@ export default function Home() {
               onChange={handleTemplateChange}
               className="ml-2 px-4 py-2 border border-gray-300 rounded-md"
             >
+              <option value="empty">Empty</option>
               <option value="marvel">Marvel Champions</option>
               <option value="mtg">Magic: The Gathering</option>
             </select>
@@ -149,7 +155,7 @@ export default function Home() {
               onClick={addRandomCounter}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
-              Añadir Contador Aleatorio
+              Añadir Contador
             </button>
           </div>
         </div>

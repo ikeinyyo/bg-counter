@@ -2,58 +2,12 @@
 import { useState, useEffect } from "react";
 import { CounterEditor, CounterConfig } from "./CounterEditor";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import {
-  FaHeart,
-  FaStar,
-  FaCrown,
-  FaFire,
-  FaBolt,
-  FaGem,
-  FaSkull,
-  FaMagic,
-  FaLeaf,
-  FaSnowflake,
-  FaSun,
-} from "react-icons/fa";
-import {
-  GiSwordman,
-  GiMagicSwirl,
-  GiDragonHead,
-  GiCrystalBall,
-  GiAngelWings,
-  GiDeathSkull,
-  GiDrop,
-  GiLion,
-} from "react-icons/gi";
-import { FaDroplet, FaShield } from "react-icons/fa6";
+import { getIconByKey } from "./CounterConfig";
 
 type Props = {
   counter: CounterConfig;
-  onUpdate: (config: CounterConfig) => void;
-  onDelete: (id: string) => void; // Nueva prop para borrar el contador
-};
-
-const ICON_MAP: Record<string, React.ComponentType> = {
-  heart: FaHeart,
-  shield: FaShield,
-  star: FaStar,
-  crown: FaCrown,
-  fire: FaFire,
-  bolt: FaBolt,
-  gem: FaGem,
-  skull: FaSkull,
-  magic: FaMagic,
-  leaf: FaLeaf,
-  snowflake: FaSnowflake,
-  sun: FaSun,
-  swordman: GiSwordman,
-  magicswirl: GiMagicSwirl,
-  dragon: GiDragonHead,
-  crystal: GiCrystalBall,
-  wings: GiAngelWings,
-  death: GiDeathSkull,
-  drop: FaDroplet,
-  lion: GiLion,
+  onUpdate?: (config: CounterConfig) => void;
+  onDelete?: (id: string) => void;
 };
 
 const Counter = ({ counter, onUpdate, onDelete }: Props) => {
@@ -76,11 +30,11 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
     setIsEditing(false);
   };
 
-  const IconComponent = ICON_MAP[localConfig.icon] || FaHeart;
+  const IconComponent = getIconByKey(localConfig.icon);
 
   return (
     <div
-      className="relative w-full h-64 rounded-lg shadow-lg overflow-hidden select-none"
+      className="relative w-full h-56 rounded-lg shadow-lg overflow-hidden select-none"
       style={{ backgroundColor: localConfig.backgroundColor }}
     >
       {/* Counter Name and Icon */}
@@ -98,7 +52,7 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
       >
         <div className="relative w-full h-full flex items-center justify-center">
           {/* Fondo blanco con opacidad */}
-          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-30 transition-opacity z-30" />
+          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           {/* Icono de decremento */}
           <div className="text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity mr-4 z-20">
             −
@@ -112,7 +66,7 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
       >
         <div className="relative w-full h-full flex items-center justify-center">
           {/* Fondo blanco con opacidad */}
-          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-30 transition-opacity z-30" />
+          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           {/* Icono de incremento */}
           <div className="text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity ml-4 z-20">
             +
@@ -128,20 +82,24 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
       </div>
 
       {/* Edit Button */}
-      <button
-        onClick={() => setIsEditing(true)}
-        className="absolute top-2 right-2 z-10 p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors z-100"
-      >
-        <FaEdit />
-      </button>
+      {onUpdate && (
+        <button
+          onClick={() => setIsEditing(true)}
+          className="absolute top-2 right-2 z-10 p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors z-100"
+        >
+          <FaEdit />
+        </button>
+      )}
 
       {/* Delete Button */}
-      <button
-        onClick={() => onDelete(localConfig.id)}
-        className="absolute top-2 left-2 z-10 p-2 text-white hover:bg-red-600 hover:bg-opacity-20 rounded-full transition-colors z-100"
-      >
-        <FaTrash />
-      </button>
+      {onDelete && (
+        <button
+          onClick={() => onDelete(localConfig.id)}
+          className="absolute top-2 left-2 z-10 p-2 text-white hover:bg-red-600 hover:bg-opacity-20 rounded-full transition-colors z-100"
+        >
+          <FaTrash />
+        </button>
+      )}
 
       {isEditing && (
         <CounterEditor

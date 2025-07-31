@@ -3,25 +3,33 @@ import {
   FaStar,
   FaCrown,
   FaFire,
-  FaBolt,
   FaGem,
   FaSkull,
   FaMagic,
-  FaLeaf,
-  FaSnowflake,
   FaSun,
+  FaMoon,
+  FaCompass,
+  FaBook,
+  FaWrench,
+  FaAppleAlt,
+  FaBolt,
+  FaLeaf,
+  FaCoins,
+  FaSpider,
+  FaDna,
+  FaBalanceScale,
 } from "react-icons/fa";
-import { FaDroplet, FaShield } from "react-icons/fa6";
 import {
-  GiSwordman,
-  GiMagicSwirl,
-  GiDragonHead,
-  GiCrystalBall,
-  GiAngelWings,
-  GiDeathSkull,
-  GiDrop,
-  GiLion,
-} from "react-icons/gi";
+  FaBurst,
+  FaDroplet,
+  FaHandBackFist,
+  FaMask,
+  FaPeopleGroup,
+  FaShieldHalved,
+  FaShieldHeart,
+} from "react-icons/fa6";
+
+import { PiWarningFill } from "react-icons/pi";
 
 export type CounterConfig = {
   id: string;
@@ -52,35 +60,45 @@ const COLORS = [
   { name: "Magenta", value: "#d1008f", key: "magenta" },
 ];
 
+const ICONS = [
+  { name: "Heart", component: FaHeart, key: "heart" },
+  { name: "Warning", component: PiWarningFill, key: "warning" },
+  { name: "Star", component: FaStar, key: "star" },
+  { name: "Shield", component: FaShieldHalved, key: "shield" },
+
+  { name: "Sun", component: FaSun, key: "sun" },
+  { name: "Water", component: FaDroplet, key: "water" },
+  { name: "Skull", component: FaSkull, key: "skull" },
+  { name: "Fire", component: FaFire, key: "fire" },
+  { name: "Leaf", component: FaLeaf, key: "leaf" },
+
+  { name: "Crown", component: FaCrown, key: "crown" },
+  { name: "Bolt", component: FaBolt, key: "bolt" },
+  { name: "Gem", component: FaGem, key: "gem" },
+  { name: "Coins", component: FaCoins, key: "coins" },
+  { name: "Magic", component: FaMagic, key: "magic" },
+  { name: "Compass", component: FaCompass, key: "compass" },
+  { name: "Apple", component: FaAppleAlt, key: "applealt" },
+  { name: "Book", component: FaBook, key: "book" },
+  { name: "Wrench", component: FaWrench, key: "wrench" },
+
+  { name: "Spider", component: FaSpider, key: "spider" },
+  { name: "Dna", component: FaDna, key: "dna" },
+  { name: "Mask", component: FaMask, key: "mask" },
+  { name: "Justice", component: FaBalanceScale, key: "justice" },
+  { name: "Leadership", component: FaPeopleGroup, key: "leadership" },
+  { name: "Aggression", component: FaHandBackFist, key: "aggression" },
+  { name: "Protection", component: FaShieldHeart, key: "protection" },
+
+  { name: "Moon", component: FaMoon, key: "moon" },
+  { name: "Burst", component: FaBurst, key: "burst" },
+];
+
 const getColorByKey = (key: string) => {
-  return COLORS.find((color) => color.key === key)?.value;
+  return COLORS.find((color) => color.key === key)?.value || "#dc2626";
 };
 
 const getIconByKey = (key: string) => {
-  return ICONS.find((icon) => icon.key === key)?.component;
+  return ICONS.find((icon) => icon.key === key)?.component || FaHeart;
 };
-
-const ICONS = [
-  { name: "Corazón", component: FaHeart, key: "heart" },
-  { name: "Escudo", component: FaShield, key: "shield" },
-  { name: "Estrella", component: FaStar, key: "star" },
-  { name: "Corona", component: FaCrown, key: "crown" },
-  { name: "Fuego", component: FaFire, key: "fire" },
-  { name: "Rayo", component: FaBolt, key: "bolt" },
-  { name: "Gema", component: FaGem, key: "gem" },
-  { name: "Calavera", component: FaSkull, key: "skull" },
-  { name: "Magia", component: FaMagic, key: "magic" },
-  { name: "Hoja", component: FaLeaf, key: "leaf" },
-  { name: "Copo", component: FaSnowflake, key: "snowflake" },
-  { name: "Sol", component: FaSun, key: "sun" },
-  { name: "Guerrero", component: GiSwordman, key: "swordman" },
-  { name: "Hechizo", component: GiMagicSwirl, key: "magicswirl" },
-  { name: "Dragón", component: GiDragonHead, key: "dragon" },
-  { name: "Cristal", component: GiCrystalBall, key: "crystal" },
-  { name: "Alas", component: GiAngelWings, key: "wings" },
-  { name: "Muerte", component: GiDeathSkull, key: "death" },
-  { name: "Gota", component: FaDroplet, key: "drop" },
-  { name: "Leon", component: GiLion, key: "lion" },
-];
-
 export { COLORS, ICONS, getColorByKey, getIconByKey };
