@@ -23,6 +23,7 @@ import {
   GiAngelWings,
   GiDeathSkull,
 } from "react-icons/gi";
+import { FaShield } from "react-icons/fa6";
 
 type Props = {
   counter: CounterConfig;
@@ -31,6 +32,7 @@ type Props = {
 
 const ICON_MAP: Record<string, React.ComponentType> = {
   heart: FaHeart,
+  shield: FaShield,
   star: FaStar,
   crown: FaCrown,
   fire: FaFire,
@@ -105,8 +107,6 @@ const Counter = ({ counter, onUpdate }: Props) => {
         </span>
       </div>
 
-      {/* Visual Divider */}
-      <div className="absolute left-1/2 top-0 w-px h-full bg-white bg-opacity-20 transform -translate-x-1/2"></div>
       {/* Edit Button */}
       <button
         onClick={() => setIsEditing(true)}
