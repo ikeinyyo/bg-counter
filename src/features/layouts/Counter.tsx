@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { CounterEditor, CounterConfig } from "./CounterEditor";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import {
   FaHeart,
   FaStar,
@@ -30,6 +30,7 @@ import { FaDroplet, FaShield } from "react-icons/fa6";
 type Props = {
   counter: CounterConfig;
   onUpdate: (config: CounterConfig) => void;
+  onDelete: (id: string) => void; // Nueva prop para borrar el contador
 };
 
 const ICON_MAP: Record<string, React.ComponentType> = {
@@ -55,13 +56,14 @@ const ICON_MAP: Record<string, React.ComponentType> = {
   lion: GiLion,
 };
 
-const Counter = ({ counter, onUpdate }: Props) => {
+const Counter = ({ counter, onUpdate, onDelete }: Props) => {
   const [count, setCount] = useState(counter.initialValue);
 
   // Sincroniza el valor cuando cambia el template
   useEffect(() => {
     setCount(counter.initialValue);
   }, [counter.initialValue]);
+
   const [isEditing, setIsEditing] = useState(false);
   const [localConfig, setLocalConfig] = useState(counter);
 
@@ -128,10 +130,19 @@ const Counter = ({ counter, onUpdate }: Props) => {
       {/* Edit Button */}
       <button
         onClick={() => setIsEditing(true)}
-        className="absolute top-2 right-2 z-10 p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+        className="absolute top-2 right-2 z-10 p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors z-100"
       >
         <FaEdit />
       </button>
+
+      {/* Delete Button */}
+      <button
+        onClick={() => onDelete(localConfig.id)}
+        className="absolute top-2 left-2 z-10 p-2 text-white hover:bg-red-600 hover:bg-opacity-20 rounded-full transition-colors z-100"
+      >
+        <FaTrash />
+      </button>
+
       {isEditing && (
         <CounterEditor
           counter={localConfig}

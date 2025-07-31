@@ -13,9 +13,10 @@ type CounterConfig = {
 
 type Props = {
   countersDefault: CounterConfig[];
+  onDelete: (id: string) => void;
 };
 
-const CounterContainer = ({ countersDefault }: Props) => {
+const CounterContainer = ({ countersDefault, onDelete }: Props) => {
   const [counters, setCounters] = useState<CounterConfig[]>(countersDefault);
 
   // Sincroniza el estado interno cuando cambian las props
@@ -31,7 +32,12 @@ const CounterContainer = ({ countersDefault }: Props) => {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {counters.map((counter) => (
-            <Counter key={counter.id} counter={counter} onUpdate={() => {}} />
+            <Counter
+              key={counter.id}
+              counter={counter}
+              onUpdate={() => {}}
+              onDelete={onDelete}
+            />
           ))}
         </div>
       </div>
