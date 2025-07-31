@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { Counter } from "./Counter";
 
 type CounterConfig = {
@@ -9,10 +11,20 @@ type CounterConfig = {
 };
 
 type Props = {
-  counters: CounterConfig[];
+  countersDefault: CounterConfig[];
 };
 
-const CounterContainer = ({ counters }: Props) => {
+const CounterContainer = ({ countersDefault }: Props) => {
+  const [counters, setCounters] = useState<CounterConfig[]>(countersDefault);
+
+  const handleUpdateCounter = (updated: CounterConfig) => {
+    setCounters((prev) =>
+      prev.map((counter) =>
+        counter.id === updated.id ? { ...counter, ...updated } : counter
+      )
+    );
+  };
+
   return (
     <div className="p-6 min-h-screen bg-gray-100">
       <div className="max-w-4xl mx-auto">
@@ -23,10 +35,8 @@ const CounterContainer = ({ counters }: Props) => {
           {counters.map((counter) => (
             <Counter
               key={counter.id}
-              counter={counter.initialValue}
-              name={counter.name}
-              backgroundColor={counter.backgroundColor}
-              icon={counter.icon}
+              counter={counter}
+              onUpdate={handleUpdateCounter}
             />
           ))}
         </div>

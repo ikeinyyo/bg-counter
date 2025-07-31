@@ -6,8 +6,8 @@ export default function Home() {
     {
       id: "player1",
       initialValue: 20,
-      name: "Jugador 1",
-      backgroundColor: "#dc2626",
+      name: "Naranja",
+      backgroundColor: "Naranja",
       icon: "❤️",
     },
     {
@@ -28,7 +28,7 @@ export default function Home() {
 
   return (
     <div>
-      <CounterContainer counters={counters} />
+      <CounterContainer countersDefault={counters} />
     </div>
   );
 }
