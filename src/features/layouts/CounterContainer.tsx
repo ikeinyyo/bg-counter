@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
 import { Counter } from "./Counter";
+import { useState, useEffect } from "react";
 
+// Tipos de datos para los contadores
 type CounterConfig = {
   id: string;
   initialValue: number;
@@ -17,13 +18,10 @@ type Props = {
 const CounterContainer = ({ countersDefault }: Props) => {
   const [counters, setCounters] = useState<CounterConfig[]>(countersDefault);
 
-  const handleUpdateCounter = (updated: CounterConfig) => {
-    setCounters((prev) =>
-      prev.map((counter) =>
-        counter.id === updated.id ? { ...counter, ...updated } : counter
-      )
-    );
-  };
+  // Sincroniza el estado interno cuando cambian las props
+  useEffect(() => {
+    setCounters(countersDefault);
+  }, [countersDefault]);
 
   return (
     <div className="p-6 min-h-screen bg-gray-100">
@@ -33,11 +31,7 @@ const CounterContainer = ({ countersDefault }: Props) => {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {counters.map((counter) => (
-            <Counter
-              key={counter.id}
-              counter={counter}
-              onUpdate={handleUpdateCounter}
-            />
+            <Counter key={counter.id} counter={counter} onUpdate={() => {}} />
           ))}
         </div>
       </div>

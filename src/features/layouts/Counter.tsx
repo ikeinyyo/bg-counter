@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { CounterEditor, CounterConfig } from "./CounterEditor";
 import { FaEdit } from "react-icons/fa";
 import {
@@ -53,6 +53,11 @@ const ICON_MAP: Record<string, React.ComponentType> = {
 
 const Counter = ({ counter, onUpdate }: Props) => {
   const [count, setCount] = useState(counter.initialValue);
+
+  // Sincroniza el valor cuando cambia el template
+  useEffect(() => {
+    setCount(counter.initialValue);
+  }, [counter.initialValue]);
   const [isEditing, setIsEditing] = useState(false);
   const [localConfig, setLocalConfig] = useState(counter);
 
