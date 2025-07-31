@@ -22,8 +22,10 @@ import {
   GiCrystalBall,
   GiAngelWings,
   GiDeathSkull,
+  GiDrop,
+  GiLion,
 } from "react-icons/gi";
-import { FaShield } from "react-icons/fa6";
+import { FaDroplet, FaShield } from "react-icons/fa6";
 
 type Props = {
   counter: CounterConfig;
@@ -49,6 +51,8 @@ const ICON_MAP: Record<string, React.ComponentType> = {
   crystal: GiCrystalBall,
   wings: GiAngelWings,
   death: GiDeathSkull,
+  drop: FaDroplet,
+  lion: GiLion,
 };
 
 const Counter = ({ counter, onUpdate }: Props) => {
@@ -87,21 +91,30 @@ const Counter = ({ counter, onUpdate }: Props) => {
 
       {/* Left Half - Decrement Zone */}
       <div
-        className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-black hover:bg-opacity-20 active:bg-black active:bg-opacity-30"
+        className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
         onClick={onDecrement}
       >
-        <div className="text-white text-6xl font-bold opacity-20 hover:opacity-40 transition-opacity">
-          −
+        <div className="relative w-full h-full flex items-center justify-center">
+          {/* Fondo blanco con opacidad */}
+          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-30 transition-opacity z-30" />
+          {/* Icono de decremento */}
+          <div className="text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity mr-4 z-20">
+            −
+          </div>
         </div>
       </div>
 
-      {/* Right Half - Increment Zone */}
       <div
-        className="absolute right-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-white hover:bg-opacity-10 active:bg-white active:bg-opacity-20"
+        className="absolute right-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
         onClick={onIncrement}
       >
-        <div className="text-white text-6xl font-bold opacity-20 hover:opacity-40 transition-opacity">
-          +
+        <div className="relative w-full h-full flex items-center justify-center">
+          {/* Fondo blanco con opacidad */}
+          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-30 transition-opacity z-30" />
+          {/* Icono de incremento */}
+          <div className="text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity ml-4 z-20">
+            +
+          </div>
         </div>
       </div>
 

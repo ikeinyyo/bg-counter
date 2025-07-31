@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { CounterContainer } from "@/features/layouts/CounterContainer";
+import { getColorByKey } from "@/features/layouts/CounterConfig";
 
 // Tipos de datos para los contadores
 type CounterConfig = {
@@ -14,48 +15,62 @@ type CounterConfig = {
 const templates: Record<string, CounterConfig[]> = {
   marvel: [
     {
-      id: "player1",
-      initialValue: 20,
-      name: "Iron Man",
-      backgroundColor: "#FF0000",
-      icon: "❤️",
+      id: "villain",
+      initialValue: 0,
+      name: "Villano",
+      backgroundColor: getColorByKey("purple"),
+      icon: "skull",
     },
     {
       id: "player2",
-      initialValue: 20,
-      name: "Captain America",
-      backgroundColor: "#0000FF",
-      icon: "💙",
+      initialValue: 0,
+      name: "Amenaza",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "shield",
+    },
+    {
+      id: "hero",
+      initialValue: 0,
+      name: "Héroe",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
     },
   ],
   mtg: [
     {
       id: "player1",
       initialValue: 20,
-      name: "Shivan Dragon",
-      backgroundColor: "#FF4500",
-      icon: "🔥",
+      name: "Ajani",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "lion",
     },
     {
       id: "player2",
       initialValue: 20,
-      name: "Black Lotus",
-      backgroundColor: "#000000",
-      icon: "💎",
+      name: "Jace",
+      backgroundColor: getColorByKey("blue"),
+      icon: "drop",
     },
     {
       id: "player3",
       initialValue: 20,
-      name: "White Lotus",
-      backgroundColor: "#000000",
-      icon: "💎",
+      name: "Liliana",
+      backgroundColor: getColorByKey("black"),
+      icon: "skull",
     },
     {
       id: "player4",
       initialValue: 20,
-      name: "Red Lotus",
-      backgroundColor: "#000000",
-      icon: "💎",
+      name: "Chandra",
+      backgroundColor: getColorByKey("orange"),
+      icon: "fire",
+    },
+    {
+      id: "player5",
+      initialValue: 20,
+      name: "Nissa",
+      backgroundColor: getColorByKey("green"),
+      icon: "leaf",
     },
   ],
 };

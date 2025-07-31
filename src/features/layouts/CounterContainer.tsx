@@ -24,8 +24,8 @@ const CounterContainer = ({ countersDefault }: Props) => {
   }, [countersDefault]);
 
   return (
-    <div className="p-6 min-h-screen bg-gray-100">
-      <div className="max-w-4xl mx-auto">
+    <div className="p-4 min-h-screen bg-gray-100">
+      <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
           Contador de Vidas
         </h1>
