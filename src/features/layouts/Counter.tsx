@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CounterEditor, CounterConfig } from "./CounterEditor";
-import { FaEdit, FaTrash, FaExpandArrowsAlt } from "react-icons/fa";
+import { FaEdit, FaTrash, FaExpandArrowsAlt, FaCog } from "react-icons/fa";
 import { getIconByKey } from "./CounterConfig";
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 
 const Counter = ({ counter, onUpdate, onDelete }: Props) => {
   const [count, setCount] = useState(counter.initialValue);
-
+  const [showMenu, setShowMenu] = useState(false);
   // Sincroniza el valor cuando cambia el template
   useEffect(() => {
     setCount(counter.initialValue);
@@ -31,6 +31,29 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
   };
 
   const IconComponent = getIconByKey(localConfig.icon);
+
+  const cogRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // ✨ Cierre automático al tocar fuera (ratón o móvil)
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const handlePointerDown = (e: PointerEvent) => {
+      const target = e.target as Node;
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        cogRef.current &&
+        !cogRef.current.contains(target)
+      ) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [showMenu]);
 
   return (
     <div
@@ -95,40 +118,70 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
         </span>
       </div>
 
-      {/* Edit Button */}
-      {onUpdate && (
-        <button
-          onClick={() => setIsEditing(true)}
-          className="absolute top-2 right-2 z-10 p-2 text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors z-100"
-        >
-          <FaEdit />
-        </button>
-      )}
-
-      {/* Size Toggle Button */}
+      {/* Tuerca – botón discreto */}
       <button
-        onClick={() => {
-          const sizes = ["small", "medium", "large"];
-          const currentIndex = sizes.indexOf(localConfig.size);
-          const nextSize = sizes[(currentIndex + 1) % sizes.length];
-          const updated = { ...localConfig, size: nextSize };
-          setLocalConfig(updated);
-          if (onUpdate) onUpdate(updated);
-        }}
-        className="absolute top-2 left-10 z-10 p-2 text-white hover:bg-blue-600 hover:bg-opacity-20 rounded-full transition-colors z-100"
-        title="Cambiar tamaño"
+        className="absolute top-2 right-2 z-100 p-2 text-white/70 hover:text-white transition-colors"
+        onClick={() => setShowMenu((v) => !v)}
+        ref={cogRef}
+        title="Opciones"
       >
-        <FaExpandArrowsAlt />
+        <FaCog />
       </button>
 
-      {/* Delete Button */}
-      {onDelete && (
-        <button
-          onClick={() => onDelete(localConfig.id)}
-          className="absolute top-2 left-2 z-10 p-2 text-white hover:bg-red-600 hover:bg-opacity-20 rounded-full transition-colors z-100"
+      {/* --- MENÚ EMERGENTE --- */}
+      {showMenu && (
+        <div
+          className="absolute top-12 right-2 bg-white/90 backdrop-blur-sm rounded-md shadow-lg p-2 flex flex-col gap-1 z-100"
+          onClick={(e) => e.stopPropagation()} // evita que el click se propague
+          ref={menuRef}
         >
-          <FaTrash />
-        </button>
+          {/* Editar */}
+          {onUpdate && (
+            <button
+              onClick={() => {
+                setIsEditing(true);
+                setShowMenu(false);
+              }}
+              className="flex items-center gap-2 px-3 py-1 rounded hover:bg-gray-200 text-sm text-black"
+            >
+              <FaEdit /> Editar
+            </button>
+          )}
+
+          {/* Borrar */}
+          {onDelete && (
+            <button
+              onClick={() => onDelete(localConfig.id)}
+              className="flex items-center gap-2 px-3 py-1 rounded hover:bg-red-100 text-sm text-red-600"
+            >
+              <FaTrash /> Borrar
+            </button>
+          )}
+
+          <hr className="my-1" />
+
+          {/* Tallas */}
+          <div className="flex justify-between gap-1">
+            {["small", "medium", "large"].map((size, i) => (
+              <button
+                key={size}
+                onClick={() => {
+                  const updated = { ...localConfig, size };
+                  setLocalConfig(updated);
+                  onUpdate?.(updated);
+                }}
+                className={`w-8 h-8 rounded-full border text-xs font-semibold
+                  ${
+                    localConfig.size === size
+                      ? "bg-black text-white"
+                      : "bg-transparent border-black text-black"
+                  }`}
+              >
+                {["S", "M", "L"][i]}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {isEditing && (
