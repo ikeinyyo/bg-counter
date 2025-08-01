@@ -37,7 +37,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Héroe",
       backgroundColor: getColorByKey("red"),
       icon: "heart",
-      size: "medium",
+      size: "medium2large",
     },
   ],
   marvelSoloCounters: [
@@ -513,6 +513,9 @@ export default function Home() {
               className="p-2 pl-4"
             />
             <span className="lg:inline md:inline hidden">Counter App</span>
+            <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-500">
+              v1.0.1d
+            </span>
           </div>
         </Link>
 
