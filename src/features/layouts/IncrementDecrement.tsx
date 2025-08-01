@@ -12,59 +12,29 @@ const IncrementDecrement = ({
   onIncrement,
   localConfig,
 }: Props) => {
-  // Estados para mouse
-  const [mouseIsLongPress, setMouseIsLongPress] = useState(false);
-  const [mousePressTimer, setMousePressTimer] = useState<NodeJS.Timeout | null>(
-    null
-  );
-  const [mouseRepeatTimer, setMouseRepeatTimer] =
-    useState<NodeJS.Timeout | null>(null);
-  const [mousePressedButton, setMousePressedButton] = useState<
-    "increment" | "decrement" | null
-  >(null);
-
-  // Estados para touch
-  const [touchIsLongPress, setTouchIsLongPress] = useState(false);
-  const [touchPressTimer, setTouchPressTimer] = useState<NodeJS.Timeout | null>(
-    null
-  );
-  const [touchRepeatTimer, setTouchRepeatTimer] =
-    useState<NodeJS.Timeout | null>(null);
-  const [touchPressedButton, setTouchPressedButton] = useState<
+  // Estados para manejo de presión
+  const [isLongPress, setIsLongPress] = useState(false);
+  const [pressTimer, setPressTimer] = useState<NodeJS.Timeout | null>(null);
+  const [repeatTimer, setRepeatTimer] = useState<NodeJS.Timeout | null>(null);
+  const [pressedButton, setPressedButton] = useState<
     "increment" | "decrement" | null
   >(null);
   const [isScrolling, setIsScrolling] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [lastActionTime, setLastActionTime] = useState(0);
+
+  // Referencias para control de eventos
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
-  const executionPending = useRef(false);
+  const isProcessing = useRef(false);
+  const eventId = useRef(0);
+
+  // Detectar si es dispositivo táctil
+  const isTouchDevice = useRef(
+    "ontouchstart" in window || navigator.maxTouchPoints > 0
+  );
 
   const executeAction = (
     buttonType: "increment" | "decrement",
     value: number
   ) => {
-    const now = Date.now();
-    console.log(
-      "executeAction called:",
-      buttonType,
-      value,
-      now,
-      "lastActionTime:",
-      lastActionTime
-    );
-
-    // Prevenir ejecuciones muy rápidas (menos de 250ms para touch)
-    if (now - lastActionTime < 250) {
-      console.log(
-        "Action blocked - too fast, time diff:",
-        now - lastActionTime
-      );
-      return;
-    }
-
-    setLastActionTime(now);
-    console.log("Action executed:", buttonType, value);
-
     if (buttonType === "increment") {
       onIncrement(value);
     } else if (buttonType === "decrement") {
@@ -72,155 +42,80 @@ const IncrementDecrement = ({
     }
   };
 
-  // Funciones para mouse
-  const startMouseRepeating = (buttonType: "increment" | "decrement") => {
+  // Función para repetición en long press
+  const startRepeating = (buttonType: "increment" | "decrement") => {
     const timer = setInterval(() => {
       executeAction(buttonType, 10);
     }, 500);
-    setMouseRepeatTimer(timer);
+    setRepeatTimer(timer);
   };
 
-  const stopMouseRepeating = () => {
-    if (mouseRepeatTimer) {
-      clearInterval(mouseRepeatTimer);
-      setMouseRepeatTimer(null);
+  const stopRepeating = () => {
+    if (repeatTimer) {
+      clearInterval(repeatTimer);
+      setRepeatTimer(null);
     }
   };
 
-  // Funciones para touch
-  const startTouchRepeating = (buttonType: "increment" | "decrement") => {
-    const timer = setInterval(() => {
-      executeAction(buttonType, 10);
-    }, 500);
-    setTouchRepeatTimer(timer);
-  };
+  // Manejador de inicio de presión
+  const handlePressStart = (
+    buttonType: "increment" | "decrement",
+    currentEventId: number
+  ) => {
+    if (isProcessing.current) return;
+    isProcessing.current = true;
 
-  const stopTouchRepeating = () => {
-    if (touchRepeatTimer) {
-      clearInterval(touchRepeatTimer);
-      setTouchRepeatTimer(null);
-    }
-  };
-
-  // Manejadores para mouse
-  const handleMousePressStart = (buttonType: "increment" | "decrement") => {
-    setMousePressedButton(buttonType);
+    setPressedButton(buttonType);
 
     const timer = setTimeout(() => {
-      setMouseIsLongPress(true);
-      startMouseRepeating(buttonType);
-    }, 500);
-
-    setMousePressTimer(timer);
-  };
-
-  const handleMousePressEnd = () => {
-    if (mousePressTimer) {
-      clearTimeout(mousePressTimer);
-      setMousePressTimer(null);
-    }
-
-    stopMouseRepeating();
-
-    if (!mouseIsLongPress && mousePressedButton) {
-      executeAction(mousePressedButton, 1);
-    }
-
-    setMouseIsLongPress(false);
-    setMousePressedButton(null);
-  };
-
-  // Manejadores para touch
-  const handleTouchPressStart = (buttonType: "increment" | "decrement") => {
-    console.log("handleTouchPressStart:", buttonType);
-    if (isScrolling) return;
-
-    setTouchPressedButton(buttonType);
-
-    const timer = setTimeout(() => {
-      if (!isScrolling) {
-        setTouchIsLongPress(true);
-        startTouchRepeating(buttonType);
+      if (eventId.current === currentEventId && !isScrolling) {
+        setIsLongPress(true);
+        startRepeating(buttonType);
       }
     }, 500);
-
-    setTouchPressTimer(timer);
+    setPressTimer(timer);
   };
 
-  const handleTouchPressEnd = () => {
-    console.log(
-      "handleTouchPressEnd called, touchIsLongPress:",
-      touchIsLongPress,
-      "touchPressedButton:",
-      touchPressedButton,
-      "isScrolling:",
-      isScrolling,
-      "executionPending:",
-      executionPending.current
-    );
+  // Manejador de fin de presión
+  const handlePressEnd = (currentEventId: number) => {
+    // Solo procesar si es el mismo evento que inició
+    if (eventId.current !== currentEventId) return;
 
-    if (touchPressTimer) {
-      clearTimeout(touchPressTimer);
-      setTouchPressTimer(null);
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
     }
 
-    stopTouchRepeating();
+    stopRepeating();
 
-    // Prevenir múltiples ejecuciones
-    if (
-      !touchIsLongPress &&
-      touchPressedButton &&
-      !isScrolling &&
-      !executionPending.current
-    ) {
-      console.log("About to execute action - setting executionPending to true");
-      executionPending.current = true;
-
-      // Ejecutar inmediatamente sin setTimeout
-      executeAction(touchPressedButton, 1);
-
-      // Resetear la bandera después de un delay más largo
-      setTimeout(() => {
-        executionPending.current = false;
-        console.log("executionPending reset to false");
-      }, 300); // Aumentado a 300ms para prevenir dobles llamadas
-    } else {
-      console.log("Action skipped - conditions not met or execution pending");
+    // Ejecutar solo si no fue long press y no hay scroll
+    if (!isLongPress && pressedButton && !isScrolling) {
+      executeAction(pressedButton, 1);
     }
 
-    setTouchIsLongPress(false);
-    setTouchPressedButton(null);
+    // Resetear estados
+    setIsLongPress(false);
+    setPressedButton(null);
+    isProcessing.current = false;
   };
 
   const handleDecrementMouseDown = (event: React.MouseEvent) => {
-    // Si se detectó touch recientemente, ignorar eventos de mouse
-    if (isTouchDevice) return;
-
     event.preventDefault();
-    handleMousePressStart("decrement");
+    const currentEventId = ++eventId.current;
+    handlePressStart("decrement", currentEventId);
   };
 
   const handleIncrementMouseDown = (event: React.MouseEvent) => {
-    // Si se detectó touch recientemente, ignorar eventos de mouse
-    if (isTouchDevice) return;
-
     event.preventDefault();
-    handleMousePressStart("increment");
+    const currentEventId = ++eventId.current;
+    handlePressStart("increment", currentEventId);
   };
 
   const handleMouseUp = (event: React.MouseEvent) => {
-    // Si se detectó touch recientemente, ignorar eventos de mouse
-    if (isTouchDevice) return;
-
-    handleMousePressEnd();
+    handlePressEnd(eventId.current);
   };
 
   const handleDecrementTouchStart = (event: React.TouchEvent) => {
-    console.log("handleDecrementTouchStart called");
-    event.preventDefault();
-
-    // Marcar que es un dispositivo táctil
-    setIsTouchDevice(true);
     setIsScrolling(false);
 
     touchStartPos.current = {
@@ -228,15 +123,11 @@ const IncrementDecrement = ({
       y: event.touches[0].clientY,
     };
 
-    handleTouchPressStart("decrement");
+    const currentEventId = ++eventId.current;
+    handlePressStart("decrement", currentEventId);
   };
 
   const handleIncrementTouchStart = (event: React.TouchEvent) => {
-    console.log("handleIncrementTouchStart called");
-    event.preventDefault();
-
-    // Marcar que es un dispositivo táctil
-    setIsTouchDevice(true);
     setIsScrolling(false);
 
     touchStartPos.current = {
@@ -244,7 +135,8 @@ const IncrementDecrement = ({
       y: event.touches[0].clientY,
     };
 
-    handleTouchPressStart("increment");
+    const currentEventId = ++eventId.current;
+    handlePressStart("increment", currentEventId);
   };
 
   const handleTouchMove = (event: React.TouchEvent) => {
@@ -255,59 +147,48 @@ const IncrementDecrement = ({
       if (dx > 10 || dy > 10) {
         setIsScrolling(true);
 
-        if (touchPressTimer) {
-          clearTimeout(touchPressTimer);
-          setTouchPressTimer(null);
+        if (pressTimer) {
+          clearTimeout(pressTimer);
+          setPressTimer(null);
         }
 
-        stopTouchRepeating();
-        setTouchIsLongPress(false);
-        setTouchPressedButton(null);
+        stopRepeating();
+        setIsLongPress(false);
+        setPressedButton(null);
+        isProcessing.current = false;
       }
     }
   };
 
   const handleTouchEnd = (event: React.TouchEvent) => {
-    console.log(
-      "handleTouchEnd called, isScrolling:",
-      isScrolling,
-      "executionPending:",
-      executionPending.current
-    );
-
     if (isScrolling) {
       setIsScrolling(false);
-      stopTouchRepeating();
-      setTouchIsLongPress(false);
-      setTouchPressedButton(null);
+      stopRepeating();
+      setIsLongPress(false);
+      setPressedButton(null);
+      isProcessing.current = false;
       touchStartPos.current = null;
       return;
     }
 
-    // Solo ejecutar si no hay una ejecución pendiente
-    if (!executionPending.current) {
-      handleTouchPressEnd();
-    } else {
-      console.log("handleTouchEnd skipped - execution already pending");
-    }
-
+    handlePressEnd(eventId.current);
     touchStartPos.current = null;
-
-    // Resetear la bandera de touch después de un pequeño delay
-    setTimeout(() => {
-      setIsTouchDevice(false);
-    }, 100);
   };
 
   return (
     <>
       <div
         className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
-        onMouseDown={handleDecrementMouseDown}
-        onMouseUp={handleMouseUp}
-        onTouchStart={handleDecrementTouchStart}
-        onTouchMove={handleTouchMove} // Detectar el movimiento
-        onTouchEnd={handleTouchEnd}
+        {...(isTouchDevice.current
+          ? {
+              onTouchStart: handleDecrementTouchStart,
+              onTouchMove: handleTouchMove,
+              onTouchEnd: handleTouchEnd,
+            }
+          : {
+              onMouseDown: handleDecrementMouseDown,
+              onMouseUp: handleMouseUp,
+            })}
       >
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
@@ -327,11 +208,16 @@ const IncrementDecrement = ({
 
       <div
         className="absolute right-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
-        onMouseDown={handleIncrementMouseDown}
-        onMouseUp={handleMouseUp}
-        onTouchStart={handleIncrementTouchStart}
-        onTouchMove={handleTouchMove} // Detectar el movimiento
-        onTouchEnd={handleTouchEnd}
+        {...(isTouchDevice.current
+          ? {
+              onTouchStart: handleIncrementTouchStart,
+              onTouchMove: handleTouchMove,
+              onTouchEnd: handleTouchEnd,
+            }
+          : {
+              onMouseDown: handleIncrementMouseDown,
+              onMouseUp: handleMouseUp,
+            })}
       >
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
