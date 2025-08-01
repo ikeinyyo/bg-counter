@@ -1,17 +1,13 @@
 "use client";
 import { useState } from "react";
 import { CounterContainer } from "@/features/layouts/CounterContainer";
-import { COLORS, getColorByKey, ICONS } from "@/features/layouts/CounterConfig";
+import {
+  COLORS,
+  CounterConfig,
+  getColorByKey,
+  ICONS,
+} from "@/features/layouts/CounterConfig";
 import { faker } from "@faker-js/faker";
-
-// Tipos de datos para los contadores
-type CounterConfig = {
-  id: string;
-  initialValue: number;
-  name?: string;
-  backgroundColor?: string;
-  icon?: string;
-};
 
 const templates: Record<string, CounterConfig[]> = {
   empty: [],
@@ -22,6 +18,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Villano",
       backgroundColor: getColorByKey("purple"),
       icon: "skull",
+      size: "medium",
     },
     {
       id: "player2",
@@ -29,6 +26,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Amenaza",
       backgroundColor: getColorByKey("yellow"),
       icon: "warning",
+      size: "medium",
     },
     {
       id: "hero",
@@ -36,6 +34,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Héroe",
       backgroundColor: getColorByKey("red"),
       icon: "heart",
+      size: "medium",
     },
   ],
   mtg: [
@@ -45,6 +44,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Ajani",
       backgroundColor: getColorByKey("yellow"),
       icon: "sun",
+      size: "medium",
     },
     {
       id: "player2",
@@ -52,6 +52,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Jace",
       backgroundColor: getColorByKey("blue"),
       icon: "water",
+      size: "medium",
     },
     {
       id: "player3",
@@ -59,6 +60,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Liliana",
       backgroundColor: getColorByKey("black"),
       icon: "skull",
+      size: "medium",
     },
     {
       id: "player4",
@@ -66,6 +68,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Chandra",
       backgroundColor: getColorByKey("orange"),
       icon: "fire",
+      size: "medium",
     },
     {
       id: "player5",
@@ -73,6 +76,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Nissa",
       backgroundColor: getColorByKey("green"),
       icon: "leaf",
+      size: "medium",
     },
   ],
 };
@@ -92,7 +96,6 @@ export default function Home() {
 
   // Función para generar un contador aleatorio
   const generateRandomCounter = (): CounterConfig => {
-    const randomName = `Counter ${Math.floor(Math.random() * 1000)}`;
     const randomId = `${Math.random()}`.slice(2);
 
     return {
@@ -103,6 +106,7 @@ export default function Home() {
         COLORS[Math.floor(Math.random() * COLORS.length)].key
       ),
       icon: ICONS[Math.floor(Math.random() * ICONS.length)].key,
+      size: "medium",
     };
   };
 
@@ -114,6 +118,12 @@ export default function Home() {
 
   const handleDeleteCounter = (id: string) => {
     setCounters(counters.filter((counter) => counter.id !== id));
+  };
+
+  const handleUpdateCounter = (updatedCounter: CounterConfig) => {
+    setCounters((prev) =>
+      prev.map((c) => (c.id === updatedCounter.id ? updatedCounter : c))
+    );
   };
 
   return (
@@ -166,6 +176,7 @@ export default function Home() {
         key={selectedTemplate}
         countersDefault={counters}
         onDelete={handleDeleteCounter}
+        onUpdate={handleUpdateCounter}
       />
     </div>
   );

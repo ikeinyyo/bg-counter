@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { CounterEditor, CounterConfig } from "./CounterEditor";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaExpandArrowsAlt } from "react-icons/fa";
 import { getIconByKey } from "./CounterConfig";
 
 type Props = {
@@ -42,7 +42,13 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
         <span className="text-2xl">
           <IconComponent />
         </span>
-        <span className="text-lg font-semibold">{localConfig.name}</span>
+        <span
+          className={`text-lg font-semibold ${
+            localConfig.size === "small" ? "hidden lg:inline" : ""
+          }`}
+        >
+          {localConfig.name}
+        </span>
       </div>
 
       {/* Left Half - Decrement Zone */}
@@ -54,7 +60,11 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
           {/* Fondo blanco con opacidad */}
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           {/* Icono de decremento */}
-          <div className="text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity mr-4 z-20">
+          <div
+            className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity mr-4 z-20 ${
+              localConfig.size === "small" ? "hidden lg:inline" : ""
+            }`}
+          >
             −
           </div>
         </div>
@@ -68,7 +78,11 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
           {/* Fondo blanco con opacidad */}
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           {/* Icono de incremento */}
-          <div className="text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity ml-4 z-20">
+          <div
+            className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity ml-4 z-20 ${
+              localConfig.size === "small" ? "hidden lg:inline" : ""
+            }`}
+          >
             +
           </div>
         </div>
@@ -90,6 +104,22 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
           <FaEdit />
         </button>
       )}
+
+      {/* Size Toggle Button */}
+      <button
+        onClick={() => {
+          const sizes = ["small", "medium", "large"];
+          const currentIndex = sizes.indexOf(localConfig.size);
+          const nextSize = sizes[(currentIndex + 1) % sizes.length];
+          const updated = { ...localConfig, size: nextSize };
+          setLocalConfig(updated);
+          if (onUpdate) onUpdate(updated);
+        }}
+        className="absolute top-2 left-10 z-10 p-2 text-white hover:bg-blue-600 hover:bg-opacity-20 rounded-full transition-colors z-100"
+        title="Cambiar tamaño"
+      >
+        <FaExpandArrowsAlt />
+      </button>
 
       {/* Delete Button */}
       {onDelete && (
