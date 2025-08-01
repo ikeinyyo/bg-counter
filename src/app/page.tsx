@@ -527,20 +527,17 @@ export default function Home() {
             >
               <option value="empty">Sin plantilla</option>
               <option value="marvelSolo">Marvel Champions - 1P</option>
-              <option value="marvelSoloCounters">
-                Marvel Champions - 1P Contadores
-              </option>
+              <option value="marvelSoloCounters">Marvel Champions - 1P+</option>
               <option value="marvel2P">Marvel Champions - 2P</option>
-
-              <option value="commander">MTG Commander</option>
-              <option value="duel">MTG Duel</option>
-              <option value="lifeEnergy2">Vida y Energía - 2 Jugadores</option>
-              <option value="life3">Vida - 3 Jugadores</option>
-              <option value="life4">Vida - 4 Jugadores</option>
-              <option value="life5">Vida - 5 Jugadores</option>
-              <option value="life6">Vida - 6 Jugadores</option>
               <option value="marvel3P">Marvel Champions - 3P</option>
               <option value="marvel4P">Marvel Champions - 4P</option>
+              <option value="commander">Commander</option>
+              <option value="duel">Duelo</option>
+              <option value="lifeEnergy2">Duelo +</option>
+              <option value="life3">3 Jugadores</option>
+              <option value="life4">4 Jugadores</option>
+              <option value="life5">5 Jugadores</option>
+              <option value="life6">6 Jugadores</option>
             </select>
           </div>
 
