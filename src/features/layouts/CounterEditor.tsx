@@ -120,7 +120,7 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  className="flex-1 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
                 >
                   Guardar
                 </button>
@@ -128,7 +128,10 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
             </div>
 
             {/* Vista Previa del Contador */}
-            <div className="w-full flex items-center justify-center">
+            <div className="w-full flex items-center justify-center flex-col">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Vista Previa
+              </label>
               <Counter
                 key={`${name}-${backgroundColor}-${selectedIcon}`} // Esto fuerza la re-renderización
                 counter={{

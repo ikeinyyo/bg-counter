@@ -177,8 +177,8 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
                 className={`w-8 h-8 rounded-full border text-xs font-semibold
                   ${
                     localConfig.size === size
-                      ? "bg-black text-white"
-                      : "bg-transparent border-black text-black"
+                      ? "bg-primary text-white"
+                      : "bg-transparent border-primary text-primary"
                   }`}
               >
                 {["S", "M", "L"][i]}

@@ -9,10 +9,12 @@ import {
 } from "@/features/layouts/CounterConfig";
 import { faker } from "@faker-js/faker";
 import Link from "next/link";
+import { FaPlusCircle } from "react-icons/fa";
+import Image from "next/image";
 
 const templates: Record<string, CounterConfig[]> = {
   empty: [],
-  marvel: [
+  marvelSolo: [
     {
       id: "villain",
       initialValue: 0,
@@ -22,7 +24,7 @@ const templates: Record<string, CounterConfig[]> = {
       size: "medium",
     },
     {
-      id: "player2",
+      id: "warning",
       initialValue: 0,
       name: "Amenaza",
       backgroundColor: getColorByKey("yellow"),
@@ -38,38 +40,106 @@ const templates: Record<string, CounterConfig[]> = {
       size: "medium",
     },
   ],
-  commander: [
+  marvelSoloCounters: [
     {
-      id: "player1",
-      initialValue: 20,
-      name: "Ajani",
-      backgroundColor: getColorByKey("yellow"),
-      icon: "sun",
-      size: "large",
-    },
-    {
-      id: "player2",
-      initialValue: 20,
-      name: "Jace",
-      backgroundColor: getColorByKey("blue"),
-      icon: "water",
-      size: "large",
-    },
-    {
-      id: "player3",
-      initialValue: 20,
-      name: "Liliana",
-      backgroundColor: getColorByKey("black"),
+      id: "villain",
+      initialValue: 0,
+      name: "Villano",
+      backgroundColor: getColorByKey("purple"),
       icon: "skull",
       size: "large",
     },
     {
+      id: "threat",
+      initialValue: 0,
+      name: "Amenaza",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "warning",
+      size: "large",
+    },
+    {
+      id: "hero",
+      initialValue: 0,
+      name: "Héroe",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
+      size: "small",
+    },
+    {
+      id: "counter",
+      initialValue: 0,
+      name: "Contador",
+      backgroundColor: getColorByKey("black"),
+      icon: "star",
+      size: "small",
+    },
+  ],
+  marvelGroup: [
+    {
+      id: "villain",
+      initialValue: 0,
+      name: "Villano",
+      backgroundColor: getColorByKey("purple"),
+      icon: "skull",
+      size: "large",
+    },
+    {
+      id: "threat",
+      initialValue: 0,
+      name: "Amenaza",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "warning",
+      size: "large",
+    },
+    {
+      id: "hero1",
+      initialValue: 0,
+      name: "Héroe 1",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
+      size: "small",
+    },
+    {
+      id: "hero2",
+      initialValue: 0,
+      name: "Héroe 2",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "small",
+    },
+  ],
+  commander: [
+    {
+      id: "player1",
+      initialValue: 40,
+      name: "Ajani",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "sun",
+      size: "small",
+    },
+    {
+      id: "player2",
+      initialValue: 40,
+      name: "Jace",
+      backgroundColor: getColorByKey("blue"),
+      icon: "water",
+      size: "small",
+    },
+    {
+      id: "player3",
+      initialValue: 40,
+      name: "Liliana",
+      backgroundColor: getColorByKey("black"),
+      icon: "skull",
+      size: "small",
+    },
+    {
       id: "player4",
-      initialValue: 20,
+      initialValue: 40,
       name: "Chandra",
       backgroundColor: getColorByKey("orange"),
       icon: "fire",
-      size: "large",
+      size: "small",
     },
   ],
   duel: [
@@ -140,32 +210,42 @@ export default function Home() {
   return (
     <div>
       {/* Barra superior */}
-      <div className="flex items-center justify-between p-4 bg-gray-800 text-white">
+      <div className="flex items-center justify-between p-2 bg-dark text-white h-14">
         <Link
-          className="text-2xl font-bold"
+          className="text-2xl font-bold hover:text-primary transition-colors"
           onClick={() => {
             setCounters(templates.empty);
             setSelectedTemplate("empty");
           }}
           href="/"
         >
-          BG Counter
+          <div className="flex items-center gap-2">
+            <Image
+              src="/images/logo.png"
+              width={100}
+              height={50}
+              alt="Logo de Juernes de Mesa"
+              className="p-2 pl-4"
+            />
+            <span className="lg:inline md:inline hidden">Counter App</span>
+          </div>
         </Link>
 
         <div className="flex items-center gap-4">
           {/* Selector de plantilla */}
           <div>
-            <label htmlFor="template" className="text-xl">
-              Selecciona una plantilla
-            </label>
             <select
               id="template"
               value={selectedTemplate}
               onChange={handleTemplateChange}
-              className="ml-2 px-4 py-2 border border-gray-300 rounded-md"
+              className="px-4 py-2 max-w-72 bg-dark border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 transition-colors ease-in-out"
             >
-              <option value="empty">Empty</option>
-              <option value="marvel">Marvel Champions</option>
+              <option value="empty">Sin plantilla</option>
+              <option value="marvelSolo">Marvel Champions - 1P</option>
+              <option value="marvelSoloCounters">
+                Marvel Champions - 1P Contadores
+              </option>
+              <option value="marvelGroup">Marvel Champions - 2P</option>
               <option value="commander">MTG Commander</option>
               <option value="duel">MTG Duel</option>
             </select>
@@ -175,9 +255,10 @@ export default function Home() {
           <div>
             <button
               onClick={addRandomCounter}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors flex"
             >
-              Añadir Contador
+              <FaPlusCircle className="h-6 w-6" />
+              <span className="lg:inline hidden ml-2">Añadir Contador</span>
             </button>
           </div>
         </div>

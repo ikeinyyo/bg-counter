@@ -9,6 +9,7 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { FaFaceRollingEyes } from "react-icons/fa6";
 
 /* -------------------- utilidades -------------------- */
 
@@ -96,15 +97,13 @@ export const CounterContainer = ({
   return (
     <div className="p-4 min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-          Contadores
-        </h1>
-
         {counters.length === 0 ? (
-          <p className="text-xl text-gray-500 mt-16 text-center">
+          <div className="text-xl text-dark mt-32 text-center">
+            <FaFaceRollingEyes className="mx-auto text-6xl text-dark/80" />
+            <br />
             No hay contadores. Añade uno para comenzar o selecciona una
             plantilla.
-          </p>
+          </div>
         ) : (
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="grid" direction="vertical">
