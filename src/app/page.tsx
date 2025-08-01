@@ -523,7 +523,7 @@ export default function Home() {
             />
             <span className="lg:inline md:inline hidden">Counter App</span>
             <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-500">
-              v1.0.1d
+              v1.0.2
             </span>
           </div>
         </Link>

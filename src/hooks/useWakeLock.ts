@@ -16,6 +16,12 @@ export const useWakeLock = () => {
       return false;
     }
 
+    // Verificar que la página esté visible antes de solicitar wake lock
+    if (document.hidden) {
+      console.warn("No se puede activar Wake Lock: la página no está visible");
+      return false;
+    }
+
     try {
       wakeLockRef.current = await navigator.wakeLock.request("screen");
       setIsActive(true);
