@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CounterContainer } from "@/features/layouts/CounterContainer";
 import {
   COLORS,
@@ -7,6 +7,7 @@ import {
   getColorByKey,
   ICONS,
 } from "@/features/layouts/CounterConfig";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import { faker } from "@faker-js/faker";
 import Link from "next/link";
 import { FaPlusCircle } from "react-icons/fa";
@@ -450,6 +451,7 @@ const templates: Record<string, CounterConfig[]> = {
 export default function Home() {
   const [counters, setCounters] = useState<CounterConfig[]>(templates.empty); // Cargar template por defecto
   const [selectedTemplate, setSelectedTemplate] = useState<string>("empty");
+  const { isSupported, requestWakeLock } = useWakeLock();
 
   // Función para cambiar el template
   const handleTemplateChange = (
@@ -459,6 +461,13 @@ export default function Home() {
     setSelectedTemplate(selected);
     setCounters(templates[selected]); // Cambiar los counters al template seleccionado
   };
+
+  // Activar wake lock cuando se carga la página
+  useEffect(() => {
+    if (isSupported) {
+      requestWakeLock();
+    }
+  }, [isSupported, requestWakeLock]);
 
   // Función para generar un contador aleatorio
   const generateRandomCounter = (): CounterConfig => {
