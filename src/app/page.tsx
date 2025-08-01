@@ -38,14 +38,14 @@ const templates: Record<string, CounterConfig[]> = {
       size: "medium",
     },
   ],
-  mtg: [
+  commander: [
     {
       id: "player1",
       initialValue: 20,
       name: "Ajani",
       backgroundColor: getColorByKey("yellow"),
       icon: "sun",
-      size: "medium",
+      size: "large",
     },
     {
       id: "player2",
@@ -53,7 +53,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Jace",
       backgroundColor: getColorByKey("blue"),
       icon: "water",
-      size: "medium",
+      size: "large",
     },
     {
       id: "player3",
@@ -61,7 +61,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Liliana",
       backgroundColor: getColorByKey("black"),
       icon: "skull",
-      size: "medium",
+      size: "large",
     },
     {
       id: "player4",
@@ -69,15 +69,25 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Chandra",
       backgroundColor: getColorByKey("orange"),
       icon: "fire",
-      size: "medium",
+      size: "large",
+    },
+  ],
+  duel: [
+    {
+      id: "player1",
+      initialValue: 20,
+      name: "Ajani",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "sun",
+      size: "large",
     },
     {
-      id: "player5",
+      id: "player2",
       initialValue: 20,
-      name: "Nissa",
-      backgroundColor: getColorByKey("green"),
-      icon: "leaf",
-      size: "medium",
+      name: "Jace",
+      backgroundColor: getColorByKey("blue"),
+      icon: "water",
+      size: "large",
     },
   ],
 };
@@ -156,7 +166,8 @@ export default function Home() {
             >
               <option value="empty">Empty</option>
               <option value="marvel">Marvel Champions</option>
-              <option value="mtg">Magic: The Gathering</option>
+              <option value="commander">MTG Commander</option>
+              <option value="duel">MTG Duel</option>
             </select>
           </div>
 
