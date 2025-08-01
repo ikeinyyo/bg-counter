@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { CounterEditor, CounterConfig } from "./CounterEditor";
-import { FaEdit, FaTrash, FaExpandArrowsAlt, FaCog } from "react-icons/fa";
+import { CounterEditor } from "./CounterEditor";
+import { CounterConfig } from "./CounterConfig";
+import { FaEdit, FaTrash, FaCog } from "react-icons/fa";
 import { getIconByKey } from "./CounterConfig";
 
 type Props = {
@@ -26,7 +27,7 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
 
   const handleSave = (updated: CounterConfig) => {
     setLocalConfig(updated);
-    onUpdate(updated);
+    onUpdate?.(updated);
     setIsEditing(false);
   };
 
@@ -166,7 +167,10 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
               <button
                 key={size}
                 onClick={() => {
-                  const updated = { ...localConfig, size };
+                  const updated = {
+                    ...localConfig,
+                    size: size as CounterConfig["size"],
+                  };
                   setLocalConfig(updated);
                   onUpdate?.(updated);
                 }}

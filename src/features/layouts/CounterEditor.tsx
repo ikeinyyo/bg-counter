@@ -137,6 +137,7 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
                   name,
                   backgroundColor,
                   icon: selectedIcon,
+                  size: counter.size,
                 }}
               />
             </div>

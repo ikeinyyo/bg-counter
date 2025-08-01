@@ -8,6 +8,7 @@ import {
   ICONS,
 } from "@/features/layouts/CounterConfig";
 import { faker } from "@faker-js/faker";
+import Link from "next/link";
 
 const templates: Record<string, CounterConfig[]> = {
   empty: [],
@@ -130,7 +131,7 @@ export default function Home() {
     <div>
       {/* Barra superior */}
       <div className="flex items-center justify-between p-4 bg-gray-800 text-white">
-        <a
+        <Link
           className="text-2xl font-bold"
           onClick={() => {
             setCounters(templates.empty);
@@ -139,7 +140,7 @@ export default function Home() {
           href="/"
         >
           BG Counter
-        </a>
+        </Link>
 
         <div className="flex items-center gap-4">
           {/* Selector de plantilla */}
