@@ -4,6 +4,7 @@ import { CounterEditor } from "./CounterEditor";
 import { CounterConfig } from "./CounterConfig";
 import { FaEdit, FaTrash, FaCog } from "react-icons/fa";
 import { getIconByKey } from "./CounterConfig";
+import IncrementDecrement from "./IncrementDecrement";
 
 type Props = {
   counter: CounterConfig;
@@ -22,8 +23,8 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localConfig, setLocalConfig] = useState(counter);
 
-  const onIncrement = () => setCount((c) => c + 1);
-  const onDecrement = () => setCount((c) => c - 1);
+  const onIncrement = (value: number) => setCount((c) => c + value);
+  const onDecrement = (value: number) => setCount((c) => c - value);
 
   const handleSave = (updated: CounterConfig) => {
     setLocalConfig(updated);
@@ -78,49 +79,11 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
       </div>
 
       {/* Left Half - Decrement Zone */}
-      <div
-        className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
-        onClick={onDecrement}
-      >
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Fondo blanco con opacidad */}
-          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
-          {/* Icono de decremento */}
-          <div
-            className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity mr-4 z-20 ${
-              ["small", "large2small", "medium2small"].includes(
-                localConfig.size
-              )
-                ? "hidden lg:inline md:inline"
-                : ""
-            }`}
-          >
-            −
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="absolute right-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
-        onClick={onIncrement}
-      >
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Fondo blanco con opacidad */}
-          <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
-          {/* Icono de incremento */}
-          <div
-            className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity ml-4 z-20 ${
-              ["small", "large2small", "medium2small"].includes(
-                localConfig.size
-              )
-                ? "hidden lg:inline md:inline"
-                : ""
-            }`}
-          >
-            +
-          </div>
-        </div>
-      </div>
+      <IncrementDecrement
+        onDecrement={onDecrement}
+        onIncrement={onIncrement}
+        localConfig={localConfig}
+      />
 
       {/* Central Counter Display */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
