@@ -37,7 +37,14 @@ export type CounterConfig = {
   name: string;
   backgroundColor: string;
   icon: string;
-  size: "small" | "medium" | "large";
+  size:
+    | "small"
+    | "medium"
+    | "large"
+    | "medium2small"
+    | "large2small"
+    | "full"
+    | "medium2large";
 };
 
 const COLORS = [

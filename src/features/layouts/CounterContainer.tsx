@@ -18,6 +18,10 @@ const spanBySize: Record<CounterConfig["size"], number> = {
   small: 3,
   medium: 4,
   large: 6,
+  medium2small: 4,
+  large2small: 6,
+  full: 12,
+  medium2large: 6,
 };
 
 /** Calcula cuántas columnas han quedado libres en la fila actual
@@ -70,7 +74,11 @@ export const CounterContainer = ({
   const sizeToClass = {
     small: "col-span-1 md:col-span-1 lg:col-span-3",
     medium: "col-span-2 md:col-span-2 lg:col-span-4",
+    medium2small: "col-span-1 md:col-span-2 lg:col-span-4",
+    medium2large: "col-span-2 md:col-span-4 lg:col-span-4",
     large: "col-span-2 md:col-span-4 lg:col-span-6",
+    large2small: "col-span-1 md:col-span-2 lg:col-span-6",
+    full: "col-span-2 md:col-span-4 lg:col-span-12",
   } as const;
 
   /* ---------- drag & drop ---------- */

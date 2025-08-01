@@ -47,7 +47,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Villano",
       backgroundColor: getColorByKey("purple"),
       icon: "skull",
-      size: "large",
+      size: "large2small",
     },
     {
       id: "threat",
@@ -55,7 +55,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Amenaza",
       backgroundColor: getColorByKey("yellow"),
       icon: "warning",
-      size: "large",
+      size: "large2small",
     },
     {
       id: "hero",
@@ -63,7 +63,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Héroe",
       backgroundColor: getColorByKey("red"),
       icon: "heart",
-      size: "small",
+      size: "large",
     },
     {
       id: "counter",
@@ -71,17 +71,17 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Contador",
       backgroundColor: getColorByKey("black"),
       icon: "star",
-      size: "small",
+      size: "large",
     },
   ],
-  marvelGroup: [
+  marvel2P: [
     {
       id: "villain",
       initialValue: 0,
       name: "Villano",
       backgroundColor: getColorByKey("purple"),
       icon: "skull",
-      size: "large",
+      size: "large2small",
     },
     {
       id: "threat",
@@ -89,7 +89,83 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Amenaza",
       backgroundColor: getColorByKey("yellow"),
       icon: "warning",
+      size: "large2small",
+    },
+    {
+      id: "hero1",
+      initialValue: 0,
+      name: "Héroe 1",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
       size: "large",
+    },
+    {
+      id: "hero2",
+      initialValue: 0,
+      name: "Héroe 2",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "large",
+    },
+  ],
+  marvel3P: [
+    {
+      id: "villain",
+      initialValue: 0,
+      name: "Villano",
+      backgroundColor: getColorByKey("purple"),
+      icon: "skull",
+      size: "large2small",
+    },
+    {
+      id: "threat",
+      initialValue: 0,
+      name: "Amenaza",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "warning",
+      size: "large2small",
+    },
+    {
+      id: "hero1",
+      initialValue: 0,
+      name: "Héroe 1",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
+      size: "medium2large",
+    },
+    {
+      id: "hero2",
+      initialValue: 0,
+      name: "Héroe 2",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "medium2small",
+    },
+    {
+      id: "hero3",
+      initialValue: 0,
+      name: "Héroe 3",
+      backgroundColor: getColorByKey("green"),
+      icon: "heart",
+      size: "medium2small",
+    },
+  ],
+  marvel4P: [
+    {
+      id: "villain",
+      initialValue: 0,
+      name: "Villano",
+      backgroundColor: getColorByKey("purple"),
+      icon: "skull",
+      size: "large2small",
+    },
+    {
+      id: "threat",
+      initialValue: 0,
+      name: "Amenaza",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "warning",
+      size: "large2small",
     },
     {
       id: "hero1",
@@ -107,6 +183,22 @@ const templates: Record<string, CounterConfig[]> = {
       icon: "heart",
       size: "small",
     },
+    {
+      id: "hero3",
+      initialValue: 0,
+      name: "Héroe 3",
+      backgroundColor: getColorByKey("green"),
+      icon: "heart",
+      size: "small",
+    },
+    {
+      id: "hero4",
+      initialValue: 0,
+      name: "Héroe 4",
+      backgroundColor: getColorByKey("magenta"),
+      icon: "heart",
+      size: "small",
+    },
   ],
   commander: [
     {
@@ -115,7 +207,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Ajani",
       backgroundColor: getColorByKey("yellow"),
       icon: "sun",
-      size: "small",
+      size: "large2small",
     },
     {
       id: "player2",
@@ -123,7 +215,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Jace",
       backgroundColor: getColorByKey("blue"),
       icon: "water",
-      size: "small",
+      size: "large2small",
     },
     {
       id: "player3",
@@ -131,7 +223,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Liliana",
       backgroundColor: getColorByKey("black"),
       icon: "skull",
-      size: "small",
+      size: "large2small",
     },
     {
       id: "player4",
@@ -139,7 +231,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Chandra",
       backgroundColor: getColorByKey("orange"),
       icon: "fire",
-      size: "small",
+      size: "large2small",
     },
   ],
   duel: [
@@ -158,6 +250,199 @@ const templates: Record<string, CounterConfig[]> = {
       backgroundColor: getColorByKey("blue"),
       icon: "water",
       size: "large",
+    },
+  ],
+  lifeEnergy2: [
+    {
+      id: "player1-life",
+      initialValue: 20,
+      name: "Jugador 1 - Vida",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player1-energy",
+      initialValue: 0,
+      name: "Jugador 1 - Energía",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "bolt",
+      size: "large2small",
+    },
+    {
+      id: "player2-life",
+      initialValue: 20,
+      name: "Jugador 2 - Vida",
+      backgroundColor: getColorByKey("green"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player2-energy",
+      initialValue: 0,
+      name: "Jugador 2 - Energía",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "bolt",
+      size: "large2small",
+    },
+  ],
+
+  /* --- 3 jugadores: Vida --- */
+  life3: [
+    {
+      id: "player1",
+      initialValue: 20,
+      name: "Jugador 1",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
+      size: "full",
+    },
+    {
+      id: "player2",
+      initialValue: 20,
+      name: "Jugador 2",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "large",
+    },
+    {
+      id: "player3",
+      initialValue: 20,
+      name: "Jugador 3",
+      backgroundColor: getColorByKey("green"),
+      icon: "heart",
+      size: "large",
+    },
+  ],
+
+  /* --- 4 jugadores: Vida --- */
+  life4: [
+    {
+      id: "player1",
+      initialValue: 20,
+      name: "Jugador 1",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player2",
+      initialValue: 20,
+      name: "Jugador 2",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player3",
+      initialValue: 20,
+      name: "Jugador 3",
+      backgroundColor: getColorByKey("green"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player4",
+      initialValue: 20,
+      name: "Jugador 4",
+      backgroundColor: getColorByKey("purple"),
+      icon: "heart",
+      size: "large2small",
+    },
+  ],
+
+  life5: [
+    {
+      id: "player1",
+      initialValue: 20,
+      name: "Jugador 1",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
+      size: "full",
+    },
+    {
+      id: "player2",
+      initialValue: 20,
+      name: "Jugador 2",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player3",
+      initialValue: 20,
+      name: "Jugador 3",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player4",
+      initialValue: 20,
+      name: "Jugador 4",
+      backgroundColor: getColorByKey("green"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player5",
+      initialValue: 20,
+      name: "Jugador 5",
+      backgroundColor: getColorByKey("purple"),
+      icon: "heart",
+      size: "large2small",
+    },
+  ],
+
+  /* --- 6 jugadores: Vida --- */
+  life6: [
+    {
+      id: "player1",
+      initialValue: 20,
+      name: "Jugador 1",
+      backgroundColor: getColorByKey("red"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player2",
+      initialValue: 20,
+      name: "Jugador 2",
+      backgroundColor: getColorByKey("blue"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player3",
+      initialValue: 20,
+      name: "Jugador 3",
+      backgroundColor: getColorByKey("green"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player4",
+      initialValue: 20,
+      name: "Jugador 4",
+      backgroundColor: getColorByKey("yellow"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player5",
+      initialValue: 20,
+      name: "Jugador 5",
+      backgroundColor: getColorByKey("purple"),
+      icon: "heart",
+      size: "large2small",
+    },
+    {
+      id: "player6",
+      initialValue: 20,
+      name: "Jugador 6",
+      backgroundColor: getColorByKey("orange"),
+      icon: "heart",
+      size: "large2small",
     },
   ],
 };
@@ -245,9 +530,17 @@ export default function Home() {
               <option value="marvelSoloCounters">
                 Marvel Champions - 1P Contadores
               </option>
-              <option value="marvelGroup">Marvel Champions - 2P</option>
+              <option value="marvel2P">Marvel Champions - 2P</option>
+
               <option value="commander">MTG Commander</option>
               <option value="duel">MTG Duel</option>
+              <option value="lifeEnergy2">Vida y Energía - 2 Jugadores</option>
+              <option value="life3">Vida - 3 Jugadores</option>
+              <option value="life4">Vida - 4 Jugadores</option>
+              <option value="life5">Vida - 5 Jugadores</option>
+              <option value="life6">Vida - 6 Jugadores</option>
+              <option value="marvel3P">Marvel Champions - 3P</option>
+              <option value="marvel4P">Marvel Champions - 4P</option>
             </select>
           </div>
 

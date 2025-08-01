@@ -68,7 +68,9 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
         </span>
         <span
           className={`text-lg font-semibold ${
-            localConfig.size === "small" ? "hidden lg:inline" : ""
+            ["small", "large2small", "medium2small"].includes(localConfig.size)
+              ? "hidden lg:inline md:inline"
+              : ""
           }`}
         >
           {localConfig.name}
@@ -86,7 +88,11 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
           {/* Icono de decremento */}
           <div
             className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity mr-4 z-20 ${
-              localConfig.size === "small" ? "hidden lg:inline" : ""
+              ["small", "large2small", "medium2small"].includes(
+                localConfig.size
+              )
+                ? "hidden lg:inline md:inline"
+                : ""
             }`}
           >
             −
@@ -104,7 +110,11 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
           {/* Icono de incremento */}
           <div
             className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity ml-4 z-20 ${
-              localConfig.size === "small" ? "hidden lg:inline" : ""
+              ["small", "large2small", "medium2small"].includes(
+                localConfig.size
+              )
+                ? "hidden lg:inline md:inline"
+                : ""
             }`}
           >
             +
