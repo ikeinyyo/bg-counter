@@ -1,24 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Counter } from "./Counter";
-import { CounterConfig } from "./CounterConfig";
+import { Counter } from "./Counter/Counter";
+import { CounterConfig } from "./domain";
 import { FaFaceRollingEyes } from "react-icons/fa6";
-
-/* -------------------- utilidades -------------------- */
-
-/** nº de columnas que ocupa cada tamaño (en un grid de 12 col). */
-const spanBySize: Record<CounterConfig["size"], number> = {
-  small: 3,
-  medium: 4,
-  large: 6,
-  medium2small: 4,
-  large2small: 6,
-  full: 12,
-  medium2large: 6,
-};
-
-/* --------------------- componente -------------------- */
 
 type Props = {
   countersDefault: CounterConfig[];
@@ -26,14 +11,9 @@ type Props = {
   onUpdate: (updated: CounterConfig) => void;
 };
 
-export const CounterContainer = ({
-  countersDefault,
-  onDelete,
-  onUpdate,
-}: Props) => {
+const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   const [counters, setCounters] = useState<CounterConfig[]>(countersDefault);
 
-  /* sincroniza con props externas */
   useEffect(() => setCounters(countersDefault), [countersDefault]);
 
   const sizeToClass = {
@@ -47,8 +27,19 @@ export const CounterContainer = ({
     small2medium: "col-span-1 md:col-span-2 lg:col-span-3",
   } as const;
 
+  const spanBySize: Record<CounterConfig["size"], number> = {
+    small: 3,
+    medium: 4,
+    large: 6,
+    medium2small: 4,
+    large2small: 6,
+    full: 12,
+    medium2large: 6,
+    small2medium: 3,
+  };
+
   return (
-    <div className="p-4 min-h-screen bg-gray-100">
+    <div className="p-2 md:p-4 min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto">
         {counters.length === 0 ? (
           <div className="text-xl text-dark mt-32 text-center">
@@ -58,8 +49,8 @@ export const CounterContainer = ({
             plantilla.
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 grid-flow-dense gap-6">
-            {counters.map((counter, idx) => {
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 grid-flow-dense gap-2 md:gap-4 lg:gap-6">
+            {counters.map((counter) => {
               const span = spanBySize[counter.size];
               return (
                 <div
@@ -71,6 +62,7 @@ export const CounterContainer = ({
                 >
                   <Counter
                     counter={counter}
+                    span={span}
                     onDelete={onDelete}
                     onUpdate={onUpdate}
                   />
@@ -83,3 +75,5 @@ export const CounterContainer = ({
     </div>
   );
 };
+
+export { CounterContainer };

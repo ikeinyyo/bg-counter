@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { CounterConfig } from "./CounterConfig";
+import { CounterConfig } from "../domain";
 
 type Props = {
   onDecrement: (value: number) => void;
@@ -12,7 +12,6 @@ const IncrementDecrement = ({
   onIncrement,
   localConfig,
 }: Props) => {
-  // Estados para manejo de presión
   const [isLongPress, setIsLongPress] = useState(false);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout | null>(null);
   const [repeatTimer, setRepeatTimer] = useState<NodeJS.Timeout | null>(null);
@@ -21,12 +20,10 @@ const IncrementDecrement = ({
   >(null);
   const [isScrolling, setIsScrolling] = useState(false);
 
-  // Referencias para control de eventos
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const isProcessing = useRef(false);
   const eventId = useRef(0);
 
-  // Detectar si es dispositivo táctil
   const isTouchDevice = useRef(
     "ontouchstart" in window || navigator.maxTouchPoints > 0
   );
@@ -42,7 +39,6 @@ const IncrementDecrement = ({
     }
   };
 
-  // Función para repetición en long press
   const startRepeating = (buttonType: "increment" | "decrement") => {
     const timer = setInterval(() => {
       executeAction(buttonType, 10);
@@ -57,7 +53,6 @@ const IncrementDecrement = ({
     }
   };
 
-  // Manejador de inicio de presión
   const handlePressStart = (
     buttonType: "increment" | "decrement",
     currentEventId: number
@@ -76,9 +71,7 @@ const IncrementDecrement = ({
     setPressTimer(timer);
   };
 
-  // Manejador de fin de presión
   const handlePressEnd = (currentEventId: number) => {
-    // Solo procesar si es el mismo evento que inició
     if (eventId.current !== currentEventId) return;
 
     if (pressTimer) {
@@ -88,12 +81,10 @@ const IncrementDecrement = ({
 
     stopRepeating();
 
-    // Ejecutar solo si no fue long press y no hay scroll
     if (!isLongPress && pressedButton && !isScrolling) {
       executeAction(pressedButton, 1);
     }
 
-    // Resetear estados
     setIsLongPress(false);
     setPressedButton(null);
     isProcessing.current = false;
@@ -111,7 +102,7 @@ const IncrementDecrement = ({
     handlePressStart("increment", currentEventId);
   };
 
-  const handleMouseUp = (event: React.MouseEvent) => {
+  const handleMouseUp = () => {
     handlePressEnd(eventId.current);
   };
 
@@ -160,7 +151,7 @@ const IncrementDecrement = ({
     }
   };
 
-  const handleTouchEnd = (event: React.TouchEvent) => {
+  const handleTouchEnd = () => {
     if (isScrolling) {
       setIsScrolling(false);
       stopRepeating();
@@ -193,7 +184,7 @@ const IncrementDecrement = ({
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           <div
-            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity mr-12 z-20 ${
+            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity mt-8 mr-12 z-20 ${
               ["small", "large2small", "medium2small", "small2medium"].includes(
                 localConfig.size
               )
@@ -222,7 +213,7 @@ const IncrementDecrement = ({
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           <div
-            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity ml-12 z-20 ${
+            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity mt-8 ml-12 z-20 ${
               ["small", "large2small", "medium2small", "small2medium"].includes(
                 localConfig.size
               )
@@ -238,4 +229,4 @@ const IncrementDecrement = ({
   );
 };
 
-export default IncrementDecrement;
+export { IncrementDecrement };
