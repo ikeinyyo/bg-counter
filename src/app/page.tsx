@@ -174,7 +174,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Héroe 1",
       backgroundColor: getColorByKey("red"),
       icon: "heart",
-      size: "small",
+      size: "small2medium",
     },
     {
       id: "hero2",
@@ -182,7 +182,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Héroe 2",
       backgroundColor: getColorByKey("blue"),
       icon: "heart",
-      size: "small",
+      size: "small2medium",
     },
     {
       id: "hero3",
@@ -190,7 +190,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Héroe 3",
       backgroundColor: getColorByKey("green"),
       icon: "heart",
-      size: "small",
+      size: "small2medium",
     },
     {
       id: "hero4",
@@ -198,7 +198,7 @@ const templates: Record<string, CounterConfig[]> = {
       name: "Héroe 4",
       backgroundColor: getColorByKey("magenta"),
       icon: "heart",
-      size: "small",
+      size: "small2medium",
     },
   ],
   commander: [
@@ -523,7 +523,7 @@ export default function Home() {
             />
             <span className="lg:inline md:inline hidden">Counter App</span>
             <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-500">
-              v1.0.2
+              v1.0.2b
             </span>
           </div>
         </Link>

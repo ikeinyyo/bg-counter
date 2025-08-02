@@ -44,6 +44,7 @@ export const CounterContainer = ({
     large: "col-span-2 md:col-span-4 lg:col-span-6",
     large2small: "col-span-1 md:col-span-2 lg:col-span-6",
     full: "col-span-2 md:col-span-4 lg:col-span-12",
+    small2medium: "col-span-1 md:col-span-2 lg:col-span-3",
   } as const;
 
   return (

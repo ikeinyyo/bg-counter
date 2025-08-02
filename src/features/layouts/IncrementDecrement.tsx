@@ -193,12 +193,12 @@ const IncrementDecrement = ({
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           <div
-            className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity mr-4 z-20 ${
-              ["small", "large2small", "medium2small"].includes(
+            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity mr-12 z-20 ${
+              ["small", "large2small", "medium2small", "small2medium"].includes(
                 localConfig.size
               )
-                ? "hidden lg:inline md:inline"
-                : ""
+                ? "text-4xl lg:text-6xl md:text-6xl"
+                : "text-6xl"
             }`}
           >
             −
@@ -222,12 +222,12 @@ const IncrementDecrement = ({
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           <div
-            className={`text-white text-6xl font-bold opacity-30 hover:opacity-60 transition-opacity ml-4 z-20 ${
-              ["small", "large2small", "medium2small"].includes(
+            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity ml-12 z-20 ${
+              ["small", "large2small", "medium2small", "small2medium"].includes(
                 localConfig.size
               )
-                ? "hidden lg:inline md:inline"
-                : ""
+                ? "text-4xl lg:text-6xl md:text-6xl"
+                : "text-6xl"
             }`}
           >
             +

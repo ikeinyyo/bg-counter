@@ -69,7 +69,9 @@ const Counter = ({ counter, onUpdate, onDelete }: Props) => {
         </span>
         <span
           className={`text-lg font-semibold ${
-            ["small", "large2small", "medium2small"].includes(localConfig.size)
+            ["small", "large2small", "medium2small", "small2medium"].includes(
+              localConfig.size
+            )
               ? "hidden lg:inline md:inline"
               : ""
           }`}

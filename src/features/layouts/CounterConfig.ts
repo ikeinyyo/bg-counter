@@ -44,7 +44,8 @@ export type CounterConfig = {
     | "medium2small"
     | "large2small"
     | "full"
-    | "medium2large";
+    | "medium2large"
+    | "small2medium";
 };
 
 const COLORS = [
