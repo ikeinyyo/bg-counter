@@ -55,23 +55,25 @@ const Counter = ({ counter, span, onUpdate, onDelete }: Props) => {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [showMenu]);
 
+  const isSmall = !!(span && span <= 6);
+
   return (
     <div
       className="relative w-full h-56 rounded-lg shadow-lg overflow-hidden select-none"
       style={{ backgroundColor: counter.backgroundColor }}
     >
-      <CounterHeader localConfig={counter} />
+      <CounterHeader localConfig={counter} isSmall={isSmall} />
 
       <IncrementDecrement
         onDecrement={onDecrement}
         onIncrement={onIncrement}
-        localConfig={counter}
+        isSmall={isSmall}
       />
 
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span
-          className={`font-bold text-white drop-shadow-lg mt-6 ${
-            span && span < 6 ? "text-7xl" : "text-8xl" // TODO: make this dynamic based on span
+          className={`font-bold drop-shadow-lg mt-6 ${
+            isSmall ? "text-7xl md:text-8xl" : "text-8xl"
           }`}
         >
           {count}
@@ -84,7 +86,7 @@ const Counter = ({ counter, span, onUpdate, onDelete }: Props) => {
         ref={cogRef}
         title="Options"
       >
-        <FaCog className="w-6 h-6" />
+        <FaCog className={`${isSmall ? "w-4 h-4 md:w-6 md:h-6" : "w-6 h-6"}`} />
       </button>
 
       <Menu
