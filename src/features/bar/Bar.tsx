@@ -7,6 +7,7 @@ import { layoutTemplates } from "../CounterContainer/config/templates";
 import { faker } from "@faker-js/faker";
 import { CounterConfig, getDefaultBySize } from "../CounterContainer/domain";
 import { ICONS } from "../CounterContainer/config/icons";
+import { FaArrowRotateRight } from "react-icons/fa6";
 
 type Props = {
   counters: CounterConfig[];
@@ -30,10 +31,8 @@ const Bar = ({ counters, setCounters }: Props) => {
   };
 
   const generateRandomCounter = (): CounterConfig => {
-    const randomId = `${Math.random()}`.slice(2);
-
     return {
-      id: randomId,
+      id: faker.string.uuid(),
       initialValue: 0,
       name: faker.person.firstName(),
       backgroundColor: getColorByKey(
@@ -42,6 +41,12 @@ const Bar = ({ counters, setCounters }: Props) => {
       icon: ICONS[Math.floor(Math.random() * ICONS.length)].key,
       ...getDefaultBySize("M"),
     };
+  };
+
+  const resetCounters = () => {
+    setCounters([
+      ...counters.map((counter) => ({ ...counter, id: faker.string.uuid() })),
+    ]);
   };
 
   const addRandomCounter = () => {
@@ -69,7 +74,7 @@ const Bar = ({ counters, setCounters }: Props) => {
           />
           <span className="lg:inline md:inline hidden">Counter App</span>
           <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-500">
-            v1.2.0
+            v1.2.1
           </span>
         </div>
       </Link>
@@ -81,7 +86,7 @@ const Bar = ({ counters, setCounters }: Props) => {
             id="template"
             value={selectedTemplate}
             onChange={handleTemplateChange}
-            className="px-4 py-2 max-w-72 bg-dark border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 transition-colors ease-in-out"
+            className="text-sm px-4 py-2 max-w-72 bg-dark border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 transition-colors ease-in-out"
           >
             {layoutTemplates.map((template) => (
               <option key={template.id} value={template.id}>
@@ -91,7 +96,14 @@ const Bar = ({ counters, setCounters }: Props) => {
           </select>
         </div>
 
-        <div>
+        <div className="flex gap-2">
+          <button
+            onClick={resetCounters}
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors flex"
+          >
+            <FaArrowRotateRight className="h-6 w-6" />
+            <span className="lg:inline hidden ml-2">Reset</span>
+          </button>
           <button
             onClick={addRandomCounter}
             className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors flex"
