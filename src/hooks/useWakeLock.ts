@@ -6,19 +6,15 @@ export const useWakeLock = () => {
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
   useEffect(() => {
-    // Verificar si el navegador soporta Wake Lock API
     setIsSupported("wakeLock" in navigator);
   }, []);
 
   const requestWakeLock = async () => {
     if (!isSupported) {
-      console.warn("Wake Lock API no está soportada en este navegador");
       return false;
     }
 
-    // Verificar que la página esté visible antes de solicitar wake lock
     if (document.hidden) {
-      console.warn("No se puede activar Wake Lock: la página no está visible");
       return false;
     }
 
@@ -26,16 +22,12 @@ export const useWakeLock = () => {
       wakeLockRef.current = await navigator.wakeLock.request("screen");
       setIsActive(true);
 
-      // Listener para cuando se libera el wake lock
       wakeLockRef.current.addEventListener("release", () => {
         setIsActive(false);
-        console.log("Wake Lock liberado");
       });
 
-      console.log("Wake Lock activado");
       return true;
     } catch (err) {
-      console.error("Error al activar Wake Lock:", err);
       return false;
     }
   };
@@ -48,7 +40,6 @@ export const useWakeLock = () => {
     }
   };
 
-  // Reactivar wake lock cuando la página vuelve a ser visible
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (
@@ -66,7 +57,6 @@ export const useWakeLock = () => {
     };
   }, [isActive, isSupported]);
 
-  // Limpiar al desmontar el componente
   useEffect(() => {
     return () => {
       releaseWakeLock();
