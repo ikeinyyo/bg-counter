@@ -5,6 +5,7 @@ import { CounterConfig } from "@/features/CounterContainer/domain";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { layoutTemplates } from "@/features/CounterContainer/config/templates";
 import { Bar } from "@/features/bar/Bar";
+import { Footer } from "@/features/footer/Footer";
 
 export default function Home() {
   const [counters, setCounters] = useState<CounterConfig[]>(
@@ -18,20 +19,20 @@ export default function Home() {
         activateWakeLock();
       }
     };
-  
+
     document.addEventListener("visibilitychange", handleVisibility);
     window.addEventListener("focus", handleVisibility);
-  
+
     activateWakeLock();
-  
+
     return () => {
       document.removeEventListener("visibilitychange", handleVisibility);
       window.removeEventListener("focus", handleVisibility);
     };
   }, [isSupported, requestWakeLock]);
-  
 
   const activateWakeLock = () => {
+    console.log("Activando wake lock");
     if (isSupported) {
       requestWakeLock();
     }
@@ -48,13 +49,16 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <Bar counters={counters} isWakeLockActive={isActive} activateWakeLock={activateWakeLock} setCounters={setCounters} />
+    <div className="flex flex-col">
+      <Bar counters={counters} setCounters={setCounters} />
+
       <CounterContainer
         countersDefault={counters}
         onDelete={handleDeleteCounter}
         onUpdate={handleUpdateCounter}
       />
+
+      <Footer isWakeLockActive={isActive} activateWakeLock={activateWakeLock} />
     </div>
   );
 }

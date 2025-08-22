@@ -39,7 +39,7 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   };
 
   return (
-    <div className="p-2 md:p-4 min-h-screen bg-gray-100">
+    <main className="p-2 md:p-4 bg-gray-100 min-h-[calc(100vh-3.5rem-2rem)]">
       <div className="max-w-7xl mx-auto">
         {counters.length === 0 ? (
           <div className="text-xl text-dark mt-32 text-center">
@@ -72,7 +72,7 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 };
 

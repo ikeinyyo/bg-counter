@@ -10,12 +10,10 @@ import { ICONS } from "../CounterContainer/config/icons";
 
 type Props = {
   counters: CounterConfig[];
-  isWakeLockActive: boolean;
-  activateWakeLock: () => void;
   setCounters: (counters: CounterConfig[]) => void;
 };
 
-const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Props) => {
+const Bar = ({ counters, setCounters }: Props) => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("empty");
 
   const handleTemplateChange = (
@@ -52,7 +50,7 @@ const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Prop
   };
 
   return (
-    <div className="flex items-center justify-between p-2 bg-dark text-white h-14">
+    <header className="flex items-center justify-between p-2 bg-dark text-white h-14">
       <Link
         className="text-2xl font-bold hover:text-primary transition-colors"
         onClick={() => {
@@ -102,11 +100,8 @@ const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Prop
             <span className="lg:inline hidden ml-2">Añadir Contador</span>
           </button>
         </div>
-        
-        <div className={`w-2 h-2 rounded-full fixed bottom-2 right-2 ${isWakeLockActive ? "bg-green-500 " : "bg-red-500"}`} onClick={activateWakeLock}/>
-        
       </div>
-    </div>
+    </header>
   );
 };
 
