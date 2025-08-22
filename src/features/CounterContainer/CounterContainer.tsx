@@ -17,25 +17,17 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   useEffect(() => setCounters(countersDefault), [countersDefault]);
 
   const sizeToClass = {
-    small: "col-span-1 md:col-span-1 lg:col-span-3",
-    medium: "col-span-2 md:col-span-2 lg:col-span-4",
-    medium2small: "col-span-1 md:col-span-2 lg:col-span-4",
-    medium2large: "col-span-2 md:col-span-4 lg:col-span-4",
-    large: "col-span-2 md:col-span-4 lg:col-span-6",
-    large2small: "col-span-1 md:col-span-2 lg:col-span-6",
-    full: "col-span-2 md:col-span-4 lg:col-span-12",
-    small2medium: "col-span-1 md:col-span-2 lg:col-span-3",
+    xs: "col-span-1 md:col-span-1 lg:col-span-3",
+    s: "col-span-1 md:col-span-3 lg:col-span-4",
+    m: "col-span-2 md:col-span-3 lg:col-span-6",
+    l: "col-span-2 md:col-span-6 lg:col-span-12",
   } as const;
 
   const spanBySize: Record<CounterConfig["size"], number> = {
-    small: 3,
-    medium: 4,
-    large: 6,
-    medium2small: 4,
-    large2small: 6,
-    full: 12,
-    medium2large: 6,
-    small2medium: 3,
+    xs: 1,
+    s: 2,
+    m: 3,
+    l: 4,
   };
 
   return (
@@ -49,17 +41,11 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
             plantilla.
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 grid-flow-dense gap-2 md:gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-12 grid-flow-dense gap-2 md:gap-4 lg:gap-6">
             {counters.map((counter) => {
               const span = spanBySize[counter.size];
               return (
-                <div
-                  key={counter.id}
-                  className={sizeToClass[counter.size]}
-                  style={{
-                    gridColumnEnd: `span ${span}`,
-                  }}
-                >
+                <div key={counter.id} className={sizeToClass[counter.size]}>
                   <Counter
                     counter={counter}
                     span={span}
