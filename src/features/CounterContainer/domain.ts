@@ -17,6 +17,9 @@ export type CounterConfig = {
   backgroundColor: string;
   icon: string;
   size: "xs" | "s" | "m" | "l";
+  xsElementsPerRow?: number;
+  mdElementsPerRow?: number;
+  lgElementsPerRow?: number;
 };
 
 export type IconDef = {
