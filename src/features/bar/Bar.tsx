@@ -5,17 +5,15 @@ import React, { useState } from "react";
 import { COLORS, getColorByKey } from "../CounterContainer/config/colors";
 import { layoutTemplates } from "../CounterContainer/config/templates";
 import { faker } from "@faker-js/faker";
-import { CounterConfig } from "../CounterContainer/domain";
+import { CounterConfig, getDefaultBySize } from "../CounterContainer/domain";
 import { ICONS } from "../CounterContainer/config/icons";
 
 type Props = {
   counters: CounterConfig[];
-  isWakeLockActive: boolean;
-  activateWakeLock: () => void;
   setCounters: (counters: CounterConfig[]) => void;
 };
 
-const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Props) => {
+const Bar = ({ counters, setCounters }: Props) => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>("empty");
 
   const handleTemplateChange = (
@@ -42,7 +40,7 @@ const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Prop
         COLORS[Math.floor(Math.random() * COLORS.length)].key
       ),
       icon: ICONS[Math.floor(Math.random() * ICONS.length)].key,
-      size: "medium",
+      ...getDefaultBySize("M"),
     };
   };
 
@@ -52,7 +50,7 @@ const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Prop
   };
 
   return (
-    <div className="flex items-center justify-between p-2 bg-dark text-white h-14">
+    <header className="flex items-center justify-between p-2 bg-dark text-white h-14">
       <Link
         className="text-2xl font-bold hover:text-primary transition-colors"
         onClick={() => {
@@ -71,7 +69,7 @@ const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Prop
           />
           <span className="lg:inline md:inline hidden">Counter App</span>
           <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-500">
-            v1.1.0
+            v1.2.0
           </span>
         </div>
       </Link>
@@ -99,14 +97,11 @@ const Bar = ({ counters, isWakeLockActive, activateWakeLock, setCounters }: Prop
             className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors flex"
           >
             <FaPlusCircle className="h-6 w-6" />
-            <span className="lg:inline hidden ml-2">Añadir Contador</span>
+            <span className="lg:inline hidden ml-2">Add Counter</span>
           </button>
         </div>
-        
-        <div className={`w-2 h-2 rounded-full fixed bottom-2 right-2 ${isWakeLockActive ? "bg-green-500 " : "bg-red-500"}`} onClick={activateWakeLock}/>
-        
       </div>
-    </div>
+    </header>
   );
 };
 

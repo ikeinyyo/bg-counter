@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export const useWakeLock = () => {
+const useWakeLock = () => {
   const [isSupported, setIsSupported] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
@@ -28,6 +28,7 @@ export const useWakeLock = () => {
 
       return true;
     } catch (err) {
+      console.error(err);
       return false;
     }
   };
@@ -70,3 +71,5 @@ export const useWakeLock = () => {
     releaseWakeLock,
   };
 };
+
+export { useWakeLock };

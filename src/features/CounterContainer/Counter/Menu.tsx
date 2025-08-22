@@ -1,5 +1,10 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { CounterConfig } from "../domain";
+import {
+  CounterConfig,
+  getDefaultBySize,
+  getSizeFromConfig,
+  Size,
+} from "../domain";
 
 type Props = {
   showMenu: boolean;
@@ -20,6 +25,10 @@ const Menu = ({
   setIsEditing,
   menuRef,
 }: Props) => {
+  const changeProps = (size: Size) => {
+    return getDefaultBySize(size);
+  };
+
   return (
     showMenu && (
       <div
@@ -51,28 +60,24 @@ const Menu = ({
         <hr className="my-1" />
 
         <div className="flex justify-between gap-1">
-          {["small", "medium", "large"].map((size) => (
+          {["XS", "S", "M", "L"].map((size) => (
             <button
               key={size}
               onClick={() => {
                 const updated = {
                   ...localConfig,
-                  size: size as CounterConfig["size"],
+                  ...changeProps(size as Size),
                 };
                 onUpdate?.(updated);
               }}
               className={`w-8 h-8 rounded-full border border-primary text-xs font-semibold hover:border-transparent hover:bg-primary/80 hover:text-white transition-colors
                 ${
-                  localConfig.size.startsWith(size)
+                  getSizeFromConfig(localConfig) === (size as Size)
                     ? "bg-primary text-white"
                     : "bg-transparent text-primary"
                 }`}
             >
-              {size.startsWith("small")
-                ? "S"
-                : size.startsWith("medium")
-                ? "M"
-                : "L"}
+              {size}
             </button>
           ))}
         </div>

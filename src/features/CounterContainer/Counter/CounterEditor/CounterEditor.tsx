@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Counter } from "../Counter";
-import { CounterConfig } from "../../domain";
+import { CounterConfig, getDefaultBySize } from "../../domain";
 import { ICONS } from "../../config/icons";
 import { COLORS } from "../../config/colors";
 import { useCounterEditorState } from "./useCounterEditorState";
@@ -73,7 +73,6 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
             </div>
           </div>
 
-          {/* Columna derecha (preview arriba, acciones abajo) */}
           <div className="flex flex-col h-full min-h-[360px]">
             <CounterPreview label="Preview">
               <Counter
@@ -84,8 +83,9 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
                   name,
                   backgroundColor,
                   icon: selectedIcon,
-                  size: "large",
+                  ...getDefaultBySize("M"),
                 }}
+                isPreview={true}
               />
             </CounterPreview>
 
