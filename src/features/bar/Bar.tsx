@@ -40,7 +40,9 @@ const Bar = ({ counters, setCounters }: Props) => {
         COLORS[Math.floor(Math.random() * COLORS.length)].key
       ),
       icon: ICONS[Math.floor(Math.random() * ICONS.length)].key,
-      size: "medium",
+      xsElementsPerRow: 2,
+      mdElementsPerRow: 2,
+      lgElementsPerRow: 2,
     };
   };
 

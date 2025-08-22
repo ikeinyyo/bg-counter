@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Counter } from "./Counter/Counter";
 import { CounterConfig } from "./domain";
 import { FaFaceRollingEyes } from "react-icons/fa6";
+import { useBreakpoint } from "../../hooks/useBreakpoint";
 
 type Props = {
   countersDefault: CounterConfig[];
@@ -24,6 +25,7 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   };
 
   const [windowWidth, setWindowWidth] = useState<number>(0);
+  const breakpoint = useBreakpoint();
 
   useEffect(() => {
     setWindowWidth(window.innerWidth);
@@ -40,9 +42,9 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   }, []);
 
   const spanBySize = (counter: CounterConfig) => {
-    if (windowWidth >= 1024) {
+    if (breakpoint.isLg) {
       return 12 / (counter.lgElementsPerRow || 2);
-    } else if (windowWidth >= 768) {
+    } else if (breakpoint.isMd) {
       return 12 / (counter.mdElementsPerRow || 2);
     } else {
       return 12 / (counter.xsElementsPerRow || 1);

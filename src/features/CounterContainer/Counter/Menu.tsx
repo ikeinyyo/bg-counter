@@ -1,5 +1,6 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { CounterConfig } from "../domain";
+import { useBreakpoint } from "../../../hooks/useBreakpoint";
 
 type Props = {
   showMenu: boolean;
@@ -20,6 +21,29 @@ const Menu = ({
   setIsEditing,
   menuRef,
 }: Props) => {
+  const breakpoint = useBreakpoint();
+  const changeProps = (counter: CounterConfig, size: number) => {
+    const xsElementsPerRow = breakpoint.isXs ? size : counter.xsElementsPerRow;
+    const mdElementsPerRow = breakpoint.isMd ? size : counter.mdElementsPerRow;
+    const lgElementsPerRow = breakpoint.isLg ? size : counter.lgElementsPerRow;
+
+    return {
+      xsElementsPerRow,
+      mdElementsPerRow,
+      lgElementsPerRow,
+    };
+  };
+
+  const isSelected = (counter: CounterConfig, size: number) => {
+    return breakpoint.isXs
+      ? counter.xsElementsPerRow == size
+      : breakpoint.isMd
+      ? counter.mdElementsPerRow == size
+      : breakpoint.isLg
+      ? counter.lgElementsPerRow == size
+      : false;
+  };
+
   return (
     showMenu && (
       <div
@@ -51,28 +75,24 @@ const Menu = ({
         <hr className="my-1" />
 
         <div className="flex justify-between gap-1">
-          {["small", "medium", "large"].map((size) => (
+          {[1, 2, 3, 4].map((size) => (
             <button
               key={size}
               onClick={() => {
                 const updated = {
                   ...localConfig,
-                  size: size as CounterConfig["size"],
+                  ...changeProps(localConfig, size),
                 };
                 onUpdate?.(updated);
               }}
               className={`w-8 h-8 rounded-full border border-primary text-xs font-semibold hover:border-transparent hover:bg-primary/80 hover:text-white transition-colors
                 ${
-                  localConfig.size.startsWith(size)
+                  isSelected(localConfig, size)
                     ? "bg-primary text-white"
                     : "bg-transparent text-primary"
                 }`}
             >
-              {size.startsWith("small")
-                ? "S"
-                : size.startsWith("medium")
-                ? "M"
-                : "L"}
+              {{ 1: "L", 2: "M", 3: "S", 4: "XS" }[size]}
             </button>
           ))}
         </div>

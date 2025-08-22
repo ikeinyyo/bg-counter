@@ -16,7 +16,6 @@ export type CounterConfig = {
   name: string;
   backgroundColor: string;
   icon: string;
-  size: "xs" | "s" | "m" | "l";
   xsElementsPerRow?: number;
   mdElementsPerRow?: number;
   lgElementsPerRow?: number;
