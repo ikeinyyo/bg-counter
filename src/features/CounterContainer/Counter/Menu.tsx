@@ -1,5 +1,10 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { CounterConfig } from "../domain";
+import {
+  CounterConfig,
+  getDefaultBySize,
+  getSizeFromConfig,
+  Size,
+} from "../domain";
 import { useBreakpoint } from "../../../hooks/useBreakpoint";
 
 type Props = {
@@ -22,16 +27,8 @@ const Menu = ({
   menuRef,
 }: Props) => {
   const breakpoint = useBreakpoint();
-  const changeProps = (counter: CounterConfig, size: number) => {
-    const xsElementsPerRow = breakpoint.isXs ? size : counter.xsElementsPerRow;
-    const mdElementsPerRow = breakpoint.isMd ? size : counter.mdElementsPerRow;
-    const lgElementsPerRow = breakpoint.isLg ? size : counter.lgElementsPerRow;
-
-    return {
-      xsElementsPerRow,
-      mdElementsPerRow,
-      lgElementsPerRow,
-    };
+  const changeProps = (size: Size) => {
+    return getDefaultBySize(size);
   };
 
   const isSelected = (counter: CounterConfig, size: number) => {
@@ -75,24 +72,24 @@ const Menu = ({
         <hr className="my-1" />
 
         <div className="flex justify-between gap-1">
-          {[1, 2, 3, 4].map((size) => (
+          {["XS", "S", "M", "L"].map((size) => (
             <button
               key={size}
               onClick={() => {
                 const updated = {
                   ...localConfig,
-                  ...changeProps(localConfig, size),
+                  ...changeProps(size as Size),
                 };
                 onUpdate?.(updated);
               }}
               className={`w-8 h-8 rounded-full border border-primary text-xs font-semibold hover:border-transparent hover:bg-primary/80 hover:text-white transition-colors
                 ${
-                  isSelected(localConfig, size)
+                  getSizeFromConfig(localConfig) === (size as Size)
                     ? "bg-primary text-white"
                     : "bg-transparent text-primary"
                 }`}
             >
-              {{ 1: "L", 2: "M", 3: "S", 4: "XS" }[size]}
+              {size}
             </button>
           ))}
         </div>
