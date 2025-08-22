@@ -69,7 +69,7 @@ const Bar = ({ counters, setCounters }: Props) => {
           />
           <span className="lg:inline md:inline hidden">Counter App</span>
           <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-500">
-            v1.1.0
+            v1.2.0
           </span>
         </div>
       </Link>
