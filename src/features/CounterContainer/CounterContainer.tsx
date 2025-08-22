@@ -24,22 +24,7 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
     return `col-span-${xsSpan} md:col-span-${mdSpan} lg:col-span-${lgSpan}`;
   };
 
-  const [windowWidth, setWindowWidth] = useState<number>(0);
   const breakpoint = useBreakpoint();
-
-  useEffect(() => {
-    setWindowWidth(window.innerWidth);
-
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   const spanBySize = (counter: CounterConfig) => {
     if (breakpoint.isLg) {

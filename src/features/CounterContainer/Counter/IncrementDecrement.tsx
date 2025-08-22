@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import { CounterConfig } from "../domain";
 
 type Props = {
   onDecrement: (value: number) => void;

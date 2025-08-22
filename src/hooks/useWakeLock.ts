@@ -28,6 +28,7 @@ const useWakeLock = () => {
 
       return true;
     } catch (err) {
+      console.error(err);
       return false;
     }
   };

@@ -12,9 +12,10 @@ type Props = {
   span?: number;
   onUpdate?: (config: CounterConfig) => void;
   onDelete?: (id: string) => void;
+  isPreview?: boolean;
 };
 
-const Counter = ({ counter, span, onUpdate, onDelete }: Props) => {
+const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
   const [count, setCount] = useState(counter.initialValue);
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -80,14 +81,18 @@ const Counter = ({ counter, span, onUpdate, onDelete }: Props) => {
         </span>
       </div>
 
-      <button
-        className="absolute top-2 right-2 z-100 p-2 text-white/70 hover:text-white transition-colors"
-        onClick={() => setShowMenu((isVisible) => !isVisible)}
-        ref={cogRef}
-        title="Options"
-      >
-        <FaCog className={`${isSmall ? "w-4 h-4 md:w-6 md:h-6" : "w-6 h-6"}`} />
-      </button>
+      {!isPreview && (
+        <button
+          className="absolute top-2 right-2 z-100 p-2 text-white/70 hover:text-white transition-colors"
+          onClick={() => setShowMenu((isVisible) => !isVisible)}
+          ref={cogRef}
+          title="Options"
+        >
+          <FaCog
+            className={`${isSmall ? "w-4 h-4 md:w-6 md:h-6" : "w-6 h-6"}`}
+          />
+        </button>
+      )}
 
       <Menu
         showMenu={showMenu}

@@ -5,7 +5,6 @@ import {
   getSizeFromConfig,
   Size,
 } from "../domain";
-import { useBreakpoint } from "../../../hooks/useBreakpoint";
 
 type Props = {
   showMenu: boolean;
@@ -26,19 +25,8 @@ const Menu = ({
   setIsEditing,
   menuRef,
 }: Props) => {
-  const breakpoint = useBreakpoint();
   const changeProps = (size: Size) => {
     return getDefaultBySize(size);
-  };
-
-  const isSelected = (counter: CounterConfig, size: number) => {
-    return breakpoint.isXs
-      ? counter.xsElementsPerRow == size
-      : breakpoint.isMd
-      ? counter.mdElementsPerRow == size
-      : breakpoint.isLg
-      ? counter.lgElementsPerRow == size
-      : false;
   };
 
   return (

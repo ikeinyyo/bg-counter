@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { COLORS, getColorByKey } from "../CounterContainer/config/colors";
 import { layoutTemplates } from "../CounterContainer/config/templates";
 import { faker } from "@faker-js/faker";
-import { CounterConfig } from "../CounterContainer/domain";
+import { CounterConfig, getDefaultBySize } from "../CounterContainer/domain";
 import { ICONS } from "../CounterContainer/config/icons";
 
 type Props = {
@@ -40,9 +40,7 @@ const Bar = ({ counters, setCounters }: Props) => {
         COLORS[Math.floor(Math.random() * COLORS.length)].key
       ),
       icon: ICONS[Math.floor(Math.random() * ICONS.length)].key,
-      xsElementsPerRow: 2,
-      mdElementsPerRow: 2,
-      lgElementsPerRow: 2,
+      ...getDefaultBySize("M"),
     };
   };
 
