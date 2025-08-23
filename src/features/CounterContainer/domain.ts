@@ -13,6 +13,7 @@ export type Layout = {
 export type CounterConfig = {
   id: string;
   initialValue: number;
+  value?: number;
   name: string;
   backgroundColor: string;
   icon: string;

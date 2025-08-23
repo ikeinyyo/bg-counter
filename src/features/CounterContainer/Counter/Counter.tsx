@@ -16,23 +16,24 @@ type Props = {
 };
 
 const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
-  const [count, setCount] = useState(counter.initialValue);
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const onIncrement = (value: number) =>
-    setCount((currentValue) => currentValue + value);
+    onUpdate?.({ ...counter, value: counter.value! + value });
   const onDecrement = (value: number) =>
-    setCount((currentValue) => currentValue - value);
+    onUpdate?.({ ...counter, value: counter.value! - value });
 
   const handleSave = (updated: CounterConfig) => {
-    onUpdate?.(updated);
+    onUpdate?.({ ...updated, value: updated.initialValue });
     setIsEditing(false);
   };
 
   useEffect(() => {
-    setCount(counter.initialValue);
-  }, [counter.initialValue]);
+    if (counter.value === undefined) {
+      onUpdate?.({ ...counter, value: counter.initialValue });
+    }
+  }, [counter.initialValue, onUpdate]);
 
   const cogRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -77,7 +78,7 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
             isSmall ? "text-7xl md:text-8xl" : "text-8xl"
           }`}
         >
-          {count}
+          {counter.value!}
         </span>
       </div>
 
