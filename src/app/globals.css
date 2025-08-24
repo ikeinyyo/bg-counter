@@ -17,6 +17,8 @@
   --color-light-medium: #eeeeee;
   --color-light-low: #f3f6f4;
   --color-primary: #be1e2d;
+  --color-true: #4caf50;
+  --color-false: #f44336;
 }
 
 @media (prefers-color-scheme: dark) {
