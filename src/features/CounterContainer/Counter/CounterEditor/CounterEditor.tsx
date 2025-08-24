@@ -41,9 +41,7 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
       <div className="p-6">
         <CounterEditorHeader title="Edit Counter" onClose={onClose} />
 
-        {/* 2 columnas: formulario a la izquierda, preview/acciones a la derecha */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Columna izquierda (formulario) */}
           <div className="w-full min-w-0">
             <div className="grid gap-4">
               <NameField value={name} onChange={setName} />
@@ -80,6 +78,7 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
                 counter={{
                   id: counter.id,
                   initialValue: defaultValue,
+                  value: defaultValue,
                   name,
                   backgroundColor,
                   icon: selectedIcon,

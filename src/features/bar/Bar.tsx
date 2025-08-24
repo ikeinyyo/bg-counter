@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FaPlusCircle } from "react-icons/fa";
 import Image from "next/image";
 import React, { useState } from "react";
+import packageJson from "../../../package.json";
 import { COLORS, getColorByKey } from "../CounterContainer/config/colors";
 import { layoutTemplates } from "../CounterContainer/config/templates";
 import { faker } from "@faker-js/faker";
@@ -45,7 +46,11 @@ const Bar = ({ counters, setCounters }: Props) => {
 
   const resetCounters = () => {
     setCounters([
-      ...counters.map((counter) => ({ ...counter, id: faker.string.uuid() })),
+      ...counters.map((counter) => ({
+        ...counter,
+        id: faker.string.uuid(),
+        value: counter.initialValue,
+      })),
     ]);
   };
 
@@ -74,7 +79,7 @@ const Bar = ({ counters, setCounters }: Props) => {
           />
           <span className="lg:inline md:inline hidden">Counter App</span>
           <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-500">
-            v1.2.1
+            v{packageJson.version}
           </span>
         </div>
       </Link>
