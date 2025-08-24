@@ -19,10 +19,36 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const onIncrement = (value: number) =>
-    onUpdate?.({ ...counter, value: counter.value! + value });
-  const onDecrement = (value: number) =>
-    onUpdate?.({ ...counter, value: counter.value! - value });
+  const [localValue, setLocalValue] = useState<number>(
+    counter.value ?? counter.initialValue
+  );
+
+  const valueRef = useRef(localValue);
+  useEffect(() => {
+    valueRef.current = localValue;
+  }, [localValue]);
+
+  useEffect(() => {
+    const next = counter.value ?? counter.initialValue;
+    setLocalValue(next);
+    valueRef.current = next;
+  }, [counter.value, counter.initialValue]);
+
+  const pushUpdate = (nextValue: number) => {
+    onUpdate?.({ ...counter, value: nextValue });
+  };
+
+  const onIncrement = (amount: number) => {
+    const next = valueRef.current + amount;
+    setLocalValue(next);
+    pushUpdate(next);
+  };
+
+  const onDecrement = (amount: number) => {
+    const next = valueRef.current - amount;
+    setLocalValue(next);
+    pushUpdate(next);
+  };
 
   const handleSave = (updated: CounterConfig) => {
     onUpdate?.({ ...updated, value: updated.initialValue });
@@ -31,16 +57,19 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
 
   useEffect(() => {
     if (counter.value === undefined) {
-      onUpdate?.({ ...counter, value: counter.initialValue });
+      const init = counter.initialValue;
+      setLocalValue(init);
+      valueRef.current = init;
+      onUpdate?.({ ...counter, value: init });
     }
-  }, [counter.initialValue, onUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const cogRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!showMenu) return;
-
     const handlePointerDown = (e: PointerEvent) => {
       const target = e.target as Node;
       if (
@@ -52,7 +81,6 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
         setShowMenu(false);
       }
     };
-
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [showMenu]);
@@ -74,11 +102,11 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
 
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span
-          className={`font-bold drop-shadow-lg mt-6 ${
+          className={`font-bold drop-shadow-lg mt-6 tracking-wide ${
             isSmall ? "text-7xl md:text-8xl" : "text-8xl"
           }`}
         >
-          {counter.value!}
+          {localValue}
         </span>
       </div>
 

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   onDecrement: (value: number) => void;
@@ -6,10 +6,14 @@ type Props = {
   isSmall: boolean;
 };
 
+const HOLD_DELAY_MS = 500;
+const REPEAT_EVERY_MS = 500;
+const REPEAT_STEP = 10;
+
 const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
+  const [delta, setDelta] = useState(0);
+  const [showDelta, setShowDelta] = useState(false);
   const [isLongPress, setIsLongPress] = useState(false);
-  const [pressTimer, setPressTimer] = useState<NodeJS.Timeout | null>(null);
-  const [repeatTimer, setRepeatTimer] = useState<NodeJS.Timeout | null>(null);
   const [pressedButton, setPressedButton] = useState<
     "increment" | "decrement" | null
   >(null);
@@ -18,34 +22,56 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
   const touchStartPos = useRef<{ x: number; y: number } | null>(null);
   const isProcessing = useRef(false);
   const eventId = useRef(0);
-
   const isTouchDevice = useRef(
     "ontouchstart" in window || navigator.maxTouchPoints > 0
   );
+
+  const pressTimerRef = useRef<number | null>(null);
+  const repeatTimerRef = useRef<number | null>(null);
+  const deltaTimeoutRef = useRef<number | null>(null);
+
+  const clearPressTimer = () => {
+    if (pressTimerRef.current != null) {
+      window.clearTimeout(pressTimerRef.current);
+      pressTimerRef.current = null;
+    }
+  };
+
+  const stopRepeating = () => {
+    if (repeatTimerRef.current != null) {
+      window.clearInterval(repeatTimerRef.current);
+      repeatTimerRef.current = null;
+    }
+  };
+
+  const hideDelta = () => {
+    setShowDelta(false);
+    window.setTimeout(() => setDelta(0), 320);
+  };
 
   const executeAction = (
     buttonType: "increment" | "decrement",
     value: number
   ) => {
     if (buttonType === "increment") {
+      console.log("increment", value);
       onIncrement(value);
-    } else if (buttonType === "decrement") {
+      setDelta((d) => d + value);
+    } else {
+      console.log("decrement", value);
       onDecrement(value);
+      setDelta((d) => d - value);
     }
+    setShowDelta(true);
+    if (deltaTimeoutRef.current) window.clearTimeout(deltaTimeoutRef.current);
+    deltaTimeoutRef.current = window.setTimeout(() => hideDelta(), 2000);
   };
 
   const startRepeating = (buttonType: "increment" | "decrement") => {
-    const timer = setInterval(() => {
-      executeAction(buttonType, 10);
-    }, 500);
-    setRepeatTimer(timer);
-  };
-
-  const stopRepeating = () => {
-    if (repeatTimer) {
-      clearInterval(repeatTimer);
-      setRepeatTimer(null);
-    }
+    executeAction(buttonType, REPEAT_STEP);
+    repeatTimerRef.current = window.setInterval(() => {
+      executeAction(buttonType, REPEAT_STEP);
+    }, REPEAT_EVERY_MS);
   };
 
   const handlePressStart = (
@@ -54,26 +80,21 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
   ) => {
     if (isProcessing.current) return;
     isProcessing.current = true;
-
     setPressedButton(buttonType);
 
-    const timer = setTimeout(() => {
+    clearPressTimer();
+    pressTimerRef.current = window.setTimeout(() => {
       if (eventId.current === currentEventId && !isScrolling) {
         setIsLongPress(true);
         startRepeating(buttonType);
       }
-    }, 500);
-    setPressTimer(timer);
+    }, HOLD_DELAY_MS);
   };
 
   const handlePressEnd = (currentEventId: number) => {
     if (eventId.current !== currentEventId) return;
 
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      setPressTimer(null);
-    }
-
+    clearPressTimer();
     stopRepeating();
 
     if (!isLongPress && pressedButton && !isScrolling) {
@@ -85,42 +106,51 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
     isProcessing.current = false;
   };
 
+  const onWindowMouseUp = () => {
+    handlePressEnd(eventId.current);
+    window.removeEventListener("mouseup", onWindowMouseUp);
+  };
+
   const handleDecrementMouseDown = (event: React.MouseEvent) => {
     event.preventDefault();
     const currentEventId = ++eventId.current;
+    window.addEventListener("mouseup", onWindowMouseUp);
     handlePressStart("decrement", currentEventId);
   };
 
   const handleIncrementMouseDown = (event: React.MouseEvent) => {
     event.preventDefault();
     const currentEventId = ++eventId.current;
+    window.addEventListener("mouseup", onWindowMouseUp);
     handlePressStart("increment", currentEventId);
   };
 
   const handleMouseUp = () => {
     handlePressEnd(eventId.current);
+    window.removeEventListener("mouseup", onWindowMouseUp);
+  };
+
+  const handleMouseLeave = () => {
+    handlePressEnd(eventId.current);
+    window.removeEventListener("mouseup", onWindowMouseUp);
   };
 
   const handleDecrementTouchStart = (event: React.TouchEvent) => {
     setIsScrolling(false);
-
     touchStartPos.current = {
       x: event.touches[0].clientX,
       y: event.touches[0].clientY,
     };
-
     const currentEventId = ++eventId.current;
     handlePressStart("decrement", currentEventId);
   };
 
   const handleIncrementTouchStart = (event: React.TouchEvent) => {
     setIsScrolling(false);
-
     touchStartPos.current = {
       x: event.touches[0].clientX,
       y: event.touches[0].clientY,
     };
-
     const currentEventId = ++eventId.current;
     handlePressStart("increment", currentEventId);
   };
@@ -129,15 +159,9 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
     if (touchStartPos.current) {
       const dx = Math.abs(event.touches[0].clientX - touchStartPos.current.x);
       const dy = Math.abs(event.touches[0].clientY - touchStartPos.current.y);
-
       if (dx > 10 || dy > 10) {
         setIsScrolling(true);
-
-        if (pressTimer) {
-          clearTimeout(pressTimer);
-          setPressTimer(null);
-        }
-
+        clearPressTimer();
         stopRepeating();
         setIsLongPress(false);
         setPressedButton(null);
@@ -156,10 +180,18 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
       touchStartPos.current = null;
       return;
     }
-
     handlePressEnd(eventId.current);
     touchStartPos.current = null;
   };
+
+  useEffect(() => {
+    return () => {
+      clearPressTimer();
+      stopRepeating();
+      if (deltaTimeoutRef.current) window.clearTimeout(deltaTimeoutRef.current);
+      window.removeEventListener("mouseup", onWindowMouseUp);
+    };
+  }, []);
 
   return (
     <>
@@ -174,6 +206,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
           : {
               onMouseDown: handleDecrementMouseDown,
               onMouseUp: handleMouseUp,
+              onMouseLeave: handleMouseLeave,
             })}
       >
         <div className="relative w-full h-full flex items-center justify-center">
@@ -199,6 +232,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
           : {
               onMouseDown: handleIncrementMouseDown,
               onMouseUp: handleMouseUp,
+              onMouseLeave: handleMouseLeave,
             })}
       >
         <div className="relative w-full h-full flex items-center justify-center">
@@ -209,6 +243,25 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
             }`}
           >
             +
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 h-full flex items-center justify-center cursor-pointer">
+        <div
+          className={`
+            relative w-full h-full flex items-center justify-center
+            transition-opacity duration-300 ease-in-out
+            ${showDelta ? "opacity-100" : "opacity-0"}
+          `}
+        >
+          <div
+            className={`font-bold mt-38 text-white opacity-70 tracking-wide ${
+              isSmall ? "text-3xl md:text-4xl" : "text-4xl"
+            }`}
+          >
+            {delta > 0 ? "+" : ""}
+            {delta}
           </div>
         </div>
       </div>

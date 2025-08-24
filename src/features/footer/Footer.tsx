@@ -20,7 +20,7 @@ const Footer = ({ isWakeLockActive, activateWakeLock }: Props) => {
       </span>
       <button
         className={`w-4 h-4 ml-2 rounded-full ${
-          isWakeLockActive ? "bg-green-500 " : "bg-red-500"
+          isWakeLockActive ? "bg-true" : "bg-false"
         }`}
         onClick={activateWakeLock}
       />
