@@ -1,80 +1,79 @@
 "use client";
-import { useState, useEffect } from "react";
-import { CounterContainer } from "@/features/CounterContainer/CounterContainer";
-import { CounterConfig } from "@/features/CounterContainer/domain";
-import { useWakeLock } from "@/hooks/useWakeLock";
-import { layoutTemplates } from "@/features/CounterContainer/config/templates";
-import { Bar } from "@/features/bar/Bar";
-import { Footer } from "@/features/footer/Footer";
-import { CounterLoading } from "@/features/CounterLoading/CounterLoading";
 
-const STORAGE_KEY = "current-counters";
+import Link from "next/link";
+import { BsCollection, BsPlusCircleFill } from "react-icons/bs";
+import { useSettings } from "@/context/SettingsContext";
+import { NavBar } from "@/features/navbar/NavBar";
 
 export default function Home() {
-  const [counters, setCounters] = useState<CounterConfig[]>(
-    layoutTemplates[0].counters
-  );
-  const [mounted, setMounted] = useState(false);
+  const { t } = useSettings();
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as CounterConfig[];
-        if (Array.isArray(parsed)) setCounters(parsed);
-      }
-    } catch {
-    } finally {
-      setMounted(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(counters));
-    } catch {}
-  }, [counters, mounted]);
-
-  const { isSupported, requestWakeLock, isActive } = useWakeLock();
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") activateWakeLock();
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    window.addEventListener("focus", handleVisibility);
-    activateWakeLock();
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-      window.removeEventListener("focus", handleVisibility);
-    };
-  }, [isSupported, requestWakeLock]);
-  const activateWakeLock = () => {
-    if (isSupported) requestWakeLock();
-  };
-
-  const handleDeleteCounter = (id: string) => {
-    setCounters((prev) => prev.filter((c) => c.id !== id));
-  };
-  const handleUpdateCounter = (updated: CounterConfig) => {
-    setCounters((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
-  };
+  const tools = [
+    {
+      title: t("counterTitle"),
+      description: t("counterDescription"),
+      href: "/counter",
+      icon: BsCollection,
+    },
+    {
+      title: t("soonTitle"),
+      description: t("soonDescription"),
+      href: "#",
+      icon: BsPlusCircleFill,
+      disabled: true,
+    },
+  ];
 
   return (
-    <div className="flex flex-col">
-      <Bar counters={counters} setCounters={setCounters} />
+    <>
+      <NavBar />
+      <main className="min-h-[calc(100vh-3.5rem)] bg-[var(--background)] px-4 py-6 text-[var(--foreground)]">
+        <div className="mx-auto flex max-w-5xl flex-col gap-6">
+          <section className="pt-2">
+            <h1 className="text-3xl font-semibold tracking-tight">
+              {t("homeTitle")}
+            </h1>
+            <p className="mt-2 text-sm leading-6 text-[var(--text-muted)] max-w-2xl">
+              {t("homeDescription")}
+            </p>
+          </section>
 
-      {mounted ? (
-        <CounterContainer
-          countersDefault={counters}
-          onDelete={handleDeleteCounter}
-          onUpdate={handleUpdateCounter}
-        />
-      ) : (
-        <CounterLoading />
-      )}
+          <section className="grid gap-3">
+            {tools.map((tool) => {
+              const Icon = tool.icon;
+              const content = (
+                <article
+                  className={`flex items-center gap-4 rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm transition-all ${
+                    tool.disabled
+                      ? "opacity-60"
+                      : "active:scale-[0.99] hover:-translate-y-0.5"
+                  }`}
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-primary)]/10 text-[var(--color-primary)]">
+                    <Icon size={22} />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold">{tool.title}</h2>
+                    <p className="mt-1 text-sm text-[var(--text-muted)]">
+                      {tool.description}
+                    </p>
+                  </div>
+                </article>
+              );
 
-      <Footer isWakeLockActive={isActive} activateWakeLock={activateWakeLock} />
-    </div>
+              if (tool.disabled) {
+                return <div key={tool.title}>{content}</div>;
+              }
+
+              return (
+                <Link key={tool.title} href={tool.href} className="block">
+                  {content}
+                </Link>
+              );
+            })}
+          </section>
+        </div>
+      </main>
+    </>
   );
 }

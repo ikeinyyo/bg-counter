@@ -6,9 +6,9 @@ type Props = {
   children: React.ReactNode;
 };
 
-const CounterPreview = ({ label = "Vista Previa", children }: Props) => (
+const CounterPreview = ({ label = "Preview", children }: Props) => (
   <div className="w-full flex items-center justify-center flex-col">
-    <label className="block text-sm font-medium text-gray-700 mb-2">
+    <label className="block text-sm font-medium  text-[var(--foreground)] mb-2">
       {label}
     </label>
     {children}

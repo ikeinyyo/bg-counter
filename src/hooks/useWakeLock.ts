@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const useWakeLock = () => {
   const [isSupported, setIsSupported] = useState(false);
@@ -9,7 +9,7 @@ const useWakeLock = () => {
     setIsSupported("wakeLock" in navigator);
   }, []);
 
-  const requestWakeLock = async () => {
+  const requestWakeLock = useCallback(async () => {
     if (!isSupported) {
       return false;
     }
@@ -31,15 +31,15 @@ const useWakeLock = () => {
       console.error(err);
       return false;
     }
-  };
+  }, [isSupported]);
 
-  const releaseWakeLock = async () => {
+  const releaseWakeLock = useCallback(async () => {
     if (wakeLockRef.current) {
       await wakeLockRef.current.release();
       wakeLockRef.current = null;
       setIsActive(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -56,7 +56,7 @@ const useWakeLock = () => {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [isActive, isSupported]);
+  }, [isActive, isSupported, requestWakeLock]);
 
   useEffect(() => {
     return () => {

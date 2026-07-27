@@ -1,4 +1,5 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { useTranslation } from "@/context/SettingsContext";
 import {
   CounterConfig,
   getDefaultBySize,
@@ -25,6 +26,7 @@ const Menu = ({
   setIsEditing,
   menuRef,
 }: Props) => {
+  const { t } = useTranslation();
   const changeProps = (size: Size) => {
     return getDefaultBySize(size);
   };
@@ -32,7 +34,7 @@ const Menu = ({
   return (
     showMenu && (
       <div
-        className="absolute top-12 right-2 bg-white/90 backdrop-blur-sm rounded-md shadow-lg p-2 flex flex-col gap-1 z-100"
+        className="absolute top-12 right-2 z-100 flex flex-col gap-1 rounded-md border border-[var(--border)] bg-[var(--surface)]/95 p-2 shadow-lg backdrop-blur-sm"
         onClick={(e) => e.stopPropagation()}
         ref={menuRef}
       >
@@ -42,9 +44,9 @@ const Menu = ({
               setIsEditing(true);
               setShowMenu(false);
             }}
-            className="flex items-center gap-2 px-3 py-1 rounded hover:bg-gray-200 text-sm text-black"
+            className="flex items-center gap-2 rounded px-3 py-1 text-sm text-[var(--foreground)] transition-colors hover:bg-[var(--surface-muted)]"
           >
-            <FaEdit /> Edit
+            <FaEdit /> {t("menuEdit")}
           </button>
         )}
 
@@ -53,7 +55,7 @@ const Menu = ({
             onClick={() => onDelete(localConfig.id)}
             className="flex items-center gap-2 px-3 py-1 rounded hover:bg-red-100 text-sm text-red-600"
           >
-            <FaTrash /> Delete
+            <FaTrash /> {t("menuDelete")}
           </button>
         )}
 

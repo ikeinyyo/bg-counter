@@ -5,6 +5,7 @@ import { Counter } from "./Counter/Counter";
 import { CounterConfig } from "./domain";
 import { FaFaceRollingEyes } from "react-icons/fa6";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { useTranslation } from "@/context/SettingsContext";
 
 type Props = {
   countersDefault: CounterConfig[];
@@ -14,6 +15,7 @@ type Props = {
 
 const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   const [counters, setCounters] = useState<CounterConfig[]>(countersDefault);
+  const { t } = useTranslation();
 
   useEffect(() => setCounters(countersDefault), [countersDefault]);
 
@@ -37,14 +39,13 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   };
 
   return (
-    <main className="p-2 md:p-4 bg-gray-100 min-h-[calc(100vh-3.5rem-2rem)]">
+    <main className="min-h-[calc(100vh-3.5rem-2rem)] bg-[var(--surface-muted)] p-2 md:p-4">
       <div className="max-w-7xl mx-auto">
         {counters.length === 0 ? (
-          <div className="text-xl text-dark mt-32 text-center">
-            <FaFaceRollingEyes className="mx-auto text-6xl text-dark/80" />
+          <div className="mt-32 text-center text-xl text-[var(--foreground)]">
+            <FaFaceRollingEyes className="mx-auto text-6xl text-[var(--foreground)]/80" />
             <br />
-            No hay contadores. Añade uno para comenzar o selecciona una
-            plantilla.
+            {t("emptyCounters")}
           </div>
         ) : (
           <div className="grid grid-cols-12 grid-flow-dense gap-2 md:gap-4 lg:gap-6">
