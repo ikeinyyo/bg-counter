@@ -6,6 +6,7 @@ import { IncrementDecrement } from "./IncrementDecrement";
 import { Menu } from "./Menu";
 import { CounterEditor } from "./CounterEditor/CounterEditor";
 import { FaCog } from "react-icons/fa";
+import { useTranslation } from "@/context/SettingsContext";
 
 type Props = {
   counter: CounterConfig;
@@ -16,11 +17,12 @@ type Props = {
 };
 
 const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
+  const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const [localValue, setLocalValue] = useState<number>(
-    counter.value ?? counter.initialValue
+    counter.value ?? counter.initialValue,
   );
 
   const valueRef = useRef(localValue);
@@ -102,7 +104,7 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
 
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span
-          className={`font-bold drop-shadow-lg mt-6 tracking-wide ${
+          className={`font-bold text-white drop-shadow-lg mt-6 tracking-wide ${
             isSmall ? "text-7xl md:text-8xl" : "text-8xl"
           }`}
         >
@@ -115,7 +117,7 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
           className="absolute top-2 right-2 z-100 p-2 text-white/70 hover:text-white transition-colors"
           onClick={() => setShowMenu((isVisible) => !isVisible)}
           ref={cogRef}
-          title="Options"
+          title={t("menuOptions")}
         >
           <FaCog
             className={`${isSmall ? "w-4 h-4 md:w-6 md:h-6" : "w-6 h-6"}`}

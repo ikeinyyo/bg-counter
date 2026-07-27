@@ -23,7 +23,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
   const isProcessing = useRef(false);
   const eventId = useRef(0);
   const isTouchDevice = useRef(
-    "ontouchstart" in window || navigator.maxTouchPoints > 0
+    "ontouchstart" in window || navigator.maxTouchPoints > 0,
   );
 
   const pressTimerRef = useRef<number | null>(null);
@@ -51,7 +51,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
 
   const executeAction = (
     buttonType: "increment" | "decrement",
-    value: number
+    value: number,
   ) => {
     if (buttonType === "increment") {
       console.log("increment", value);
@@ -76,7 +76,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
 
   const handlePressStart = (
     buttonType: "increment" | "decrement",
-    currentEventId: number
+    currentEventId: number,
   ) => {
     if (isProcessing.current) return;
     isProcessing.current = true;
@@ -191,7 +191,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
       if (deltaTimeoutRef.current) window.clearTimeout(deltaTimeoutRef.current);
       window.removeEventListener("mouseup", onWindowMouseUp);
     };
-  }, []);
+  }, [onWindowMouseUp]);
 
   return (
     <>

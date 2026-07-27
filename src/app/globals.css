@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
 :root {
+  /* Default background; overridden explicitly per theme below */
   --background: #ffffff;
   --foreground: #171717;
+  --surface: #ffffff;
+  --surface-muted: #f3f6f4;
+  /* Strong surface for elements like nav/footer */
+  --surface-strong: #000000;
+  --border: rgba(15, 23, 42, 0.12);
+  /* Muted text tuned for better contrast on white */
+  --text-muted: #475569; /* slate-600 */
+  /* Explicit navbar colors */
+  --navbar-bg: #000000;
+  --navbar-fg: #ffffff;
+}
+
+:root[data-theme="light"] {
+  /* Use the light theme token for page background */
+  --background: var(--color-light-low);
+}
+
+:root[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --surface: #111111;
+  --surface-muted: #171717;
+  --surface-strong: #000000;
+  --border: rgba(255, 255, 255, 0.12);
+  --text-muted: #a3a3a3; /* neutral-400 */
+  --navbar-bg: #000000;
+  --navbar-fg: #ffffff;
 }
 
 @theme inline {
@@ -21,12 +49,7 @@
   --color-false: #f44336;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Remove OS-driven overrides; theme is controlled via [data-theme] */
 
 body {
   background: var(--background);

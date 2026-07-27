@@ -1,10 +1,13 @@
+import { useTranslation } from "@/context/SettingsContext";
+
 const CounterLoading = () => {
+  const { t } = useTranslation();
   return (
     <main
-      className="bg-white min-h-[calc(100vh-3.5rem-2rem)] flex items-center justify-center"
+      className="flex min-h-[calc(100vh-3.5rem-2rem)] items-center justify-center bg-[var(--background)]"
       role="status"
       aria-busy="true"
-      aria-label="Loading counters"
+      aria-label={t("loadingCountersAria")}
     >
       <div className="flex flex-col items-center justify-center">
         <div className="relative">
@@ -13,8 +16,8 @@ const CounterLoading = () => {
         </div>
 
         <div className="mt-6 text-center">
-          <p className="text-sm md:text-base text-dark">
-            Loading counters...
+          <p className="text-sm text-[var(--foreground)] md:text-base">
+            {t("loadingCounters")}
             <span className="inline-flex items-center ml-2 align-middle">
               <span
                 className="h-2.5 w-2.5 rounded-full bg-primary animate-bounce"
@@ -30,7 +33,9 @@ const CounterLoading = () => {
               />
             </span>
           </p>
-          <p className="mt-2 text-xs text-gray-500">It won't take long</p>
+          <p className="mt-2 text-xs text-[var(--text-muted)]">
+            {t("loadingSoon")}
+          </p>
         </div>
       </div>
     </main>

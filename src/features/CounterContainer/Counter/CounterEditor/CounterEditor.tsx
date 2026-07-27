@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslation } from "@/context/SettingsContext";
 import { Counter } from "../Counter";
 import { CounterConfig, getDefaultBySize } from "../../domain";
 import { ICONS } from "../../config/icons";
@@ -22,6 +23,7 @@ type Props = {
 };
 
 const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
+  const { t } = useTranslation();
   const {
     name,
     defaultValue,
@@ -39,7 +41,7 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
   return (
     <Modal onClose={onClose}>
       <div className="p-6">
-        <CounterEditorHeader title="Edit Counter" onClose={onClose} />
+        <CounterEditorHeader title={t("editorTitle")} onClose={onClose} />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="w-full min-w-0">
@@ -49,21 +51,21 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
               <DefaultValueField
                 value={defaultValue}
                 onChange={setDefaultValue}
-                label="Valor por defecto"
+                label={t("labelDefaultValue")}
                 min={-9999}
                 max={9999}
                 step={1}
               />
 
               <ColorPicker
-                label="Background color"
+                label={t("labelBackgroundColor")}
                 colors={COLORS}
                 value={backgroundColor}
                 onChange={setBackgroundColor}
               />
 
               <IconPicker
-                label="Icon"
+                label={t("labelIcon")}
                 icons={ICONS}
                 value={selectedIcon}
                 onChange={setSelectedIcon}
@@ -72,7 +74,7 @@ const CounterEditor = ({ counter, isOpen, onClose, onSave }: Props) => {
           </div>
 
           <div className="flex flex-col h-full min-h-[360px]">
-            <CounterPreview label="Preview">
+            <CounterPreview label={t("labelPreview")}> 
               <Counter
                 key={`${name}-${backgroundColor}-${selectedIcon}-${defaultValue}`}
                 counter={{

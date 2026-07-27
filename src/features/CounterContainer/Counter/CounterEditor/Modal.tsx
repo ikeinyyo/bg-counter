@@ -23,7 +23,7 @@ export const Modal: React.FC<ModalProps> = ({ children, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-[var(--surface)] text-[var(--foreground)] rounded-lg shadow-xl border border-[var(--border)] max-w-5xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {children}

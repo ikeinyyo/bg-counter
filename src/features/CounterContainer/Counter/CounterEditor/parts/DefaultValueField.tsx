@@ -22,13 +22,13 @@ const DefaultValueField = ({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-sm font-medium text-[var(--text-muted)] mb-2">
         {label}
       </label>
       <input
         ref={ref}
         type="number"
-        className="w-full text-black rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        className="w-full rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
         value={Number.isFinite(value) ? value : 0}
         onChange={(e) => {
           const next = e.target.value === "" ? 0 : Number(e.target.value);
