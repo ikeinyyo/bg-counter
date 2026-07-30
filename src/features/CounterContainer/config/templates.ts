@@ -7,7 +7,7 @@ const layoutTemplates: Layout[] = [
     counters: [],
   },
   {
-    name: "Marvel Champions - 1P",
+    name: "1 Jugador",
     id: "marvelSolo",
     counters: [
       {
@@ -43,7 +43,7 @@ const layoutTemplates: Layout[] = [
     ],
   },
   {
-    name: "Marvel Champions - 1P+",
+    name: "1 Jugador + recurso",
     id: "marvelSoloCounters",
     counters: [
       {
@@ -89,7 +89,7 @@ const layoutTemplates: Layout[] = [
     ],
   },
   {
-    name: "Marvel Champions - 2P",
+    name: "2 Jugadores",
     id: "marvel2P",
     counters: [
       {
@@ -135,7 +135,7 @@ const layoutTemplates: Layout[] = [
     ],
   },
   {
-    name: "Marvel Champions - 3P",
+    name: "3 Jugadores",
     id: "marvel3P",
     counters: [
       {
@@ -191,7 +191,7 @@ const layoutTemplates: Layout[] = [
     ],
   },
   {
-    name: "Marvel Champions - 4P",
+    name: "4 Jugadores",
     id: "marvel4P",
     counters: [
       {
@@ -253,6 +253,49 @@ const layoutTemplates: Layout[] = [
         xsElementsPerRow: 2,
         mdElementsPerRow: 2,
         lgElementsPerRow: 4,
+      },
+    ],
+  },
+  // Generic: 1 and 2 players (added)
+  {
+    name: "1 Player",
+    id: "life1",
+    counters: [
+      {
+        id: "player1",
+        initialValue: 20,
+        name: "Player 1",
+        backgroundColor: getColorByKey("yellow"),
+        icon: "heart",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 1,
+        lgElementsPerRow: 1,
+      },
+    ],
+  },
+  {
+    name: "2 Players",
+    id: "life2",
+    counters: [
+      {
+        id: "player1",
+        initialValue: 20,
+        name: "Player 1",
+        backgroundColor: getColorByKey("yellow"),
+        icon: "heart",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player2",
+        initialValue: 20,
+        name: "Player 2",
+        backgroundColor: getColorByKey("blue"),
+        icon: "heart",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
       },
     ],
   },
@@ -382,7 +425,7 @@ const layoutTemplates: Layout[] = [
         id: "player1",
         initialValue: 20,
         name: "Player 1",
-        backgroundColor: getColorByKey("red"),
+        backgroundColor: getColorByKey("yellow"),
         icon: "heart",
         xsElementsPerRow: 1,
         mdElementsPerRow: 3,
@@ -448,7 +491,7 @@ const layoutTemplates: Layout[] = [
         id: "player4",
         initialValue: 20,
         name: "Player 4",
-        backgroundColor: getColorByKey("purple"),
+        backgroundColor: getColorByKey("red"),
         icon: "heart",
         xsElementsPerRow: 2,
         mdElementsPerRow: 2,
@@ -464,7 +507,7 @@ const layoutTemplates: Layout[] = [
         id: "player1",
         initialValue: 20,
         name: "Player 1",
-        backgroundColor: getColorByKey("red"),
+        backgroundColor: getColorByKey("yellow"),
         icon: "heart",
         xsElementsPerRow: 2,
         mdElementsPerRow: 2,
@@ -474,7 +517,7 @@ const layoutTemplates: Layout[] = [
         id: "player2",
         initialValue: 20,
         name: "Player 2",
-        backgroundColor: getColorByKey("yellow"),
+        backgroundColor: getColorByKey("blue"),
         icon: "heart",
         xsElementsPerRow: 2,
         mdElementsPerRow: 2,
@@ -484,7 +527,7 @@ const layoutTemplates: Layout[] = [
         id: "player3",
         initialValue: 20,
         name: "Player 3",
-        backgroundColor: getColorByKey("blue"),
+        backgroundColor: getColorByKey("green"),
         icon: "heart",
         xsElementsPerRow: 1,
         mdElementsPerRow: 3,
@@ -494,7 +537,7 @@ const layoutTemplates: Layout[] = [
         id: "player4",
         initialValue: 20,
         name: "Player 4",
-        backgroundColor: getColorByKey("green"),
+        backgroundColor: getColorByKey("red"),
         icon: "heart",
         xsElementsPerRow: 2,
         mdElementsPerRow: 3,
@@ -520,7 +563,7 @@ const layoutTemplates: Layout[] = [
         id: "player1",
         initialValue: 20,
         name: "Player 1",
-        backgroundColor: getColorByKey("red"),
+        backgroundColor: getColorByKey("yellow"),
         icon: "heart",
         xsElementsPerRow: 2,
         mdElementsPerRow: 3,
@@ -550,7 +593,7 @@ const layoutTemplates: Layout[] = [
         id: "player4",
         initialValue: 20,
         name: "Player 4",
-        backgroundColor: getColorByKey("yellow"),
+        backgroundColor: getColorByKey("red"),
         icon: "heart",
         xsElementsPerRow: 2,
         mdElementsPerRow: 3,
@@ -578,5 +621,248 @@ const layoutTemplates: Layout[] = [
       },
     ],
   },
+  // Aeon's End: 1–4 players
+  {
+    name: "1 Player",
+    id: "aeons1P",
+    counters: [
+      {
+        id: "nemesis",
+        initialValue: 60,
+        name: "Nemesis",
+        backgroundColor: getColorByKey("crimson"),
+        icon: "skull",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "city",
+        initialValue: 30,
+        name: "Gravehold",
+        backgroundColor: getColorByKey("sand"),
+        icon: "fort",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player1",
+        initialValue: 10,
+        name: "Player 1",
+        backgroundColor: getColorByKey("yellow"),
+        icon: "player1",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 1,
+        lgElementsPerRow: 1,
+      },
+    ],
+  },
+  {
+    name: "2 Players",
+    id: "aeons2P",
+    counters: [
+      {
+        id: "nemesis",
+        initialValue: 60,
+        name: "Nemesis",
+        backgroundColor: getColorByKey("crimson"),
+        icon: "skull",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "city",
+        initialValue: 30,
+        name: "Gravehold",
+        backgroundColor: getColorByKey("sand"),
+        icon: "fort",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player1",
+        initialValue: 10,
+        name: "Player 1",
+        backgroundColor: getColorByKey("yellow"),
+        icon: "player1",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 1,
+        lgElementsPerRow: 1,
+      },
+      {
+        id: "player2",
+        initialValue: 10,
+        name: "Player 2",
+        backgroundColor: getColorByKey("amber"),
+        icon: "player2",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 1,
+        lgElementsPerRow: 1,
+      },
+    ],
+  },
+  {
+    name: "3 Players",
+    id: "aeons3P",
+    counters: [
+      {
+        id: "nemesis",
+        initialValue: 60,
+        name: "Nemesis",
+        backgroundColor: getColorByKey("crimson"),
+        icon: "skull",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "city",
+        initialValue: 30,
+        name: "Gravehold",
+        backgroundColor: getColorByKey("sand"),
+        icon: "fort",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player1",
+        initialValue: 10,
+        name: "Player 1",
+        backgroundColor: getColorByKey("yellow"),
+        icon: "player1",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 1,
+        lgElementsPerRow: 1,
+      },
+      {
+        id: "player2",
+        initialValue: 10,
+        name: "Player 2",
+        backgroundColor: getColorByKey("amber"),
+        icon: "player2",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player3",
+        initialValue: 10,
+        name: "Player 3",
+        backgroundColor: getColorByKey("azure"),
+        icon: "player3",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+    ],
+  },
+  {
+    name: "4 Players",
+    id: "aeons4P",
+    counters: [
+      {
+        id: "nemesis",
+        initialValue: 60,
+        name: "Nemesis",
+        backgroundColor: getColorByKey("crimson"),
+        icon: "skull",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "city",
+        initialValue: 30,
+        name: "Gravehold",
+        backgroundColor: getColorByKey("sand"),
+        icon: "fort",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player1",
+        initialValue: 10,
+        name: "Player 1",
+        backgroundColor: getColorByKey("yellow"),
+        icon: "player1",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player2",
+        initialValue: 10,
+        name: "Player 2",
+        backgroundColor: getColorByKey("amber"),
+        icon: "player2",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player3",
+        initialValue: 10,
+        name: "Player 3",
+        backgroundColor: getColorByKey("azure"),
+        icon: "player3",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+      {
+        id: "player4",
+        initialValue: 10,
+        name: "Player 4",
+        backgroundColor: getColorByKey("magenta"),
+        icon: "player4",
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      },
+    ],
+  },
 ];
-export { layoutTemplates };
+
+type GameId = "generic" | "aeons" | "marvel" | "magic";
+
+const gameToLayoutIds: Record<GameId, string[]> = {
+  // Genérico: packs de 1-6 jugadores
+  generic: ["life1", "life2", "life3", "life4", "life5", "life6"],
+  // Aeon's End
+  aeons: ["aeons1P", "aeons2P", "aeons3P", "aeons4P"],
+  // Magic: solo Commander y Duelo
+  magic: ["commander", "duel"],
+  // Marvel: solo variantes de Marvel
+  marvel: [
+    "marvelSolo",
+    "marvelSoloCounters",
+    "marvel2P",
+    "marvel3P",
+    "marvel4P",
+  ],
+};
+
+const layoutsById = new Map(layoutTemplates.map((lt) => [lt.id, lt] as const));
+
+const games = (Object.keys(gameToLayoutIds) as GameId[]).map((id) => ({
+  id,
+  layouts: gameToLayoutIds[id]
+    .map((lid) => layoutsById.get(lid))
+    .filter((x): x is Layout => Boolean(x)),
+}));
+
+const getGameByLayoutId = (layoutId: string): GameId | null => {
+  for (const [gid, ids] of Object.entries(gameToLayoutIds) as Array<
+    [GameId, string[]]
+  >) {
+    if (ids.includes(layoutId)) return gid;
+  }
+  return null;
+};
+
+export { layoutTemplates, games, getGameByLayoutId };

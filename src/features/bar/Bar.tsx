@@ -1,7 +1,12 @@
 import { FaPlusCircle } from "react-icons/fa";
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, getColorByKey } from "../CounterContainer/config/colors";
-import { layoutTemplates } from "../CounterContainer/config/templates";
+import {
+  layoutTemplates,
+  games,
+  getGameByLayoutId,
+} from "../CounterContainer/config/templates";
+import { localizeCounters } from "../CounterContainer/config/localize";
 import { faker } from "@faker-js/faker";
 import { CounterConfig, getDefaultBySize } from "../CounterContainer/domain";
 import { ICONS } from "../CounterContainer/config/icons";
@@ -16,9 +21,13 @@ type Props = {
 
 const Bar = ({ counters: _counters, setCounters }: Props) => {
   const { t } = useTranslation();
+  const [selectedGame, setSelectedGame] = useState<
+    "generic" | "marvel" | "magic" | "aeons" | "empty"
+  >("generic");
   const [selectedTemplate, setSelectedTemplate] = useState<string>("empty");
 
   const STORAGE_KEY_TEMPLATE = "selected-template";
+  const STORAGE_KEY_GAME = "selected-game";
 
   const templatesById = useMemo(() => {
     const map = new Map(layoutTemplates.map((lt) => [lt.id, lt] as const));
@@ -29,7 +38,6 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     arr
       .map((c) => ({
         id: c.id,
-        name: c.name,
         initialValue: c.initialValue,
         backgroundColor: c.backgroundColor,
         icon: c.icon,
@@ -50,7 +58,6 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
         const b = norm[i];
         if (
           a.id !== b.id ||
-          a.name !== b.name ||
           a.initialValue !== b.initialValue ||
           a.backgroundColor !== b.backgroundColor ||
           a.icon !== b.icon ||
@@ -67,17 +74,50 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     return null;
   };
 
-  // On mount: restore last selected template or infer from current counters
+  // On mount: restore last selected game/template or infer from current counters
   useEffect(() => {
     if (typeof window === "undefined") return;
     const stored = window.localStorage.getItem(STORAGE_KEY_TEMPLATE);
+    const rawGame = window.localStorage.getItem(STORAGE_KEY_GAME) || "generic";
+    const storedGame = (():
+      | "generic"
+      | "marvel"
+      | "magic"
+      | "aeons"
+      | "empty" => {
+      switch (rawGame) {
+        case "generic":
+        case "marvel":
+        case "magic":
+        case "aeons":
+        case "empty":
+          return rawGame;
+        default:
+          return "generic"; // map legacy 'custom' or others to generic
+      }
+    })();
+
+    // If a valid template is stored, prefer its game inference
     if (stored && (stored === "custom" || templatesById.has(stored))) {
       setSelectedTemplate(stored);
+      if (stored === "empty") {
+        setSelectedGame("empty");
+      } else if (stored !== "custom") {
+        const gid = getGameByLayoutId(stored);
+        setSelectedGame(gid ?? storedGame);
+      } // for 'custom', keep storedGame
       return;
     }
+
     // infer from counters when nothing stored
     const match = getMatchingTemplateId(_counters);
     setSelectedTemplate(match ?? "custom");
+    if (match) {
+      const gid = getGameByLayoutId(match);
+      setSelectedGame(gid ?? storedGame);
+    } else {
+      setSelectedGame(storedGame);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // When counters change due to edits, reflect "custom" if they diverge
@@ -92,10 +132,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     }
   }, [_counters]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleTemplateChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const selectedId = event.target.value;
+  const applyTemplate = (selectedId: string) => {
     setSelectedTemplate(selectedId);
     if (typeof window !== "undefined") {
       window.localStorage.setItem(STORAGE_KEY_TEMPLATE, selectedId);
@@ -110,9 +147,48 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     }
     const lt = templatesById.get(selectedId);
     if (lt) {
-      // Deep clone to avoid accidental shared references
       const cloned = lt.counters.map((c) => ({ ...c }));
-      setCounters(cloned);
+      setCounters(localizeCounters(selectedId, cloned, t));
+    }
+  };
+
+  const handleTemplateChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const selectedId = event.target.value;
+    applyTemplate(selectedId);
+  };
+
+  const handleGameChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const nextGame = event.target.value as
+      | "generic"
+      | "marvel"
+      | "magic"
+      | "aeons"
+      | "empty";
+    setSelectedGame(nextGame);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY_GAME, nextGame);
+    }
+
+    // Root option: apply and disable distribution
+    if (nextGame === "empty") {
+      applyTemplate(nextGame);
+      return;
+    }
+
+    // Ensure selected template belongs to the new game
+    const belongs = games
+      .find((g) => g.id === nextGame)
+      ?.layouts.some((l) => l.id === selectedTemplate);
+    if (!belongs) {
+      const first = games.find((g) => g.id === nextGame)?.layouts[0];
+      if (first) {
+        applyTemplate(first.id);
+      } else {
+        // fallback to empty
+        applyTemplate("empty");
+      }
     }
   };
 
@@ -133,7 +209,6 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     setCounters((prev) =>
       prev.map((counter) => ({
         ...counter,
-        id: faker.string.uuid(),
         value: counter.initialValue,
       })),
     );
@@ -144,28 +219,80 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     setCounters((prev) => [...prev, newCounter]);
   };
 
+  const sortedGameIds = useMemo(() => {
+    const ids: Array<"generic" | "marvel" | "magic" | "aeons"> = [
+      "generic",
+      "aeons",
+      "magic",
+      "marvel",
+    ];
+    const rest = ids
+      .filter((g) => g !== "generic")
+      .sort((a, b) => t(`game_${a}`).localeCompare(t(`game_${b}`)));
+    return ["generic", ...rest] as const;
+  }, [t]);
+
   return (
     <NavBar
       right={({ requestClose }) => (
         <>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium">{t("templateLabel")}</span>
+            <span className="text-xs font-medium">{t("gameLabel")}</span>
+            <select
+              suppressHydrationWarning
+              id="game"
+              value={selectedGame}
+              onChange={(e) => {
+                const val = e.target.value as
+                  | "generic"
+                  | "marvel"
+                  | "magic"
+                  | "aeons"
+                  | "empty";
+                handleGameChange(e);
+                if (val === "empty") {
+                  requestClose();
+                }
+              }}
+              className="text-sm px-4 py-2 w-56 truncate rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2"
+            >
+              <option value="empty">{t("game_empty")}</option>
+              {sortedGameIds.map((id) => (
+                <option key={id} value={id}>
+                  {t(`game_${id}`)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium">
+              {t("distributionLabel")}
+            </span>
             <select
               suppressHydrationWarning
               id="template"
               value={selectedTemplate}
+              disabled={selectedGame === "empty"}
               onChange={(e) => {
                 handleTemplateChange(e);
                 requestClose();
               }}
-              className="text-sm px-4 py-2 max-w-72 rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2"
+              className="text-sm px-4 py-2 w-56 truncate rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <option value="custom">{t("template_custom")}</option>
-              {layoutTemplates.map((template) => (
-                <option key={template.id} value={template.id}>
-                  {t(`template_${template.id}`)}
+              {selectedTemplate === "custom" && (
+                <option value="custom" disabled>
+                  {t("template_custom")}
                 </option>
-              ))}
+              )}
+              {selectedGame !== "empty" &&
+                games
+                  .find((g) => g.id === selectedGame)
+                  ?.layouts.map((template) => (
+                    <option key={template.id} value={template.id}>
+                      {t(`template_${template.id}`)}
+                    </option>
+                  ))}
             </select>
           </div>
 
