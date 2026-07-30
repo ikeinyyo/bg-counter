@@ -28,16 +28,23 @@ const Footer = ({ isWakeLockActive, activateWakeLock }: Props) => {
       <FaComputer />
     );
   return (
-    <footer className="flex h-12 items-center justify-between border-t border-[var(--border)] bg-[var(--navbar-bg)] px-3 text-[var(--navbar-fg)]">
-      <span className="text-[10px] sm:text-xs">
-        Copyright © 2025{" "}
+    <footer
+      className="flex min-h-12 items-center justify-between border-t border-[var(--border)] bg-[var(--navbar-bg)] text-[var(--navbar-fg)]"
+      style={{
+        paddingBottom: "calc(env(safe-area-inset-bottom) + 12px)",
+        paddingLeft: "calc(env(safe-area-inset-left, 0px) + 12px)",
+        paddingRight: "calc(env(safe-area-inset-right, 0px) + 12px)",
+      }}
+    >
+      <span className="footer-text leading-tight text-[10px] sm:text-xs">
+        <span className="whitespace-nowrap">© 2025 </span>
         <Link
           className="text-primary hover:text-white transition-colors text-bold cursor-pointer"
           href="https://juernesdemesa.com"
         >
           Juernes de Mesa
         </Link>
-        . {t("footerAllRights")}
+        <span className="hidden sm:inline">. {t("footerAllRights")}</span>
       </span>
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1">
@@ -91,6 +98,22 @@ const Footer = ({ isWakeLockActive, activateWakeLock }: Props) => {
           />
         )}
       </div>
+      <style jsx global>{`
+        .footer-text {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: normal;
+          max-width: 70vw;
+        }
+        @media (min-width: 640px) {
+          .footer-text {
+            max-width: 50vw;
+          }
+        }
+      `}</style>
     </footer>
   );
 };

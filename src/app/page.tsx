@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BsCollection, BsPlusCircleFill } from "react-icons/bs";
+import { BsHeartPulse, BsPlusCircleFill, BsDice5 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
 import { useEffect, useMemo } from "react";
@@ -25,7 +25,13 @@ export default function Home() {
       title: t("counterTitle"),
       description: t("counterDescription"),
       href: "/counter",
-      icon: BsCollection,
+      icon: BsHeartPulse,
+    },
+    {
+      title: t("choasisTitle"),
+      description: t("choasisDescription"),
+      href: "/choasis",
+      icon: BsDice5,
     },
     {
       title: t("soonTitle"),

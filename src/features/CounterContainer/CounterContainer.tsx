@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Counter } from "./Counter/Counter";
 import { CounterConfig } from "./domain";
-import { FaFaceRollingEyes } from "react-icons/fa6";
+import { MdAddBox } from "react-icons/md";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useTranslation } from "@/context/SettingsContext";
 
@@ -39,13 +39,27 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
   };
 
   return (
-    <main className="min-h-[calc(100vh-3.5rem-2rem)] bg-[var(--surface-muted)] p-2 md:p-4">
+    <main
+      className="bg-[var(--surface-muted)] p-2 md:p-4"
+      style={{
+        minHeight: "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem)",
+      }}
+    >
       <div className="max-w-7xl mx-auto">
         {counters.length === 0 ? (
-          <div className="mt-32 text-center text-xl text-[var(--foreground)]">
-            <FaFaceRollingEyes className="mx-auto text-6xl text-[var(--foreground)]/80" />
-            <br />
-            {t("emptyCounters")}
+          <div
+            className="flex items-center justify-center"
+            style={{ minHeight: "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem)" }}
+          >
+            <div className="flex flex-col items-center gap-3 px-8 text-center max-w-[92vw] md:max-w-[48rem]">
+              <MdAddBox
+                aria-hidden
+                className="text-6xl text-[var(--foreground)]/80"
+              />
+              <p className="text-xl md:text-2xl font-semibold text-[var(--foreground)]/90">
+                {t("emptyCounters")}
+              </p>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-12 grid-flow-dense gap-2 md:gap-4 lg:gap-6">
