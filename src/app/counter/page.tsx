@@ -7,6 +7,7 @@ import { layoutTemplates } from "@/features/CounterContainer/config/templates";
 import { Bar } from "@/features/bar/Bar";
 import { CounterLoading } from "@/features/CounterLoading/CounterLoading";
 import { useWakeLock } from "@/hooks/useWakeLock";
+import { useSettings } from "@/context/SettingsContext";
 
 const STORAGE_KEY = "current-counters";
 
@@ -31,6 +32,13 @@ const getInitialCounters = (): CounterConfig[] => {
 export default function CounterPage() {
   const [counters, setCounters] = useState<CounterConfig[]>(getInitialCounters);
   const [mounted, setMounted] = useState(false);
+  const { t } = useSettings();
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.title = `Juernes de Mesa — ${t("counterTitle")}`;
+    }
+  }, [t]);
 
   useEffect(() => {
     setMounted(true);

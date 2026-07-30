@@ -4,9 +4,21 @@ import Link from "next/link";
 import { BsCollection, BsPlusCircleFill } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
+import { useEffect, useMemo } from "react";
 
 export default function Home() {
   const { t } = useSettings();
+
+  const computedTitle = useMemo(
+    () => `Juernes de Mesa — ${t("appTitle")}`,
+    [t],
+  );
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.title = computedTitle;
+    }
+  }, [computedTitle]);
 
   const tools = [
     {
