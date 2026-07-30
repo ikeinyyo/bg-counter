@@ -10,7 +10,7 @@ import {
 } from "react";
 import { NavBar } from "@/features/navbar/NavBar";
 import { useSettings } from "@/context/SettingsContext";
-import { MdTouchApp } from "react-icons/md";
+import { MdTouchApp, MdPerson } from "react-icons/md";
 
 type TouchInfo = {
   id: number;
@@ -32,6 +32,8 @@ const COLORS: string[] = [
   "#6b7280", // gray
 ];
 
+const TIMEOUT = 2000;
+
 export default function ChoasisPage() {
   const { t } = useSettings();
 
@@ -43,17 +45,80 @@ export default function ChoasisPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const timerRef = useRef<number | null>(null);
 
+  const [mode, setMode] = useState<"touch" | "manual">("touch");
   const [touches, setTouches] = useState<Map<number, TouchInfo>>(new Map());
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [phase, setPhase] = useState<"idle" | "countdown" | "selected">("idle");
-  const [countdownEndsAt, setCountdownEndsAt] = useState<number | null>(null);
+  const [manualPlayersText, setManualPlayersText] = useState<string>("6");
+  const manualPlayers = useMemo(() => {
+    const raw = manualPlayersText.trim();
+    if (raw === "") return 0;
+    const n = parseInt(raw, 10);
+    if (Number.isNaN(n)) return 0;
+    return Math.max(1, Math.min(100, n));
+  }, [manualPlayersText]);
+  const [manualResult, setManualResult] = useState<number | null>(null);
+  const columnsClass = useMemo(() => {
+    const n = manualPlayers | 0;
+    const cols = Math.max(
+      4,
+      Math.min(10, Math.ceil(Math.sqrt(Math.max(1, n)))),
+    );
+    switch (cols) {
+      case 4:
+        return "grid-cols-4";
+      case 5:
+        return "grid-cols-5";
+      case 6:
+        return "grid-cols-6";
+      case 7:
+        return "grid-cols-7";
+      case 8:
+        return "grid-cols-8";
+      case 9:
+        return "grid-cols-9";
+      default:
+        return "grid-cols-10"; // 10
+    }
+  }, [manualPlayers]);
+  const [raffleActive, setRaffleActive] = useState<boolean>(false);
+  const [highlightIndex, setHighlightIndex] = useState<number | null>(null);
+  const raffleIntervalRef = useRef<number | null>(null);
+  const raffleTimeoutRef = useRef<number | null>(null);
+
+  const clearRaffle = useCallback(() => {
+    if (raffleIntervalRef.current) {
+      window.clearInterval(raffleIntervalRef.current);
+      raffleIntervalRef.current = null;
+    }
+    if (raffleTimeoutRef.current) {
+      window.clearTimeout(raffleTimeoutRef.current);
+      raffleTimeoutRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearRaffle();
+    };
+  }, [clearRaffle]);
 
   useEffect(() => {
     if (typeof document !== "undefined") {
       document.title = computedTitle;
     }
   }, [computedTitle]);
+
+  // Default to manual mode on non-touch devices
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (!hasTouch) {
+      const id = window.setTimeout(() => setMode("manual"), 0);
+      return () => window.clearTimeout(id);
+    }
+  }, []);
 
   // Set a dynamic viewport height CSS variable for mobile browsers (iOS Safari)
   useEffect(() => {
@@ -85,14 +150,11 @@ export default function ChoasisPage() {
       window.clearTimeout(timerRef.current);
       timerRef.current = null;
     }
-    setCountdownEndsAt(null);
   }, []);
 
   const startTimer = useCallback(() => {
     clearTimer();
     // 4 seconds from now
-    const endsAt = Date.now() + 4000;
-    setCountdownEndsAt(endsAt);
     timerRef.current = window.setTimeout(() => {
       // When timer fires, pick one of the active touches (if any)
       setPhase((prev) => (prev === "selected" ? prev : "selected"));
@@ -106,12 +168,12 @@ export default function ChoasisPage() {
         return prev;
       });
       timerRef.current = null;
-    }, 4000);
+    }, TIMEOUT);
   }, [clearTimer]);
 
   const handleTouchStart = useCallback(
     (e: ReactTouchEvent<HTMLDivElement>) => {
-      if (phase === "selected") return;
+      if (mode !== "touch" || phase === "selected") return;
       const rect = containerRef.current?.getBoundingClientRect();
       const next = new Map(touches);
       for (let i = 0; i < e.changedTouches.length; i++) {
@@ -120,6 +182,15 @@ export default function ChoasisPage() {
         const x = tTouch.clientX - (rect?.left ?? 0);
         const y = tTouch.clientY - (rect?.top ?? 0);
         if (!next.has(id)) {
+          if (next.size >= 5) {
+            // Switch to manual mode when a 6th touch is attempted
+            setMode("manual");
+            setManualPlayersText(String(Math.max(6, next.size + 1)));
+            setTouches(new Map());
+            setPhase("idle");
+            clearTimer();
+            return;
+          }
           next.set(id, { id, x, y, color: pickColor() });
         }
       }
@@ -129,12 +200,12 @@ export default function ChoasisPage() {
       }
       setTouches(next);
     },
-    [phase, touches, pickColor, startTimer],
+    [mode, phase, touches, pickColor, startTimer, clearTimer],
   );
 
   const handleTouchMove = useCallback(
     (e: ReactTouchEvent<HTMLDivElement>) => {
-      if (phase === "selected") return;
+      if (mode !== "touch" || phase === "selected") return;
       const rect = containerRef.current?.getBoundingClientRect();
       const next = new Map(touches);
       for (let i = 0; i < e.changedTouches.length; i++) {
@@ -147,12 +218,12 @@ export default function ChoasisPage() {
       }
       setTouches(next);
     },
-    [phase, touches],
+    [mode, phase, touches],
   );
 
   const handleTouchEnd = useCallback(
     (e: ReactTouchEvent<HTMLDivElement>) => {
-      if (phase === "selected") return;
+      if (mode !== "touch" || phase === "selected") return;
       const next = new Map(touches);
       for (let i = 0; i < e.changedTouches.length; i++) {
         const tTouch = e.changedTouches.item(i)!;
@@ -164,7 +235,7 @@ export default function ChoasisPage() {
         clearTimer();
       }
     },
-    [phase, touches, clearTimer],
+    [mode, phase, touches, clearTimer],
   );
 
   const resetAll = useCallback(() => {
@@ -180,13 +251,14 @@ export default function ChoasisPage() {
   // selection expansion: compute final scale dynamically
   const getFinalScale = useCallback(
     (x: number, y: number, baseRadius: number) => {
-      if (!containerRef.current) return 20; // fallback
-      const rect = containerRef.current.getBoundingClientRect();
+      if (typeof window === "undefined") return 20; // SSR fallback
+      const w = window.innerWidth;
+      const h = window.innerHeight;
       const distances = [
         Math.hypot(x - 0, y - 0),
-        Math.hypot(x - rect.width, y - 0),
-        Math.hypot(x - 0, y - rect.height),
-        Math.hypot(x - rect.width, y - rect.height),
+        Math.hypot(x - w, y - 0),
+        Math.hypot(x - 0, y - h),
+        Math.hypot(x - w, y - h),
       ];
       const far = Math.max(...distances);
       return (far + 40) / baseRadius; // little margin
@@ -199,7 +271,24 @@ export default function ChoasisPage() {
 
   return (
     <>
-      <NavBar />
+      <NavBar
+        right={({ requestClose }) => (
+          <button
+            onClick={() => {
+              setMode(mode === "touch" ? "manual" : "touch");
+              resetAll();
+              setManualResult(null);
+              setRaffleActive(false);
+              setHighlightIndex(null);
+              clearRaffle();
+              requestClose();
+            }}
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
+          >
+            {mode === "touch" ? t("choasisToManual") : t("choasisToTouch")}
+          </button>
+        )}
+      />
       <main
         className="bg-[var(--background)] text-[var(--foreground)]"
         style={{
@@ -209,16 +298,145 @@ export default function ChoasisPage() {
       >
         <div
           ref={containerRef}
-          className="relative mx-auto h-full w-full overflow-hidden touch-none select-none"
+          className={`relative mx-auto h-full w-full overflow-hidden select-none ${
+            mode === "touch" ? "touch-none" : ""
+          }`}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchEnd}
           onClick={phase === "selected" ? resetAll : undefined}
         >
-          {/* Placeholder */}
-          {phase === "idle" && circles.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center">
+          {mode === "manual" && (
+            <div className="absolute inset-0 flex flex-col items-center justify-start pt-8 md:pt-10 lg:pt-12">
+              <div className="flex flex-col items-center gap-4 px-8 text-center max-w-[92vw] md:max-w-[48rem]">
+                <p className="text-xl md:text-2xl font-semibold text-[var(--foreground)]/90">
+                  {t("choasisManualTitle")}
+                </p>
+                {/* Fixed-height result display to avoid layout shift */}
+                <div className="h-16 flex items-center justify-center">
+                  <span
+                    className={`text-5xl md:text-6xl font-extrabold tracking-tight ${
+                      manualResult != null
+                        ? "text-primary"
+                        : "text-[var(--foreground)]/30"
+                    }`}
+                  >
+                    {manualResult != null ? manualResult : "?"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <label
+                    className="text-sm md:text-base"
+                    htmlFor="manualPlayers"
+                  >
+                    {t("choasisManualPlayersLabel")}:
+                  </label>
+                  <input
+                    id="manualPlayers"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="1-100"
+                    value={manualPlayersText}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/[^0-9]/g, "");
+                      setManualPlayersText(digits);
+                      // If current selection is out of range, clear it on the fly
+                      const next = parseInt(digits || "0", 10);
+                      if (
+                        !Number.isNaN(next) &&
+                        manualResult &&
+                        manualResult > next
+                      ) {
+                        setManualResult(null);
+                      }
+                    }}
+                    onBlur={() => {
+                      // Clamp on blur and normalize empty to ""
+                      const n = manualPlayers;
+                      setManualPlayersText(n > 0 ? String(n) : "");
+                    }}
+                    className="w-28 rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] px-3 py-2 shadow-sm text-center"
+                  />
+                  <button
+                    disabled={raffleActive || (manualPlayers | 0) < 1}
+                    onClick={() => {
+                      if (raffleActive) return;
+                      const n = manualPlayers | 0;
+                      if (n < 1) return;
+                      setManualResult(null);
+                      setRaffleActive(true);
+                      // initial highlight
+                      const initial = Math.floor(Math.random() * n) + 1;
+                      setHighlightIndex(initial);
+                      clearRaffle();
+                      raffleIntervalRef.current = window.setInterval(() => {
+                        const count = Math.max(
+                          1,
+                          Math.min(100, manualPlayers | 0),
+                        );
+                        let next = Math.floor(Math.random() * count) + 1;
+                        setHighlightIndex((prev) => {
+                          if (prev && next === prev) {
+                            next = next % count || count;
+                          }
+                          return next;
+                        });
+                      }, 90);
+                      raffleTimeoutRef.current = window.setTimeout(() => {
+                        const finalPick = Math.floor(Math.random() * n) + 1;
+                        clearRaffle();
+                        setHighlightIndex(finalPick);
+                        setManualResult(finalPick);
+                        setRaffleActive(false);
+                      }, TIMEOUT);
+                    }}
+                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {t("choasisManualRandomize")}
+                  </button>
+                </div>
+                {/* Players grid (non-interactive items) */}
+                <div className="mt-2 w-full">
+                  <div
+                    className={`mx-auto grid ${columnsClass} gap-1.5 max-w-[28rem] md:max-w-[40rem] lg:max-w-[56rem] xl:max-w-[72rem]`}
+                  >
+                    {Array.from({ length: manualPlayers }, (_, i) => i + 1).map(
+                      (idx) => {
+                        const isSelected = raffleActive
+                          ? highlightIndex === idx
+                          : manualResult === idx;
+                        return (
+                          <div
+                            key={idx}
+                            className={`flex items-center justify-center aspect-square rounded p-1 sm:p-1.5 md:p-2 ${
+                              isSelected
+                                ? "bg-primary/10 ring-1 ring-primary"
+                                : "bg-[var(--surface)]/60"
+                            }`}
+                          >
+                            <MdPerson
+                              className={
+                                (isSelected
+                                  ? "text-primary"
+                                  : "text-[var(--foreground)]/60") +
+                                " w-full h-full"
+                              }
+                            />
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+                </div>
+                {/* Bottom label removed to keep focus on big result */}
+              </div>
+            </div>
+          )}
+          {/* Placeholder (touch mode) */}
+          {mode === "touch" && phase === "idle" && circles.length === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="flex flex-col items-center gap-3 px-8 text-center max-w-[92vw] md:max-w-[48rem]">
                 <MdTouchApp
                   aria-hidden
@@ -227,6 +445,10 @@ export default function ChoasisPage() {
                 <p className="text-xl md:text-2xl font-semibold text-[var(--foreground)]/90">
                   {t("choasisPlaceholder")}
                 </p>
+                <p className="text-sm md:text-base text-[var(--foreground)]/70">
+                  <span className="mr-1">{t("choasisMoreThanFive")}</span>
+                  <span>{t("choasisManualHintMenu")}</span>
+                </p>
               </div>
             </div>
           )}
@@ -234,42 +456,44 @@ export default function ChoasisPage() {
           {/* Countdown hint removed intentionally */}
 
           {/* Touch circles */}
-          <div className="absolute inset-0">
-            {circles.map((c) => {
-              const size = 120; // base circle size (bigger for visibility under finger)
-              const baseRadius = size / 2;
-              const isSelected = selected && c.id === selected.id;
-              const finalScale = isSelected
-                ? getFinalScale(c.x, c.y, baseRadius)
-                : 1;
-              const animClass =
-                phase === "selected"
-                  ? isSelected
-                    ? "choasis-beat-expand"
-                    : "choasis-shrink"
-                  : "choasis-pulse";
-              const style: React.CSSProperties & {
-                [key: string]: string | number;
-              } = {
-                left: c.x - baseRadius,
-                top: c.y - baseRadius,
-                width: size,
-                height: size,
-                background: c.color,
-              };
-              style["--choasis-final-scale"] = String(finalScale);
-              return (
-                <div
-                  key={c.id}
-                  className={`pointer-events-none absolute rounded-full shadow-lg choasis-circle ${animClass}`}
-                  style={style}
-                />
-              );
-            })}
-          </div>
+          {mode === "touch" && (
+            <div className="absolute inset-0">
+              {circles.map((c) => {
+                const size = 120; // base circle size (bigger for visibility under finger)
+                const baseRadius = size / 2;
+                const isSelected = selected && c.id === selected.id;
+                const finalScale = isSelected
+                  ? getFinalScale(c.x, c.y, baseRadius)
+                  : 1;
+                const animClass =
+                  phase === "selected"
+                    ? isSelected
+                      ? "choasis-beat-expand"
+                      : "choasis-shrink"
+                    : "choasis-pulse";
+                const style: React.CSSProperties & {
+                  [key: string]: string | number;
+                } = {
+                  left: c.x - baseRadius,
+                  top: c.y - baseRadius,
+                  width: size,
+                  height: size,
+                  background: c.color,
+                };
+                style["--choasis-final-scale"] = String(finalScale);
+                return (
+                  <div
+                    key={c.id}
+                    className={`pointer-events-none absolute rounded-full shadow-lg choasis-circle ${animClass}`}
+                    style={style}
+                  />
+                );
+              })}
+            </div>
+          )}
 
           {/* Color fill overlay after selection */}
-          {phase === "selected" && selectedColor && (
+          {mode === "touch" && phase === "selected" && selectedColor && (
             <div
               className="pointer-events-auto absolute inset-0 choasis-overlay"
               style={{ background: selectedColor }}

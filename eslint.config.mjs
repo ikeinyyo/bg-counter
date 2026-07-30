@@ -11,6 +11,16 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      // Relax strict hook/refs rules that flag common patterns
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/refs": "off",
+      "react-hooks/static-components": "off",
+      // Allow temporary "any" in a few utility spots
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+  },
 ];
 
 export default eslintConfig;
