@@ -7,7 +7,9 @@ import { FaEllipsisVertical } from "react-icons/fa6";
 import { useTranslation } from "@/context/SettingsContext";
 
 type Props = {
-  right?: React.ReactNode;
+  right?:
+    | React.ReactNode
+    | ((utils: { requestClose: () => void }) => React.ReactNode);
 };
 
 const NavBar = ({ right }: Props) => {
@@ -35,6 +37,19 @@ const NavBar = ({ right }: Props) => {
 
   // Language/Theme selectors are placed in Footer now
 
+  const requestClose = () => setOpen(false);
+
+  const renderRight = () => {
+    if (typeof right === "function") {
+      return (right as (u: { requestClose: () => void }) => React.ReactNode)({
+        requestClose,
+      });
+    }
+    return right;
+  };
+
+  const hasRight = Boolean(right);
+
   return (
     <header className="relative flex h-14 items-center justify-between border-b border-[var(--border)] bg-[var(--navbar-bg)] p-2 text-[var(--navbar-fg)]">
       <Link
@@ -57,28 +72,32 @@ const NavBar = ({ right }: Props) => {
       </Link>
 
       {/* Desktop/tablet actions */}
-      <div className="hidden md:flex items-center gap-4">{right}</div>
+      {hasRight && (
+        <div className="hidden md:flex items-center gap-4">{renderRight()}</div>
+      )}
 
       {/* Mobile overflow button */}
-      <button
-        ref={btnRef}
-        className="md:hidden p-2 rounded hover:bg-white/10"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label="Menu"
-        onClick={() => setOpen((v) => !v)}
-      >
-        <FaEllipsisVertical />
-      </button>
+      {hasRight && (
+        <button
+          ref={btnRef}
+          className="md:hidden p-2 rounded hover:bg-white/10"
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label="Menu"
+          onClick={() => setOpen((v) => !v)}
+        >
+          <FaEllipsisVertical />
+        </button>
+      )}
 
       {/* Mobile dropdown */}
-      {open && (
+      {open && hasRight && (
         <div
           ref={menuRef}
           role="menu"
           className="absolute right-2 top-14 z-[200] min-w-60 rounded-md border border-[var(--border)] bg-[var(--surface)] p-3 shadow-lg text-[var(--foreground)]"
         >
-          <div className="flex flex-col gap-3">{right}</div>
+          <div className="flex flex-col gap-3">{renderRight()}</div>
         </div>
       )}
     </header>
