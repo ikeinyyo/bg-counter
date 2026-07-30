@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Juernes de Mesa - Counter App",
-  description: "Aplicación para llevar contadores de vidas y otros recursos",
+  title: "Juernes de Mesa - Companion",
+  description:
+    "Companion app with handy tools for board games — counters and more. Designed for quick, mobile use.",
   icons: {
     icon: "/images/favicon.png",
   },
@@ -28,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="light">
+    <html lang="es" data-theme="light">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
