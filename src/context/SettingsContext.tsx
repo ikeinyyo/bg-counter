@@ -53,16 +53,54 @@ const translations = {
     menuEdit: "Editar",
     menuDelete: "Eliminar",
     menuOptions: "Opciones",
-    emptyCounters:
-      "No hay contadores. Añade uno para comenzar o selecciona una plantilla.",
+    emptyCounters: "No hay contadores",
+    emptyCountersHint:
+      "Selecciona una plantilla o añade un contador desde el menú de navegación.",
     loadingCountersAria: "Cargando contadores",
     loadingCounters: "Cargando contadores...",
     loadingSoon: "No tardará mucho",
     footerAllRights: "Todos los derechos reservados.",
+    wakeLockLabel: "Mantener la pantalla encendida",
+    wakeLockShortLabel: "Pantalla siempre activa",
+    wakeLockActive: "Pantalla siempre encendida: activada",
+    wakeLockInactive: "Pantalla siempre encendida: desactivada",
+    wakeLockUnsupported:
+      "Este navegador no permite mantener la pantalla encendida",
+    helpTitle: "Ayuda",
+    helpDescription:
+      "Esta guía resume las funciones principales de la aplicación y dónde encontrar cada opción.",
+    helpConfigTitle: "Configuración",
+    helpConfigText:
+      "Las preferencias generales están siempre disponibles en el footer, tanto en la página principal como dentro de cada herramienta.",
+    helpConfigOptionsTitle: "Opciones disponibles",
+    helpConfigLanguage:
+      "Idioma: cambia todos los textos de la aplicación entre español, inglés e italiano.",
+    helpConfigTheme:
+      "Tema: elige entre el modo claro, el modo oscuro o el aspecto configurado en tu sistema.",
+    helpConfigWakeLock:
+      "Pantalla siempre activa: evita que el dispositivo apague la pantalla mientras estás usando la aplicación. Resulta especialmente útil durante una partida con los contadores. La opción está activada la primera vez y recuerda el último valor elegido.",
+    helpCountersTitle: "Counters",
+    helpCountersText:
+      "La herramienta de contadores permite preparar un marcador adaptado a cada partida y modificarlo cuando lo necesites.",
+    helpCountersMenuTitle: "Plantillas y nuevos contadores",
+    helpCountersMenuText:
+      "Abre el menú de la barra de navegación para elegir un juego y una de sus plantillas. Una plantilla crea de una vez los contadores y la distribución más habituales para ese tipo de partida. Desde el mismo menú también puedes reiniciar la partida o añadir un contador nuevo. En pantallas pequeñas, estas opciones están contraídas bajo el botón de tres puntos.",
+    helpCountersEditTitle: "Editar un contador",
+    helpCountersEditText:
+      "Pulsa la rueda dentada de un contador para abrir sus opciones. Desde allí puedes cambiar su nombre, el valor inicial, el color, el icono y el espacio que ocupa en cada tamaño de pantalla. También puedes eliminarlo si ya no lo necesitas.",
+    helpChoasisTitle: "Choasis",
+    helpChoasisText:
+      "Choasis elige una persona al azar y ofrece dos modos según el número de jugadores y cómo queráis realizar la elección.",
+    helpChoasisTouchTitle: "Modo táctil",
+    helpChoasisTouchText:
+      "Cada jugador coloca un dedo sobre la pantalla y Choasis selecciona uno de ellos. Este modo admite un máximo de 5 jugadores al mismo tiempo. Después de una elección, toca la pantalla para empezar otra.",
+    helpChoasisManualTitle: "Modo manual",
+    helpChoasisManualText:
+      "Si sois más de 5, abre el menú de la barra de navegación y cambia al modo manual. Indica el número de participantes y pulsa «Elegir» para obtener un jugador al azar. El modo manual admite hasta 100 jugadores.",
     appTitle: "Companion",
     logoAlt: "Logo de Juernes de Mesa",
     barReset: "Reiniciar",
-    barAddCounter: "Añadir contador",
+    barAddCounter: "Añadir",
     close: "Cerrar",
     colorPickerAria: "Selector de color",
     iconPickerAria: "Selector de icono",
@@ -145,15 +183,53 @@ const translations = {
     menuEdit: "Edit",
     menuDelete: "Delete",
     menuOptions: "Options",
-    emptyCounters: "No counters. Add one to start or pick a template.",
+    emptyCounters: "There are no counters",
+    emptyCountersHint:
+      "Select a template or add a counter from the navigation menu.",
     loadingCountersAria: "Loading counters",
     loadingCounters: "Loading counters...",
     loadingSoon: "It will not take long",
     footerAllRights: "All rights reserved.",
+    wakeLockLabel: "Keep screen awake",
+    wakeLockShortLabel: "Keep awake",
+    wakeLockActive: "Keep screen awake: on",
+    wakeLockInactive: "Keep screen awake: off",
+    wakeLockUnsupported: "This browser cannot keep the screen awake",
+    helpTitle: "Help",
+    helpDescription:
+      "This guide covers the app’s main features and where to find each option.",
+    helpConfigTitle: "Settings",
+    helpConfigText:
+      "General preferences are always available in the footer, both on the home page and inside each tool.",
+    helpConfigOptionsTitle: "Available options",
+    helpConfigLanguage:
+      "Language: switch all app text between Spanish, English, and Italian.",
+    helpConfigTheme:
+      "Theme: choose light mode, dark mode, or follow your system appearance.",
+    helpConfigWakeLock:
+      "Keep awake: prevents your device from turning off the screen while you use the app. This is especially useful during a game with the counters. It is enabled on first use and remembers your latest choice.",
+    helpCountersTitle: "Counters",
+    helpCountersText:
+      "The counters tool lets you prepare a scoreboard for each game and adjust it whenever needed.",
+    helpCountersMenuTitle: "Templates and new counters",
+    helpCountersMenuText:
+      "Open the navigation bar menu to choose a game and one of its templates. A template creates the counters and layout commonly used for that kind of game in one step. The same menu also lets you reset the game or add a new counter. On smaller screens, these options are collapsed under the three-dot button.",
+    helpCountersEditTitle: "Editing a counter",
+    helpCountersEditText:
+      "Select the gear on a counter to open its options. From there, you can change its name, initial value, color, icon, and how much space it uses at each screen size. You can also delete it when it is no longer needed.",
+    helpChoasisTitle: "Choasis",
+    helpChoasisText:
+      "Choasis picks one person at random and provides two modes depending on the number of players and how you want to make the choice.",
+    helpChoasisTouchTitle: "Touch mode",
+    helpChoasisTouchText:
+      "Each player places one finger on the screen and Choasis selects one of them. This mode supports up to 5 players at the same time. After a selection, tap the screen to start again.",
+    helpChoasisManualTitle: "Manual mode",
+    helpChoasisManualText:
+      "For more than 5 players, open the navigation bar menu and switch to manual mode. Enter the number of participants and select “Pick” to choose a player at random. Manual mode supports up to 100 players.",
     appTitle: "Companion",
     logoAlt: "Juernes de Mesa logo",
     barReset: "Reset",
-    barAddCounter: "Add Counter",
+    barAddCounter: "Add",
     close: "Close",
     colorPickerAria: "Color Picker",
     iconPickerAria: "Icon Picker",
@@ -236,15 +312,53 @@ const translations = {
     menuEdit: "Modifica",
     menuDelete: "Elimina",
     menuOptions: "Opzioni",
-    emptyCounters: "Nessun contatore. Aggiungine uno o scegli un modello.",
+    emptyCounters: "Non ci sono contatori",
+    emptyCountersHint:
+      "Seleziona un modello o aggiungi un contatore dal menu di navigazione.",
     loadingCountersAria: "Caricamento contatori",
     loadingCounters: "Caricamento contatori...",
     loadingSoon: "Non ci vorrà molto",
     footerAllRights: "Tutti i diritti riservati.",
+    wakeLockLabel: "Mantieni lo schermo acceso",
+    wakeLockShortLabel: "Schermo acceso",
+    wakeLockActive: "Schermo sempre acceso: attivato",
+    wakeLockInactive: "Schermo sempre acceso: disattivato",
+    wakeLockUnsupported: "Questo browser non può mantenere lo schermo acceso",
+    helpTitle: "Aiuto",
+    helpDescription:
+      "Questa guida riassume le funzioni principali dell’app e dove trovare ogni opzione.",
+    helpConfigTitle: "Impostazioni",
+    helpConfigText:
+      "Le preferenze generali sono sempre disponibili nel footer, sia nella pagina iniziale sia all’interno di ogni strumento.",
+    helpConfigOptionsTitle: "Opzioni disponibili",
+    helpConfigLanguage:
+      "Lingua: cambia tutti i testi dell’app tra spagnolo, inglese e italiano.",
+    helpConfigTheme:
+      "Tema: scegli la modalità chiara, quella scura oppure l’aspetto configurato nel sistema.",
+    helpConfigWakeLock:
+      "Schermo acceso: impedisce al dispositivo di spegnere lo schermo mentre usi l’app. È particolarmente utile durante una partita con i contatori. L’opzione è attiva al primo utilizzo e ricorda l’ultima scelta.",
+    helpCountersTitle: "Counters",
+    helpCountersText:
+      "Lo strumento dei contatori ti permette di preparare un segnapunti adatto a ogni partita e modificarlo quando necessario.",
+    helpCountersMenuTitle: "Modelli e nuovi contatori",
+    helpCountersMenuText:
+      "Apri il menu della barra di navigazione per scegliere un gioco e uno dei suoi modelli. Un modello crea in un solo passaggio i contatori e la disposizione più comuni per quel tipo di partita. Dallo stesso menu puoi anche azzerare la partita o aggiungere un nuovo contatore. Sugli schermi più piccoli, queste opzioni sono raccolte nel pulsante con i tre puntini.",
+    helpCountersEditTitle: "Modificare un contatore",
+    helpCountersEditText:
+      "Premi l’ingranaggio di un contatore per aprire le sue opzioni. Da lì puoi cambiarne il nome, il valore iniziale, il colore, l’icona e lo spazio occupato per ogni dimensione dello schermo. Puoi anche eliminarlo quando non serve più.",
+    helpChoasisTitle: "Choasis",
+    helpChoasisText:
+      "Choasis sceglie una persona a caso e offre due modalità in base al numero di giocatori e a come volete effettuare la scelta.",
+    helpChoasisTouchTitle: "Modalità touch",
+    helpChoasisTouchText:
+      "Ogni giocatore appoggia un dito sullo schermo e Choasis ne seleziona uno. Questa modalità supporta fino a 5 giocatori contemporaneamente. Dopo una scelta, tocca lo schermo per ricominciare.",
+    helpChoasisManualTitle: "Modalità manuale",
+    helpChoasisManualText:
+      "Se siete più di 5, apri il menu della barra di navigazione e passa alla modalità manuale. Inserisci il numero di partecipanti e premi «Scegli» per selezionare un giocatore a caso. La modalità manuale supporta fino a 100 giocatori.",
     appTitle: "Companion",
     logoAlt: "Logo di Juernes de Mesa",
     barReset: "Reimposta",
-    barAddCounter: "Aggiungi contatore",
+    barAddCounter: "Aggiungi",
     close: "Chiudi",
     colorPickerAria: "Selettore colore",
     iconPickerAria: "Selettore icone",

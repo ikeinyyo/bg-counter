@@ -4,7 +4,11 @@ const CounterLoading = () => {
   const { t } = useTranslation();
   return (
     <main
-      className="flex min-h-[calc(100vh-3.5rem-2rem)] items-center justify-center bg-[var(--background)]"
+      className="flex items-center justify-center bg-[var(--background)]"
+      style={{
+        minHeight:
+          "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+      }}
       role="status"
       aria-busy="true"
       aria-label={t("loadingCountersAria")}

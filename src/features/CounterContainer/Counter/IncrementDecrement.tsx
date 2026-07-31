@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
   onDecrement: (value: number) => void;
@@ -106,10 +106,12 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
     isProcessing.current = false;
   };
 
-  const onWindowMouseUp = () => {
-    handlePressEnd(eventId.current);
-    window.removeEventListener("mouseup", onWindowMouseUp);
-  };
+  const handlePressEndRef = useRef(handlePressEnd);
+  handlePressEndRef.current = handlePressEnd;
+
+  const onWindowMouseUp = useCallback(() => {
+    handlePressEndRef.current(eventId.current);
+  }, []);
 
   const handleDecrementMouseDown = (event: React.MouseEvent) => {
     event.preventDefault();

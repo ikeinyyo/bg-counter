@@ -10,15 +10,10 @@ import {
 import { FaGlobe, FaSun, FaMoon, FaComputer } from "react-icons/fa6";
 import { useWakeLock } from "@/hooks/useWakeLock";
 
-type Props = {
-  isWakeLockActive?: boolean;
-  activateWakeLock?: () => void;
-};
-
-const Footer = ({ isWakeLockActive, activateWakeLock }: Props) => {
+const Footer = () => {
   const { t } = useTranslation();
   const { language, theme, setLanguage, setTheme } = useSettings();
-  const { isSupported, isActive, requestWakeLock } = useWakeLock();
+  const { isSupported, isEnabled, isActive, setIsEnabled } = useWakeLock();
   const themeIcon =
     theme === "dark" ? (
       <FaMoon />
@@ -29,14 +24,14 @@ const Footer = ({ isWakeLockActive, activateWakeLock }: Props) => {
     );
   return (
     <footer
-      className="flex min-h-12 items-center justify-between border-t border-[var(--border)] bg-[var(--navbar-bg)] text-[var(--navbar-fg)]"
+      className="flex h-[calc(3rem+env(safe-area-inset-bottom))] min-h-[calc(3rem+env(safe-area-inset-bottom))] shrink-0 items-center justify-end overflow-hidden md:justify-between border-t border-[var(--border)] bg-[var(--navbar-bg)] text-[var(--navbar-fg)]"
       style={{
-        paddingBottom: "calc(env(safe-area-inset-bottom) + 12px)",
-        paddingLeft: "calc(env(safe-area-inset-left, 0px) + 12px)",
-        paddingRight: "calc(env(safe-area-inset-right, 0px) + 12px)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "calc(env(safe-area-inset-left, 0px) + 8px)",
+        paddingRight: "calc(env(safe-area-inset-right, 0px) + 8px)",
       }}
     >
-      <span className="footer-text leading-tight text-[10px] sm:text-xs">
+      <span className="hidden md:inline-flex leading-tight text-xs">
         <span className="whitespace-nowrap">© 2025 </span>
         <Link
           className="text-primary hover:text-white transition-colors text-bold cursor-pointer"
@@ -44,16 +39,46 @@ const Footer = ({ isWakeLockActive, activateWakeLock }: Props) => {
         >
           Juernes de Mesa
         </Link>
-        <span className="hidden sm:inline">. {t("footerAllRights")}</span>
+        <span>. {t("footerAllRights")}</span>
       </span>
-      <div className="flex items-center gap-3">
+      <div className="flex min-w-0 items-center gap-1.5 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1">
+          <span className="whitespace-nowrap text-[10px] sm:text-xs">
+            {t("wakeLockShortLabel")}
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={isEnabled}
+            aria-label={t("wakeLockLabel")}
+            title={
+              !isSupported
+                ? t("wakeLockUnsupported")
+                : isActive
+                  ? t("wakeLockActive")
+                  : t("wakeLockInactive")
+            }
+            disabled={!isSupported}
+            onClick={() => setIsEnabled(!isEnabled)}
+            className={`relative h-5 w-9 shrink-0 rounded-full border border-white/25 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 ${
+              isEnabled ? "bg-primary" : "bg-gray-600"
+            }`}
+          >
+            <span
+              aria-hidden
+              className={`absolute left-0.5 top-0.5 h-[14px] w-[14px] rounded-full bg-white shadow-sm transition-transform ${
+                isEnabled ? "translate-x-4" : "translate-x-0"
+              }`}
+            />
+          </button>
+        </div>
         <div className="flex items-center gap-1">
-          <FaGlobe aria-hidden className="opacity-80" />
+          <FaGlobe aria-hidden className="hidden sm:block opacity-80" />
           <select
             aria-label={t("languageLabel")}
             value={language}
             onChange={(e) => setLanguage(e.target.value as Language)}
-            className="rounded-md border border-white/20 bg-black text-white px-2 py-1 text-xs shadow-sm"
+            className="min-w-0 rounded-md border border-white/20 bg-black text-white px-1 sm:px-2 py-1 text-xs shadow-sm"
           >
             <option value="es">{t("languageEs")}</option>
             <option value="en">{t("languageEn")}</option>
@@ -61,59 +86,21 @@ const Footer = ({ isWakeLockActive, activateWakeLock }: Props) => {
           </select>
         </div>
         <div className="flex items-center gap-1">
-          <span aria-hidden className="opacity-80">
+          <span aria-hidden className="hidden sm:block opacity-80">
             {themeIcon}
           </span>
           <select
             aria-label={t("themeLabel")}
             value={theme}
             onChange={(e) => setTheme(e.target.value as Theme)}
-            className="rounded-md border border-white/20 bg-black text-white px-2 py-1 text-xs shadow-sm"
+            className="min-w-0 rounded-md border border-white/20 bg-black text-white px-1 sm:px-2 py-1 text-xs shadow-sm"
           >
             <option value="light">{t("themeLight")}</option>
             <option value="dark">{t("themeDark")}</option>
             <option value="system">{t("themeSystem")}</option>
           </select>
         </div>
-        {(typeof isWakeLockActive === "boolean" || isSupported) && (
-          <button
-            className={`w-4 h-4 ml-1 rounded-full ${
-              (
-                typeof isWakeLockActive === "boolean"
-                  ? isWakeLockActive
-                  : isActive
-              )
-                ? "bg-true"
-                : "bg-false"
-            }`}
-            onClick={
-              activateWakeLock
-                ? activateWakeLock
-                : () => {
-                    if (isSupported) requestWakeLock();
-                  }
-            }
-            aria-label="Wake Lock"
-            title="Wake Lock"
-          />
-        )}
       </div>
-      <style jsx global>{`
-        .footer-text {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: normal;
-          max-width: 70vw;
-        }
-        @media (min-width: 640px) {
-          .footer-text {
-            max-width: 50vw;
-          }
-        }
-      `}</style>
     </footer>
   );
 };

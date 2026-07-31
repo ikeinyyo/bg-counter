@@ -19,11 +19,18 @@ type Props = {
   setCounters: React.Dispatch<React.SetStateAction<CounterConfig[]>>;
 };
 
+type GameSelection =
+  | "generic"
+  | "marvel"
+  | "magic"
+  | "aeons"
+  | "empty"
+  | "custom";
+
 const Bar = ({ counters: _counters, setCounters }: Props) => {
   const { t } = useTranslation();
-  const [selectedGame, setSelectedGame] = useState<
-    "generic" | "marvel" | "magic" | "aeons" | "empty"
-  >("generic");
+  const [selectedGame, setSelectedGame] =
+    useState<GameSelection>("generic");
   const [selectedTemplate, setSelectedTemplate] = useState<string>("empty");
 
   const STORAGE_KEY_TEMPLATE = "selected-template";
@@ -102,10 +109,12 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
       setSelectedTemplate(stored);
       if (stored === "empty") {
         setSelectedGame("empty");
+      } else if (stored === "custom") {
+        setSelectedGame("custom");
       } else if (stored !== "custom") {
         const gid = getGameByLayoutId(stored);
         setSelectedGame(gid ?? storedGame);
-      } // for 'custom', keep storedGame
+      }
       return;
     }
 
@@ -116,7 +125,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
       const gid = getGameByLayoutId(match);
       setSelectedGame(gid ?? storedGame);
     } else {
-      setSelectedGame(storedGame);
+      setSelectedGame("custom");
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -124,6 +133,15 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
   useEffect(() => {
     const match = getMatchingTemplateId(_counters);
     const next = match ?? "custom";
+    if (next === "custom") {
+      setSelectedGame("custom");
+    } else if (next === "empty") {
+      setSelectedGame("empty");
+    } else {
+      const game = getGameByLayoutId(next);
+      if (game) setSelectedGame(game);
+    }
+
     if (next !== selectedTemplate) {
       setSelectedTemplate(next);
       if (typeof window !== "undefined") {
@@ -234,9 +252,10 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
 
   return (
     <NavBar
+      compact
       right={({ requestClose }) => (
         <>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-2">
             <span className="text-xs font-medium">{t("gameLabel")}</span>
             <select
               suppressHydrationWarning
@@ -254,8 +273,13 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
                   requestClose();
                 }
               }}
-              className="text-sm px-4 py-2 w-56 truncate rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2"
+              className="w-full truncate rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2 lg:w-36 xl:w-48 2xl:w-56"
             >
+              {selectedGame === "custom" && (
+                <option value="custom" disabled>
+                  {t("game_custom")}
+                </option>
+              )}
               <option value="empty">{t("game_empty")}</option>
               {sortedGameIds.map((id) => (
                 <option key={id} value={id}>
@@ -265,7 +289,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-2">
             <span className="text-xs font-medium">
               {t("distributionLabel")}
             </span>
@@ -273,12 +297,14 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
               suppressHydrationWarning
               id="template"
               value={selectedTemplate}
-              disabled={selectedGame === "empty"}
+              disabled={
+                selectedGame === "empty" || selectedGame === "custom"
+              }
               onChange={(e) => {
                 handleTemplateChange(e);
                 requestClose();
               }}
-              className="text-sm px-4 py-2 w-56 truncate rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full truncate rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 lg:w-36 xl:w-48 2xl:w-56"
             >
               {selectedTemplate === "custom" && (
                 <option value="custom" disabled>
@@ -286,6 +312,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
                 </option>
               )}
               {selectedGame !== "empty" &&
+                selectedGame !== "custom" &&
                 games
                   .find((g) => g.id === selectedGame)
                   ?.layouts.map((template) => (
@@ -296,26 +323,26 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
             </select>
           </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                resetCounters();
-                requestClose();
-              }}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors flex"
-            >
-              <FaArrowRotateRight className="h-6 w-6" />
-              <span className="inline ml-2">{t("barReset")}</span>
-            </button>
+          <div className="flex flex-col gap-2 lg:flex-row">
             <button
               onClick={() => {
                 addRandomCounter();
                 requestClose();
               }}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors flex"
+              className="flex flex-1 items-center justify-center whitespace-nowrap rounded-md bg-primary px-3 py-2 text-white transition-colors hover:bg-primary/80 lg:flex-none"
             >
-              <FaPlusCircle className="h-6 w-6" />
-              <span className="inline ml-2">{t("barAddCounter")}</span>
+              <FaPlusCircle className="h-6 w-6 shrink-0" />
+              <span className="ml-2">{t("barAddCounter")}</span>
+            </button>
+            <button
+              onClick={() => {
+                resetCounters();
+                requestClose();
+              }}
+              className="flex flex-1 items-center justify-center whitespace-nowrap rounded-md bg-primary px-3 py-2 text-white transition-colors hover:bg-primary/80 lg:flex-none"
+            >
+              <FaArrowRotateRight className="h-6 w-6 shrink-0" />
+              <span className="ml-2">{t("barReset")}</span>
             </button>
           </div>
         </>

@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { CounterContainer } from "@/features/CounterContainer/CounterContainer";
 import { CounterConfig } from "@/features/CounterContainer/domain";
 import { layoutTemplates } from "@/features/CounterContainer/config/templates";
 import { Bar } from "@/features/bar/Bar";
 import { CounterLoading } from "@/features/CounterLoading/CounterLoading";
-import { useWakeLock } from "@/hooks/useWakeLock";
 import { useSettings } from "@/context/SettingsContext";
 
 const STORAGE_KEY = "current-counters";
@@ -51,27 +50,6 @@ export default function CounterPage() {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(counters));
     } catch {}
   }, [counters, mounted]);
-
-  const { isSupported, requestWakeLock } = useWakeLock();
-
-  const activateWakeLock = useCallback(() => {
-    if (isSupported) requestWakeLock();
-  }, [isSupported, requestWakeLock]);
-
-  useEffect(() => {
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") activateWakeLock();
-    };
-
-    document.addEventListener("visibilitychange", handleVisibility);
-    window.addEventListener("focus", handleVisibility);
-    activateWakeLock();
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-      window.removeEventListener("focus", handleVisibility);
-    };
-  }, [activateWakeLock]);
 
   const handleDeleteCounter = (id: string) => {
     setCounters((prev) => prev.filter((c) => c.id !== id));

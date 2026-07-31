@@ -7,12 +7,13 @@ import { FaEllipsisVertical } from "react-icons/fa6";
 import { useTranslation } from "@/context/SettingsContext";
 
 type Props = {
+  compact?: boolean;
   right?:
     | React.ReactNode
     | ((utils: { requestClose: () => void }) => React.ReactNode);
 };
 
-const NavBar = ({ right }: Props) => {
+const NavBar = ({ compact = false, right }: Props) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -64,8 +65,14 @@ const NavBar = ({ right }: Props) => {
             alt={t("logoAlt")}
             className="p-2 pl-4"
           />
-          <span className="lg:inline md:inline hidden">{t("appTitle")}</span>
-          <span className="lg:inline md:inline hidden text-xs mt-3 text-gray-400">
+          <span
+            className={compact ? "hidden min-[1080px]:inline" : "hidden md:inline"}
+          >
+            {t("appTitle")}
+          </span>
+          <span
+            className={`${compact ? "hidden min-[1080px]:inline" : "hidden md:inline"} mt-3 text-xs text-gray-400`}
+          >
             v{packageJson.version}
           </span>
         </div>
@@ -73,14 +80,18 @@ const NavBar = ({ right }: Props) => {
 
       {/* Desktop/tablet actions */}
       {hasRight && (
-        <div className="hidden md:flex items-center gap-4">{renderRight()}</div>
+        <div
+          className={`${compact ? "hidden lg:flex" : "hidden md:flex"} min-w-0 items-center gap-2 xl:gap-4`}
+        >
+          {renderRight()}
+        </div>
       )}
 
       {/* Mobile overflow button */}
       {hasRight && (
         <button
           ref={btnRef}
-          className="md:hidden p-2 rounded hover:bg-white/10"
+          className={`${compact ? "lg:hidden" : "md:hidden"} rounded p-2 hover:bg-white/10`}
           aria-haspopup="menu"
           aria-expanded={open}
           aria-label="Menu"
