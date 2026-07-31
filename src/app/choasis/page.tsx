@@ -10,7 +10,7 @@ import {
 } from "react";
 import { NavBar } from "@/features/navbar/NavBar";
 import { useSettings } from "@/context/SettingsContext";
-import { MdTouchApp, MdPerson } from "react-icons/md";
+import { MdTouchApp } from "react-icons/md";
 
 type TouchInfo = {
   id: number;
@@ -400,13 +400,17 @@ export default function ChoasisPage() {
                 {/* Players grid (non-interactive items) */}
                 <div className="mt-2 w-full">
                   <div
-                    className={`mx-auto grid ${columnsClass} gap-1.5 max-w-[28rem] md:max-w-[40rem] lg:max-w-[56rem] xl:max-w-[72rem]`}
+                    className={`mx-auto grid ${columnsClass} gap-1.5 max-w-[28rem]`}
                   >
                     {Array.from({ length: manualPlayers }, (_, i) => i + 1).map(
                       (idx) => {
                         const isSelected = raffleActive
                           ? highlightIndex === idx
                           : manualResult === idx;
+                        const sizeClass =
+                          manualPlayers <= 16
+                            ? "text-3xl sm:text-4xl md:text-5xl"
+                            : "text-base text-lg";
                         return (
                           <div
                             key={idx}
@@ -416,14 +420,18 @@ export default function ChoasisPage() {
                                 : "bg-[var(--surface)]/60"
                             }`}
                           >
-                            <MdPerson
+                            <span
                               className={
                                 (isSelected
                                   ? "text-primary"
-                                  : "text-[var(--foreground)]/60") +
-                                " w-full h-full"
+                                  : "text-[var(--foreground)]/80") +
+                                " " +
+                                sizeClass +
+                                " font-semibold leading-none select-none"
                               }
-                            />
+                            >
+                              {idx}
+                            </span>
                           </div>
                         );
                       },
