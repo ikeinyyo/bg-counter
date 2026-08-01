@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const STORAGE_KEY = "bg-counter-wake-lock-enabled";
 
 const useWakeLock = () => {
+  const pathname = usePathname();
   const [isSupported, setIsSupported] = useState(false);
   const [isEnabled, setIsEnabledState] = useState(true);
   const [isActive, setIsActive] = useState(false);
@@ -10,6 +12,7 @@ const useWakeLock = () => {
   const requestRef = useRef<Promise<boolean> | null>(null);
   const isEnabledRef = useRef(true);
   const isMountedRef = useRef(false);
+  const retryTimeoutRef = useRef<number | null>(null);
 
   const requestWakeLock = useCallback(function acquireWakeLock(): Promise<boolean> {
     if (
@@ -23,7 +26,13 @@ const useWakeLock = () => {
     }
 
     if (wakeLockRef.current && !wakeLockRef.current.released) {
+      if (isMountedRef.current) setIsActive(true);
       return Promise.resolve(true);
+    }
+
+    if (wakeLockRef.current?.released) {
+      wakeLockRef.current = null;
+      if (isMountedRef.current) setIsActive(false);
     }
 
     if (requestRef.current) return requestRef.current;
@@ -105,6 +114,53 @@ const useWakeLock = () => {
     }
   }, []);
 
+  const reconcileWakeLock = useCallback(async () => {
+    if (!isMountedRef.current || typeof navigator === "undefined") return;
+
+    let enabled = true;
+    try {
+      const storedValue = window.localStorage.getItem(STORAGE_KEY);
+      enabled = storedValue === null ? true : storedValue === "true";
+    } catch {
+      // Wake lock is enabled on first use by default.
+    }
+
+    isEnabledRef.current = enabled;
+    setIsEnabledState(enabled);
+
+    if (retryTimeoutRef.current !== null) {
+      window.clearTimeout(retryTimeoutRef.current);
+      retryTimeoutRef.current = null;
+    }
+
+    if (!enabled) {
+      await releaseWakeLock();
+      return;
+    }
+
+    if (
+      !("wakeLock" in navigator) ||
+      document.visibilityState !== "visible"
+    ) {
+      return;
+    }
+
+    const acquired = await requestWakeLock();
+    if (
+      !acquired &&
+      isMountedRef.current &&
+      isEnabledRef.current &&
+      document.visibilityState === "visible"
+    ) {
+      // A page can report itself as visible before it is fully active. Retry
+      // once after entry/navigation to cover that transient browser state.
+      retryTimeoutRef.current = window.setTimeout(() => {
+        retryTimeoutRef.current = null;
+        void requestWakeLock();
+      }, 500);
+    }
+  }, [releaseWakeLock, requestWakeLock]);
+
   useEffect(() => {
     isMountedRef.current = true;
     let enabled = true;
@@ -122,6 +178,10 @@ const useWakeLock = () => {
 
     return () => {
       isMountedRef.current = false;
+      if (retryTimeoutRef.current !== null) {
+        window.clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = null;
+      }
       const sentinel = wakeLockRef.current;
       wakeLockRef.current = null;
       if (sentinel && !sentinel.released) void sentinel.release();
@@ -129,35 +189,34 @@ const useWakeLock = () => {
   }, []);
 
   useEffect(() => {
-    if (!isSupported) return;
-
-    if (isEnabled) {
-      void requestWakeLock();
-    } else {
-      void releaseWakeLock();
-    }
-  }, [isEnabled, isSupported, releaseWakeLock, requestWakeLock]);
+    void reconcileWakeLock();
+  }, [isEnabled, isSupported, reconcileWakeLock]);
 
   useEffect(() => {
-    const reacquireWakeLock = () => {
-      if (
-        document.visibilityState === "visible" &&
-        isEnabledRef.current
-      ) {
-        void requestWakeLock();
-      }
+    const reconcile = () => {
+      void reconcileWakeLock();
     };
 
-    document.addEventListener("visibilitychange", reacquireWakeLock);
-    window.addEventListener("focus", reacquireWakeLock);
-    window.addEventListener("pageshow", reacquireWakeLock);
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === STORAGE_KEY) reconcile();
+    };
+
+    document.addEventListener("visibilitychange", reconcile);
+    window.addEventListener("focus", reconcile);
+    window.addEventListener("pageshow", reconcile);
+    window.addEventListener("storage", handleStorage);
 
     return () => {
-      document.removeEventListener("visibilitychange", reacquireWakeLock);
-      window.removeEventListener("focus", reacquireWakeLock);
-      window.removeEventListener("pageshow", reacquireWakeLock);
+      document.removeEventListener("visibilitychange", reconcile);
+      window.removeEventListener("focus", reconcile);
+      window.removeEventListener("pageshow", reconcile);
+      window.removeEventListener("storage", handleStorage);
     };
-  }, [requestWakeLock]);
+  }, [reconcileWakeLock]);
+
+  useEffect(() => {
+    void reconcileWakeLock();
+  }, [pathname, reconcileWakeLock]);
 
   return {
     isSupported,
