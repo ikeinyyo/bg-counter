@@ -97,6 +97,31 @@ const translations = {
     helpChoasisManualTitle: "Modo manual",
     helpChoasisManualText:
       "Si sois más de 5, abre el menú de la barra de navegación y cambia al modo manual. Indica el número de participantes y pulsa «Elegir» para obtener un jugador al azar. El modo manual admite hasta 100 jugadores.",
+    helpTimerText:
+      "El temporizador permite preparar una cuenta atrás para turnos, rondas o cualquier fase de una partida.",
+    helpTimerSetupTitle: "Configurar el tiempo",
+    helpTimerSetupText:
+      "Introduce los minutos y segundos antes de iniciar la cuenta atrás. Puedes configurar hasta 99 minutos y 59 segundos. En el primer acceso se muestran 30 segundos y, después, la aplicación recuerda el último tiempo que hayas configurado.",
+    helpTimerControlsTitle: "Controles",
+    helpTimerControlsText:
+      "Pulsa «Iniciar» para comenzar. «Detener» pausa la cuenta atrás y permite continuar desde el mismo punto con «Reanudar». «Reiniciar» devuelve el temporizador al tiempo configurado para empezar de nuevo.",
+    helpTimerFinishTitle: "Final de la cuenta atrás",
+    helpTimerFinishText:
+      "El anillo rojo va desapareciendo en sentido horario para mostrar visualmente el tiempo restante. Al llegar a cero, suena una alarma para avisarte de que el tiempo ha terminado.",
+    timerTitle: "Temporizador",
+    timerDescription:
+      "Configura una cuenta atrás con progreso visual y aviso sonoro.",
+    timerMinutes: "Minutos",
+    timerSeconds: "Segundos",
+    timerStart: "Iniciar",
+    timerResume: "Reanudar",
+    timerRestart: "Reiniciar",
+    timerStop: "Detener",
+    timerReady: "Temporizador preparado",
+    timerRunning: "Cuenta atrás en curso",
+    timerPaused: "Temporizador detenido",
+    timerFinished: "¡Tiempo finalizado!",
+    timerAriaLabel: "Tiempo restante",
     appTitle: "Companion",
     logoAlt: "Logo de Juernes de Mesa",
     barReset: "Reiniciar",
@@ -226,6 +251,31 @@ const translations = {
     helpChoasisManualTitle: "Manual mode",
     helpChoasisManualText:
       "For more than 5 players, open the navigation bar menu and switch to manual mode. Enter the number of participants and select “Pick” to choose a player at random. Manual mode supports up to 100 players.",
+    helpTimerText:
+      "The timer provides a countdown for turns, rounds, or any other stage of a game.",
+    helpTimerSetupTitle: "Setting the time",
+    helpTimerSetupText:
+      "Enter the minutes and seconds before starting the countdown. You can set up to 99 minutes and 59 seconds. The first visit starts at 30 seconds, and the app remembers the last duration you configured after that.",
+    helpTimerControlsTitle: "Controls",
+    helpTimerControlsText:
+      "Select “Start” to begin. “Stop” pauses the countdown so you can continue from the same point with “Resume”. “Restart” returns the timer to the configured duration so you can start again.",
+    helpTimerFinishTitle: "End of the countdown",
+    helpTimerFinishText:
+      "The red ring disappears clockwise to show the remaining time visually. When it reaches zero, an alarm lets you know that time is up.",
+    timerTitle: "Timer",
+    timerDescription:
+      "Set a countdown with visual progress and an audible alert.",
+    timerMinutes: "Minutes",
+    timerSeconds: "Seconds",
+    timerStart: "Start",
+    timerResume: "Resume",
+    timerRestart: "Restart",
+    timerStop: "Stop",
+    timerReady: "Timer ready",
+    timerRunning: "Countdown in progress",
+    timerPaused: "Timer stopped",
+    timerFinished: "Time’s up!",
+    timerAriaLabel: "Time remaining",
     appTitle: "Companion",
     logoAlt: "Juernes de Mesa logo",
     barReset: "Reset",
@@ -355,6 +405,31 @@ const translations = {
     helpChoasisManualTitle: "Modalità manuale",
     helpChoasisManualText:
       "Se siete più di 5, apri il menu della barra di navigazione e passa alla modalità manuale. Inserisci il numero di partecipanti e premi «Scegli» per selezionare un giocatore a caso. La modalità manuale supporta fino a 100 giocatori.",
+    helpTimerText:
+      "Il timer permette di preparare un conto alla rovescia per turni, round o qualsiasi altra fase di una partita.",
+    helpTimerSetupTitle: "Impostare il tempo",
+    helpTimerSetupText:
+      "Inserisci i minuti e i secondi prima di avviare il conto alla rovescia. Puoi impostare fino a 99 minuti e 59 secondi. Al primo accesso vengono mostrati 30 secondi; in seguito, l’app ricorda l’ultima durata configurata.",
+    helpTimerControlsTitle: "Controlli",
+    helpTimerControlsText:
+      "Premi «Avvia» per iniziare. «Ferma» mette in pausa il conto alla rovescia e permette di continuare dallo stesso punto con «Riprendi». «Ricomincia» riporta il timer alla durata configurata per iniziare di nuovo.",
+    helpTimerFinishTitle: "Fine del conto alla rovescia",
+    helpTimerFinishText:
+      "L’anello rosso scompare in senso orario per mostrare visivamente il tempo rimanente. Quando arriva a zero, un allarme ti avvisa che il tempo è scaduto.",
+    timerTitle: "Timer",
+    timerDescription:
+      "Imposta un conto alla rovescia con progresso visivo e avviso sonoro.",
+    timerMinutes: "Minuti",
+    timerSeconds: "Secondi",
+    timerStart: "Avvia",
+    timerResume: "Riprendi",
+    timerRestart: "Ricomincia",
+    timerStop: "Ferma",
+    timerReady: "Timer pronto",
+    timerRunning: "Conto alla rovescia in corso",
+    timerPaused: "Timer fermo",
+    timerFinished: "Tempo scaduto!",
+    timerAriaLabel: "Tempo rimanente",
     appTitle: "Companion",
     logoAlt: "Logo di Juernes de Mesa",
     barReset: "Reimposta",

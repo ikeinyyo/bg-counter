@@ -4,8 +4,9 @@ import Link from "next/link";
 import {
   BsHeartPulse,
   BsPlusCircleFill,
-  BsDice5,
+  BsHandIndexThumb,
   BsQuestionCircle,
+  BsStopwatch,
 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
@@ -36,7 +37,13 @@ export default function Home() {
       title: t("choasisTitle"),
       description: t("choasisDescription"),
       href: "/choasis",
-      icon: BsDice5,
+      icon: BsHandIndexThumb,
+    },
+    {
+      title: t("timerTitle"),
+      description: t("timerDescription"),
+      href: "/timer",
+      icon: BsStopwatch,
     },
     {
       title: t("helpTitle"),
