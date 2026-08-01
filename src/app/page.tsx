@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { BsHeartPulse, BsPlusCircleFill, BsDice5 } from "react-icons/bs";
+import {
+  BsHeartPulse,
+  BsPlusCircleFill,
+  BsDice5,
+  BsQuestionCircle,
+} from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
 import { useEffect, useMemo } from "react";
@@ -34,6 +39,12 @@ export default function Home() {
       icon: BsDice5,
     },
     {
+      title: t("helpTitle"),
+      description: t("helpDescription"),
+      href: "/help",
+      icon: BsQuestionCircle,
+    },
+    {
       title: t("soonTitle"),
       description: t("soonDescription"),
       href: "#",
@@ -45,7 +56,13 @@ export default function Home() {
   return (
     <>
       <NavBar />
-      <main className="min-h-[calc(100vh-3.5rem)] bg-[var(--background)] px-4 py-6 text-[var(--foreground)]">
+      <main
+        className="bg-[var(--background)] px-4 py-6 text-[var(--foreground)]"
+        style={{
+          minHeight:
+            "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+        }}
+      >
         <div className="mx-auto flex max-w-5xl flex-col gap-6">
           <section className="pt-2">
             <h1 className="text-3xl font-semibold tracking-tight">

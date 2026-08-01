@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Counter } from "./Counter/Counter";
 import { CounterConfig } from "./domain";
-import { MdAddBox } from "react-icons/md";
+import { BsEmojiFrown } from "react-icons/bs";
 import { useBreakpoint } from "../../hooks/useBreakpoint";
 import { useTranslation } from "@/context/SettingsContext";
 
@@ -42,22 +42,29 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
     <main
       className="bg-[var(--surface-muted)] p-2 md:p-4"
       style={{
-        minHeight: "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem)",
+        minHeight:
+          "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
       }}
     >
       <div className="max-w-7xl mx-auto">
         {counters.length === 0 ? (
           <div
             className="flex items-center justify-center"
-            style={{ minHeight: "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem)" }}
+            style={{
+              minHeight:
+                "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+            }}
           >
             <div className="flex flex-col items-center gap-3 px-8 text-center max-w-[92vw] md:max-w-[48rem]">
-              <MdAddBox
+              <BsEmojiFrown
                 aria-hidden
                 className="text-6xl text-[var(--foreground)]/80"
               />
               <p className="text-xl md:text-2xl font-semibold text-[var(--foreground)]/90">
                 {t("emptyCounters")}
+              </p>
+              <p className="text-sm md:text-base leading-6 text-[var(--text-muted)]">
+                {t("emptyCountersHint")}
               </p>
             </div>
           </div>
