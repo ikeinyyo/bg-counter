@@ -6,6 +6,7 @@ import {
   BsHandIndexThumb,
   BsHeartPulse,
   BsStopwatch,
+  BsTable,
 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
@@ -112,7 +113,7 @@ export default function HelpPage() {
               </p>
             </section>
 
-            <section className="pt-8">
+            <section className="py-8">
               <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <BsStopwatch aria-hidden size={21} />
@@ -141,6 +142,38 @@ export default function HelpPage() {
               </h3>
               <p className="mt-2 leading-7 text-[var(--text-muted)]">
                 {t("helpTimerFinishText")}
+              </p>
+            </section>
+
+            <section className="pt-8">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <BsTable aria-hidden size={21} />
+                </span>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t("scoreSheetTitle")}
+                </h2>
+              </div>
+              <p className="mt-4 leading-7 text-[var(--text-muted)]">
+                {t("helpScoreSheetText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpScoreSheetStructureTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpScoreSheetStructureText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpScoreSheetScoresTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpScoreSheetScoresText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpScoreSheetStorageTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpScoreSheetStorageText")}
               </p>
             </section>
           </article>

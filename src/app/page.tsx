@@ -7,6 +7,7 @@ import {
   BsHandIndexThumb,
   BsQuestionCircle,
   BsStopwatch,
+  BsTable,
 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
@@ -44,6 +45,12 @@ export default function Home() {
       description: t("timerDescription"),
       href: "/timer",
       icon: BsStopwatch,
+    },
+    {
+      title: t("scoreSheetTitle"),
+      description: t("scoreSheetDescription"),
+      href: "/score-sheet",
+      icon: BsTable,
     },
     {
       title: t("helpTitle"),
