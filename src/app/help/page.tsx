@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { BsGear, BsHandIndexThumb, BsHeartPulse } from "react-icons/bs";
+import {
+  BsGear,
+  BsHandIndexThumb,
+  BsHeartPulse,
+  BsStopwatch,
+} from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
 
@@ -81,7 +86,7 @@ export default function HelpPage() {
               </p>
             </section>
 
-            <section className="pt-8">
+            <section className="py-8">
               <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <BsHandIndexThumb aria-hidden size={21} />
@@ -104,6 +109,38 @@ export default function HelpPage() {
               </h3>
               <p className="mt-2 leading-7 text-[var(--text-muted)]">
                 {t("helpChoasisManualText")}
+              </p>
+            </section>
+
+            <section className="pt-8">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <BsStopwatch aria-hidden size={21} />
+                </span>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t("timerTitle")}
+                </h2>
+              </div>
+              <p className="mt-4 leading-7 text-[var(--text-muted)]">
+                {t("helpTimerText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpTimerSetupTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpTimerSetupText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpTimerControlsTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpTimerControlsText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpTimerFinishTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpTimerFinishText")}
               </p>
             </section>
           </article>
