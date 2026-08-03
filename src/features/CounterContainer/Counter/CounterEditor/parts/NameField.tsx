@@ -14,10 +14,14 @@ const NameField = ({ value, onChange }: Props) => {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-[var(--text-muted)]">
+      <label
+        htmlFor="counter-name"
+        className="block text-sm font-medium text-[var(--text-muted)]"
+      >
         {t("labelName")}
       </label>
       <input
+        id="counter-name"
         ref={ref}
         type="text"
         value={value}

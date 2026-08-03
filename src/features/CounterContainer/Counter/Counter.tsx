@@ -57,16 +57,6 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
     setIsEditing(false);
   };
 
-  useEffect(() => {
-    if (counter.value === undefined) {
-      const init = counter.initialValue;
-      setLocalValue(init);
-      valueRef.current = init;
-      onUpdate?.({ ...counter, value: init });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const cogRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -100,6 +90,8 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
         onDecrement={onDecrement}
         onIncrement={onIncrement}
         isSmall={isSmall}
+        decrementLabel={`${t("counterDecrement")} ${counter.name}`}
+        incrementLabel={`${t("counterIncrement")} ${counter.name}`}
       />
 
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

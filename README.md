@@ -38,3 +38,43 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 docker buildx build --platform linux/amd64 -t crgallardoglobalshared.azurecr.io/counter:v1.0.1 --push .
 
 docker buildx build --platform linux/amd64 -t crgallardoglobalshared.azurecr.io/counter:v2.0.0 --push .
+
+## Tests
+
+Integration tests use Vitest, jsdom, and Testing Library:
+
+```bash
+pnpm test
+pnpm test:coverage
+pnpm test:watch
+```
+
+Functional tests use Playwright and run against desktop and mobile Chromium:
+
+```bash
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+Run both suites with:
+
+```bash
+pnpm test:all
+```
+
+Playwright starts the Next.js development server automatically on
+`127.0.0.1:3000`. Reports and traces are written to ignored test-output
+directories.
+
+The regression suite protects these user-facing contracts:
+
+- global language, theme, footer wake lock, navigation, and help content;
+- counter templates, custom edits, counting, reset, deletion, and storage;
+- Choasis manual selection, limits, and the five-player touch boundary;
+- timer configuration, controls, persistence, completion, and alarm request;
+- score-sheet structure, totals, winner, clearing, reset, and persistence.
+
+Vitest exercises state and component integration quickly. Playwright repeats
+the critical journeys in real desktop and mobile Chromium. New behavior should
+be added to this list and receive a regression test at the lowest useful layer;
+critical journeys should also receive an end-to-end test.
