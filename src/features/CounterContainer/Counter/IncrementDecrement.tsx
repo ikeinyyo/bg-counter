@@ -4,13 +4,21 @@ type Props = {
   onDecrement: (value: number) => void;
   onIncrement: (value: number) => void;
   isSmall: boolean;
+  decrementLabel: string;
+  incrementLabel: string;
 };
 
 const HOLD_DELAY_MS = 500;
 const REPEAT_EVERY_MS = 500;
 const REPEAT_STEP = 10;
 
-const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
+const IncrementDecrement = ({
+  onDecrement,
+  onIncrement,
+  isSmall,
+  decrementLabel,
+  incrementLabel,
+}: Props) => {
   const [delta, setDelta] = useState(0);
   const [showDelta, setShowDelta] = useState(false);
   const [isLongPress, setIsLongPress] = useState(false);
@@ -54,11 +62,9 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
     value: number,
   ) => {
     if (buttonType === "increment") {
-      console.log("increment", value);
       onIncrement(value);
       setDelta((d) => d + value);
     } else {
-      console.log("decrement", value);
       onDecrement(value);
       setDelta((d) => d - value);
     }
@@ -198,6 +204,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
   return (
     <>
       <div
+        aria-label={decrementLabel}
         className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
         {...(isTouchDevice.current
           ? {
@@ -224,6 +231,7 @@ const IncrementDecrement = ({ onDecrement, onIncrement, isSmall }: Props) => {
       </div>
 
       <div
+        aria-label={incrementLabel}
         className="absolute right-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
         {...(isTouchDevice.current
           ? {

@@ -177,7 +177,7 @@ export default function ChoasisPage() {
       const rect = containerRef.current?.getBoundingClientRect();
       const next = new Map(touches);
       for (let i = 0; i < e.changedTouches.length; i++) {
-        const tTouch = e.changedTouches.item(i)!;
+        const tTouch = e.changedTouches[i]!;
         const id = tTouch.identifier;
         const x = tTouch.clientX - (rect?.left ?? 0);
         const y = tTouch.clientY - (rect?.top ?? 0);
@@ -209,7 +209,7 @@ export default function ChoasisPage() {
       const rect = containerRef.current?.getBoundingClientRect();
       const next = new Map(touches);
       for (let i = 0; i < e.changedTouches.length; i++) {
-        const tTouch = e.changedTouches.item(i)!;
+        const tTouch = e.changedTouches[i]!;
         const id = tTouch.identifier;
         const x = tTouch.clientX - (rect?.left ?? 0);
         const y = tTouch.clientY - (rect?.top ?? 0);
@@ -226,7 +226,7 @@ export default function ChoasisPage() {
       if (mode !== "touch" || phase === "selected") return;
       const next = new Map(touches);
       for (let i = 0; i < e.changedTouches.length; i++) {
-        const tTouch = e.changedTouches.item(i)!;
+        const tTouch = e.changedTouches[i]!;
         next.delete(tTouch.identifier);
       }
       setTouches(next);

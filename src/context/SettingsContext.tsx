@@ -23,7 +23,7 @@ type SettingsContextValue = {
 
 const STORAGE_KEY = "bg-counter-settings";
 
-const translations = {
+export const translations = {
   es: {
     homeTitle: "Tu compañera de mesa para tus partidas.",
     homeDescription:
@@ -53,6 +53,8 @@ const translations = {
     menuEdit: "Editar",
     menuDelete: "Eliminar",
     menuOptions: "Opciones",
+    counterDecrement: "Restar a",
+    counterIncrement: "Sumar a",
     emptyCounters: "No hay contadores",
     emptyCountersHint:
       "Selecciona una plantilla o añade un contador desde el menú de navegación.",
@@ -237,6 +239,8 @@ const translations = {
     menuEdit: "Edit",
     menuDelete: "Delete",
     menuOptions: "Options",
+    counterDecrement: "Decrease",
+    counterIncrement: "Increase",
     emptyCounters: "There are no counters",
     emptyCountersHint:
       "Select a template or add a counter from the navigation menu.",
@@ -420,6 +424,8 @@ const translations = {
     menuEdit: "Modifica",
     menuDelete: "Elimina",
     menuOptions: "Opzioni",
+    counterDecrement: "Sottrai da",
+    counterIncrement: "Aggiungi a",
     emptyCounters: "Non ci sono contatori",
     emptyCountersHint:
       "Seleziona un modello o aggiungi un contatore dal menu di navigazione.",
