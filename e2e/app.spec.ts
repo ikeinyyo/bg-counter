@@ -74,6 +74,66 @@ test.describe("home, navigation, and help", () => {
   });
 });
 
+test.describe("offline PWA", () => {
+  test("opens every tool and essential assets without a connection", async ({
+    page,
+    context,
+  }) => {
+    await resetApp(page);
+    await page.waitForFunction(async () => {
+      if (!("serviceWorker" in navigator)) return false;
+      await navigator.serviceWorker.ready;
+      if (navigator.serviceWorker.controller) return true;
+      return new Promise<boolean>((resolve) => {
+        navigator.serviceWorker.addEventListener(
+          "controllerchange",
+          () => resolve(Boolean(navigator.serviceWorker.controller)),
+          { once: true },
+        );
+      });
+    });
+
+    await context.setOffline(true);
+
+    for (const route of [
+      "/",
+      "/counter",
+      "/choasis",
+      "/timer",
+      "/score-sheet",
+      "/help",
+    ]) {
+      await page.goto(route, { waitUntil: "domcontentloaded" });
+      await expect(page.locator("main")).toBeVisible();
+    }
+
+    await page.goto("/timer", { waitUntil: "domcontentloaded" });
+    await page.getByRole("spinbutton", { name: "Segundos" }).fill("12");
+    await expect(page.getByRole("timer")).toHaveText("00:12");
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          localStorage.getItem("bg-counter-timer-duration-seconds"),
+        ),
+      )
+      .toBe("12");
+
+    await expect
+      .poll(() =>
+        page.evaluate(async () => {
+          const [manifest, alarm] = await Promise.all([
+            fetch("/manifest.webmanifest"),
+            fetch("/sounds/universfield-digital-alarm-clock-151927.mp3"),
+          ]);
+          return { manifest: manifest.ok, alarm: alarm.ok };
+        }),
+      )
+      .toEqual({ manifest: true, alarm: true });
+
+    await context.setOffline(false);
+  });
+});
+
 test.describe("global settings and wake lock", () => {
   test("persists language and theme across reloads", async ({ page }) => {
     await resetApp(page);

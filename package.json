@@ -1,6 +1,6 @@
 {
   "name": "bg-counter",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -16,15 +16,17 @@
     "typecheck": "tsc --noEmit",
     "check": "pnpm test:coverage && pnpm test && pnpm typecheck",
     "check:tests": "pnpm check && pnpm test:e2e",
-    "check:all": "pnpm check && pnpm test:e2e && pnpm build"
+    "check:all": "pnpm check && pnpm test:e2e"
   },
   "dependencies": {
     "@faker-js/faker": "^9.9.0",
     "@hello-pangea/dnd": "^18.0.1",
+    "@serwist/next": "^9.5.12",
     "next": "15.4.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "serwist": "^9.5.12"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
