@@ -56,6 +56,9 @@ pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
+Playwright builds and starts the production application so it can also verify
+the service worker and every tool while the browser is offline.
+
 Run both suites with:
 
 ```bash
@@ -78,3 +81,11 @@ Vitest exercises state and component integration quickly. Playwright repeats
 the critical journeys in real desktop and mobile Chromium. New behavior should
 be added to this list and receive a regression test at the lowest useful layer;
 critical journeys should also receive an end-to-end test.
+
+## Offline use and installation
+
+The production build registers a service worker powered by Serwist. On the
+first online visit it precaches every tool, the application shell, images, and
+the timer alarm. Later visits work without a connection, both in the browser
+and when the PWA is added to the device home screen. Development mode leaves
+the service worker disabled to prevent stale caches while coding.

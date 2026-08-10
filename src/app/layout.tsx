@@ -1,19 +1,8 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { Footer } from "@/features/footer/Footer";
 import { VHProvider } from "@/features/layout/VHProvider";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Juernes de Mesa - Companion",
@@ -21,7 +10,18 @@ export const metadata: Metadata = {
     "Companion app with handy tools for board games — counters and more. Designed for quick, mobile use.",
   icons: {
     icon: "/images/favicon.png",
+    apple: "/icons/apple-touch-icon.png",
   },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Juernes de Mesa",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#be1e2d",
 };
 
 export default function RootLayout({
@@ -31,9 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" data-theme="light">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <SettingsProvider>
           <VHProvider />
           {children}
