@@ -8,10 +8,6 @@ export const metadata: Metadata = {
   title: "Juernes de Mesa - Companion",
   description:
     "Companion app with handy tools for board games — counters and more. Designed for quick, mobile use.",
-  icons: {
-    icon: "/images/favicon.png",
-    apple: "/icons/apple-touch-icon.png",
-  },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

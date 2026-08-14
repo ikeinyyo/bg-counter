@@ -4,11 +4,13 @@ export const OFFLINE_ROUTES = [
   "/choasis",
   "/timer",
   "/score-sheet",
+  "/dice",
   "/help",
 ] as const;
 
 export const PWA_PUBLIC_ASSETS = [
   "/manifest.webmanifest",
+  "/apple-touch-icon.png",
   "/images/favicon.png",
   "/images/logo.png",
   "/icons/icon.svg",

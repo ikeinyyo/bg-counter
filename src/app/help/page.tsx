@@ -7,6 +7,7 @@ import {
   BsHeartPulse,
   BsStopwatch,
   BsTable,
+  BsDice5,
 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
@@ -142,6 +143,38 @@ export default function HelpPage() {
               </h3>
               <p className="mt-2 leading-7 text-[var(--text-muted)]">
                 {t("helpTimerFinishText")}
+              </p>
+            </section>
+
+            <section className="py-8">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <BsDice5 aria-hidden size={21} />
+                </span>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t("diceTitle")}
+                </h2>
+              </div>
+              <p className="mt-4 leading-7 text-[var(--text-muted)]">
+                {t("helpDiceText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpDiceSetupTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpDiceSetupText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpDiceRollTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpDiceRollText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpDiceHistoryTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpDiceHistoryText")}
               </p>
             </section>
 

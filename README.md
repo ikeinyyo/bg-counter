@@ -75,6 +75,7 @@ The regression suite protects these user-facing contracts:
 - counter templates, custom edits, counting, reset, deletion, and storage;
 - Choasis manual selection, limits, and the five-player touch boundary;
 - timer configuration, controls, persistence, completion, and alarm request;
+- dice configuration, animated rolls, totals, history, and persistence;
 - score-sheet structure, totals, winner, clearing, reset, and persistence.
 
 Vitest exercises state and component integration quickly. Playwright repeats
