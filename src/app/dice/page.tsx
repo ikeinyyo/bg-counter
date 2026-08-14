@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BsDice5 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
+import { trackEvent } from "@/lib/telemetry";
 
 const DICE_TYPES = [4, 6, 8, 10, 12, 20, 100] as const;
 const PIECE_TYPES = [...DICE_TYPES, "coin"] as const;
@@ -274,16 +275,19 @@ export default function DicePage() {
 
   const addPiece = (type: PieceType) => {
     if (isRolling || configuration[type] >= MAX_PIECES_PER_TYPE) return;
+    trackEvent("dice_piece_added", { pieceType: type });
     setConfiguration((current) => ({ ...current, [type]: current[type] + 1 }));
   };
 
   const removePiece = (type: PieceType) => {
     if (isRolling || configuration[type] === 0) return;
+    trackEvent("dice_piece_removed", { pieceType: type });
     setConfiguration((current) => ({ ...current, [type]: current[type] - 1 }));
   };
 
   const resetConfiguration = () => {
     if (isRolling) return;
+    trackEvent("dice_configuration_reset", {}, { pieceCount: selectedPieces.length });
     setConfiguration(
       Object.fromEntries(PIECE_TYPES.map((type) => [type, 0])) as Configuration,
     );
@@ -309,6 +313,27 @@ export default function DicePage() {
           0,
         ),
       };
+      const diceResults = finalResults.filter(
+        (item): item is DieResult => item.kind === "die",
+      );
+      const coinResults = finalResults.filter(
+        (item): item is CoinResult => item.kind === "coin",
+      );
+      trackEvent(
+        "dice_rolled",
+        {
+          configuration: PIECE_TYPES.filter((type) => configuration[type] > 0)
+            .map((type) => `${type}:${configuration[type]}`)
+            .join(","),
+        },
+        {
+          pieceCount: finalResults.length,
+          diceCount: diceResults.length,
+          coinCount: coinResults.length,
+          diceTotal: savedRoll.total,
+          headsCount: coinResults.filter((item) => item.value === "heads").length,
+        },
+      );
       setHistory((current) => [savedRoll, ...current].slice(0, MAX_HISTORY));
     }, ROLL_ANIMATION_MS);
   };
@@ -435,7 +460,14 @@ export default function DicePage() {
             <section aria-labelledby="dice-history-title">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <h2 id="dice-history-title" className="text-lg font-semibold">{t("diceHistory")}</h2>
-                <button type="button" onClick={() => setHistory([])} className="text-sm font-medium text-primary hover:underline">{t("diceClearHistory")}</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackEvent("dice_history_cleared", {}, { rollCount: history.length });
+                    setHistory([]);
+                  }}
+                  className="text-sm font-medium text-primary hover:underline"
+                >{t("diceClearHistory")}</button>
               </div>
               <ol className="space-y-2">
                 {history.map((savedRoll, index) => {

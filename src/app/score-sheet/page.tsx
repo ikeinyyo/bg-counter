@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa6";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
+import { trackEvent } from "@/lib/telemetry";
 
 type Player = {
   id: string;
@@ -154,6 +155,7 @@ export default function ScoreSheetPage() {
   );
 
   const addPlayer = () => {
+    trackEvent("score_sheet_player_added", {}, { playerCount: players.length + 1 });
     scrollAfterPlayerAddRef.current = true;
     setPlayers((current) => [
       ...current,
@@ -176,6 +178,7 @@ export default function ScoreSheetPage() {
 
   const removePlayer = (playerId: string) => {
     if (players.length === 1) return;
+    trackEvent("score_sheet_player_removed", {}, { playerCount: players.length - 1 });
     setPlayers((current) =>
       current.length === 1
         ? current
@@ -191,6 +194,7 @@ export default function ScoreSheetPage() {
   };
 
   const addRow = () => {
+    trackEvent("score_sheet_row_added", {}, { rowCount: rows.length + 1 });
     setRows((current) => [
       ...current,
       { id: createId("concept"), concept: "", scores: {} },
@@ -198,6 +202,8 @@ export default function ScoreSheetPage() {
   };
 
   const removeRow = (rowId: string) => {
+    if (rows.length === 1) return;
+    trackEvent("score_sheet_row_removed", {}, { rowCount: rows.length - 1 });
     setRows((current) =>
       current.length === 1
         ? current
@@ -206,10 +212,12 @@ export default function ScoreSheetPage() {
   };
 
   const clearScores = () => {
+    trackEvent("score_sheet_scores_cleared", {}, { playerCount: players.length, rowCount: rows.length });
     setRows((current) => current.map((row) => ({ ...row, scores: {} })));
   };
 
   const resetScoreSheet = () => {
+    trackEvent("score_sheet_reset", {}, { previousPlayerCount: players.length, previousRowCount: rows.length });
     setPlayers([{ id: "player-1", name: "" }]);
     setRows([{ id: "concept-1", concept: "", scores: {} }]);
     tableScrollRef.current?.scrollTo({ left: 0, behavior: "smooth" });
@@ -394,6 +402,11 @@ export default function ScoreSheetPage() {
                           value={row.scores[player.id] ?? ""}
                           onChange={(event) =>
                             updateScore(row.id, player.id, event.target.value)
+                          }
+                          onBlur={(event) =>
+                            trackEvent("score_sheet_score_entered", {
+                              hasValue: event.target.value.trim() !== "",
+                            })
                           }
                           aria-label={`${t("scoreSheetScore")}: ${player.name || `${t("scoreSheetPlayer")} ${playerIndex + 1}`}, ${row.concept || `${t("scoreSheetConcept")} ${rowIndex + 1}`}`}
                           className="score-sheet-number-input w-full min-w-0 rounded border border-[var(--border)] bg-[var(--surface)] px-1 py-1 text-center text-sm tabular-nums outline-none focus:ring-2 focus:ring-primary sm:rounded-md sm:px-3 sm:py-2 sm:text-base"

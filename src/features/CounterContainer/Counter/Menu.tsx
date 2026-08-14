@@ -6,6 +6,7 @@ import {
   getSizeFromConfig,
   Size,
 } from "../domain";
+import { trackEvent } from "@/lib/telemetry";
 
 type Props = {
   showMenu: boolean;
@@ -41,6 +42,7 @@ const Menu = ({
         {onUpdate && (
           <button
             onClick={() => {
+              trackEvent("counter_editor_opened");
               setIsEditing(true);
               setShowMenu(false);
             }}
@@ -52,7 +54,10 @@ const Menu = ({
 
         {onDelete && (
           <button
-            onClick={() => onDelete(localConfig.id)}
+            onClick={() => {
+              trackEvent("counter_deleted", { icon: localConfig.icon });
+              onDelete(localConfig.id);
+            }}
             className="flex items-center gap-2 px-3 py-1 rounded hover:bg-red-100 text-sm text-red-600"
           >
             <FaTrash /> {t("menuDelete")}
@@ -66,6 +71,7 @@ const Menu = ({
             <button
               key={size}
               onClick={() => {
+                trackEvent("counter_size_changed", { size });
                 const updated = {
                   ...localConfig,
                   ...changeProps(size as Size),
