@@ -11,6 +11,7 @@ import {
 import { NavBar } from "@/features/navbar/NavBar";
 import { useSettings } from "@/context/SettingsContext";
 import { MdTouchApp } from "react-icons/md";
+import { trackEvent } from "@/lib/telemetry";
 
 type TouchInfo = {
   id: number;
@@ -163,6 +164,7 @@ export default function ChoasisPage() {
         if (ids.length === 0) return prev;
         const id = ids[Math.floor(Math.random() * ids.length)];
         const info = prev.get(id)!;
+        trackEvent("choasis_selection_completed", { mode: "touch" }, { playerCount: ids.length });
         setSelectedId(id);
         setSelectedColor(info.color);
         return prev;
@@ -184,6 +186,7 @@ export default function ChoasisPage() {
         if (!next.has(id)) {
           if (next.size >= 5) {
             // Switch to manual mode when a 6th touch is attempted
+            trackEvent("choasis_mode_changed", { mode: "manual", reason: "touch_limit" });
             setMode("manual");
             setManualPlayersText(String(Math.max(6, next.size + 1)));
             setTouches(new Map());
@@ -275,7 +278,9 @@ export default function ChoasisPage() {
         right={({ requestClose }) => (
           <button
             onClick={() => {
-              setMode(mode === "touch" ? "manual" : "touch");
+              const nextMode = mode === "touch" ? "manual" : "touch";
+              trackEvent("choasis_mode_changed", { mode: nextMode, reason: "user" });
+              setMode(nextMode);
               resetAll();
               setManualResult(null);
               setRaffleActive(false);
@@ -355,6 +360,7 @@ export default function ChoasisPage() {
                     onBlur={() => {
                       // Clamp on blur and normalize empty to ""
                       const n = manualPlayers;
+                      trackEvent("choasis_player_count_set", { mode: "manual" }, { playerCount: n });
                       setManualPlayersText(n > 0 ? String(n) : "");
                     }}
                     className="w-28 rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] px-3 py-2 shadow-sm text-center"
@@ -386,6 +392,7 @@ export default function ChoasisPage() {
                       }, 90);
                       raffleTimeoutRef.current = window.setTimeout(() => {
                         const finalPick = Math.floor(Math.random() * n) + 1;
+                        trackEvent("choasis_selection_completed", { mode: "manual" }, { playerCount: n });
                         clearRaffle();
                         setHighlightIndex(finalPick);
                         setManualResult(finalPick);

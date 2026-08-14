@@ -7,6 +7,7 @@ import { Menu } from "./Menu";
 import { CounterEditor } from "./CounterEditor/CounterEditor";
 import { FaCog } from "react-icons/fa";
 import { useTranslation } from "@/context/SettingsContext";
+import { trackEvent } from "@/lib/telemetry";
 
 type Props = {
   counter: CounterConfig;
@@ -44,15 +45,22 @@ const Counter = ({ counter, span, onUpdate, onDelete, isPreview }: Props) => {
     const next = valueRef.current + amount;
     setLocalValue(next);
     pushUpdate(next);
+    if (!isPreview) {
+      trackEvent("counter_value_changed", { direction: "increment", icon: counter.icon }, { amount, resultingValue: next });
+    }
   };
 
   const onDecrement = (amount: number) => {
     const next = valueRef.current - amount;
     setLocalValue(next);
     pushUpdate(next);
+    if (!isPreview) {
+      trackEvent("counter_value_changed", { direction: "decrement", icon: counter.icon }, { amount, resultingValue: next });
+    }
   };
 
   const handleSave = (updated: CounterConfig) => {
+    trackEvent("counter_edited", { icon: updated.icon }, { defaultValue: updated.initialValue });
     onUpdate?.({ ...updated, value: updated.initialValue });
     setIsEditing(false);
   };

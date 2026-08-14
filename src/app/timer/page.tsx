@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaArrowRotateRight, FaPlay, FaStop } from "react-icons/fa6";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
+import { trackEvent } from "@/lib/telemetry";
 
 type TimerStatus = "idle" | "running" | "paused" | "finished";
 
@@ -116,12 +117,14 @@ export default function TimerPage() {
     if (status !== "running" || deadlineRef.current === null) return;
 
     const updateRemainingTime = () => {
-      const nextRemaining = Math.max(0, deadlineRef.current! - Date.now());
+      if (deadlineRef.current === null) return;
+      const nextRemaining = Math.max(0, deadlineRef.current - Date.now());
       setRemainingMs(nextRemaining);
 
       if (nextRemaining === 0) {
         deadlineRef.current = null;
         setStatus("finished");
+        trackEvent("timer_completed", {}, { durationSeconds: totalMs / 1000 });
         playAlarm();
       }
     };
@@ -129,7 +132,7 @@ export default function TimerPage() {
     updateRemainingTime();
     const interval = window.setInterval(updateRemainingTime, 100);
     return () => window.clearInterval(interval);
-  }, [playAlarm, status]);
+  }, [playAlarm, status, totalMs]);
 
   useEffect(() => {
     return () => {
@@ -164,14 +167,28 @@ export default function TimerPage() {
       status === "paused" && remainingMs > 0 ? remainingMs : totalMs;
     if (duration <= 0) return;
 
+    trackEvent(
+      "timer_started",
+      { startType: status === "paused" ? "resume" : "new" },
+      { configuredDurationSeconds: totalMs / 1000, remainingSeconds: duration / 1000 },
+    );
+
     setRemainingMs(duration);
     deadlineRef.current = Date.now() + duration;
     setStatus("running");
   };
 
   const stopTimer = () => {
+    const remaining =
+      deadlineRef.current !== null
+        ? Math.max(0, deadlineRef.current - Date.now())
+        : remainingMs;
+    trackEvent("timer_paused", {}, {
+      configuredDurationSeconds: totalMs / 1000,
+      elapsedSeconds: Math.max(0, (totalMs - remaining) / 1000),
+    });
     if (deadlineRef.current !== null) {
-      setRemainingMs(Math.max(0, deadlineRef.current - Date.now()));
+      setRemainingMs(remaining);
     }
     deadlineRef.current = null;
     setStatus("paused");
@@ -179,6 +196,7 @@ export default function TimerPage() {
   };
 
   const restartTimer = () => {
+    trackEvent("timer_reset", { previousStatus: status }, { durationSeconds: totalMs / 1000 });
     deadlineRef.current = null;
     setRemainingMs(totalMs);
     setStatus("idle");
@@ -292,6 +310,9 @@ export default function TimerPage() {
                 onChange={(event) =>
                   updateDuration(Number(event.target.value) || 0, seconds)
                 }
+                onBlur={() =>
+                  trackEvent("timer_duration_set", {}, { durationSeconds: totalMs / 1000 })
+                }
                 className="w-28 rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-center text-lg shadow-sm disabled:opacity-60"
               />
             </label>
@@ -309,6 +330,9 @@ export default function TimerPage() {
                 disabled={status === "running"}
                 onChange={(event) =>
                   updateDuration(minutes, Number(event.target.value) || 0)
+                }
+                onBlur={() =>
+                  trackEvent("timer_duration_set", {}, { durationSeconds: totalMs / 1000 })
                 }
                 className="w-28 rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-center text-lg shadow-sm disabled:opacity-60"
               />

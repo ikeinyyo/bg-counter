@@ -13,6 +13,7 @@ import { ICONS } from "../CounterContainer/config/icons";
 import { FaArrowRotateRight } from "react-icons/fa6";
 import { useTranslation } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
+import { trackEvent } from "@/lib/telemetry";
 
 type Props = {
   counters: CounterConfig[];
@@ -160,12 +161,18 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
       return;
     }
     if (selectedId === "empty") {
+      trackEvent("counter_template_selected", { templateId: selectedId }, { counterCount: 0 });
       setCounters([]);
       return;
     }
     const lt = templatesById.get(selectedId);
     if (lt) {
       const cloned = lt.counters.map((c) => ({ ...c }));
+      trackEvent(
+        "counter_template_selected",
+        { templateId: selectedId, gameId: getGameByLayoutId(selectedId) ?? "unknown" },
+        { counterCount: cloned.length },
+      );
       setCounters(localizeCounters(selectedId, cloned, t));
     }
   };
@@ -184,6 +191,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
       | "magic"
       | "aeons"
       | "empty";
+    trackEvent("counter_game_selected", { gameId: nextGame });
     setSelectedGame(nextGame);
     if (typeof window !== "undefined") {
       window.localStorage.setItem(STORAGE_KEY_GAME, nextGame);
@@ -224,6 +232,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
   };
 
   const resetCounters = () => {
+    trackEvent("counters_reset", {}, { counterCount: _counters.length });
     setCounters((prev) =>
       prev.map((counter) => ({
         ...counter,
@@ -234,6 +243,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
 
   const addRandomCounter = () => {
     const newCounter = generateRandomCounter();
+    trackEvent("counter_added", { source: "random" }, { counterCount: _counters.length + 1 });
     setCounters((prev) => [...prev, newCounter]);
   };
 

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { Footer } from "@/features/footer/Footer";
 import { VHProvider } from "@/features/layout/VHProvider";
+import { TelemetryProvider } from "@/features/telemetry/TelemetryProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className="antialiased">
         <SettingsProvider>
           <VHProvider />
+          <TelemetryProvider />
           {children}
           <Footer />
         </SettingsProvider>

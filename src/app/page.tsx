@@ -13,6 +13,7 @@ import {
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
 import { useEffect, useMemo } from "react";
+import { trackEvent } from "@/lib/telemetry";
 
 export default function Home() {
   const { t } = useSettings();
@@ -122,7 +123,12 @@ export default function Home() {
               }
 
               return (
-                <Link key={tool.title} href={tool.href} className="block">
+                <Link
+                  key={tool.title}
+                  href={tool.href}
+                  className="block"
+                  onClick={() => trackEvent("tool_opened", { path: tool.href })}
+                >
                   {content}
                 </Link>
               );

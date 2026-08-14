@@ -16,6 +16,148 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Application Insights
+
+Copy `.env.example` to `.env.local` and set the connection string from the
+Application Insights resource:
+
+```bash
+NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING="InstrumentationKey=...;IngestionEndpoint=..."
+```
+
+The variable is intentionally public because telemetry is sent by the browser;
+do not put an Azure API key or another secret in it. Without the variable the
+telemetry layer is a no-op. Page views, client errors, dependencies and usage
+events are tracked. Custom events cover tool navigation, counter templates and
+actions, dice configurations and rolls, timer durations, Choasis selections,
+score-sheet structure, and app preferences. User-entered names and labels are
+not sent.
+
+For a Docker build, pass the value at build time because Next.js embeds public
+environment variables in the client bundle:
+
+```bash
+docker build \
+  --build-arg NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING="InstrumentationKey=...;IngestionEndpoint=..." \
+  -t bg-counter .
+```
+
+Example KQL queries:
+
+```kusto
+// Herramientas más usadas, con usuarios y sesiones únicas
+pageViews
+| where name in ("/counter", "/choasis", "/timer", "/score-sheet", "/dice", "/help")
+| summarize Visits=count(), Users=dcount(user_Id), Sessions=dcount(session_Id) by Tool=name
+| order by Visits desc
+
+// Uso diario y usuarios activos
+pageViews
+| summarize Visits=count(), ActiveUsers=dcount(user_Id), Sessions=dcount(session_Id)
+  by Day=startofday(timestamp)
+| order by Day asc
+
+// Herramientas abiertas desde la portada
+customEvents
+| where name == "tool_opened"
+| summarize Opens=count(), Users=dcount(user_Id)
+  by Tool=tostring(customDimensions.path)
+| order by Opens desc
+
+// Plantillas de counters más seleccionadas
+customEvents
+| where name == "counter_template_selected"
+| summarize Uses=count(), Users=dcount(user_Id),
+    AverageCounters=avg(todouble(customMeasurements.counterCount))
+  by Template=tostring(customDimensions.templateId),
+     Game=tostring(customDimensions.gameId)
+| order by Uses desc
+
+// Juegos de counters más seleccionados
+customEvents
+| where name == "counter_game_selected"
+| summarize Uses=count(), Users=dcount(user_Id)
+  by Game=tostring(customDimensions.gameId)
+| order by Uses desc
+
+// Acciones de counters más habituales
+customEvents
+| where name startswith "counter" or name == "counters_reset"
+| summarize Uses=count(), Users=dcount(user_Id) by Action=name
+| order by Uses desc
+
+// Dados y monedas más lanzados (cantidad real de piezas, no solo tiradas)
+customEvents
+| where name == "dice_rolled"
+| extend Configuration=tostring(customDimensions.configuration)
+| mv-expand Piece=split(Configuration, ",")
+| extend Parts=split(tostring(Piece), ":")
+| extend PieceType=tostring(Parts[0]), Quantity=toint(Parts[1])
+| summarize PiecesRolled=sum(Quantity), RollsContainingPiece=count(),
+    Users=dcount(user_Id) by PieceType
+| order by PiecesRolled desc
+
+// Combinaciones de dados más frecuentes
+customEvents
+| where name == "dice_rolled"
+| summarize Rolls=count(), Users=dcount(user_Id),
+    AveragePieces=avg(todouble(customMeasurements.pieceCount))
+  by Configuration=tostring(customDimensions.configuration)
+| order by Rolls desc
+
+// Duraciones de timer más utilizadas
+customEvents
+| where name == "timer_started"
+| summarize Uses=count(), Users=dcount(user_Id)
+  by Seconds=toint(customMeasurements.configuredDurationSeconds)
+| order by Uses desc
+
+// Tasa de finalización de timers
+customEvents
+| where name in ("timer_started", "timer_completed", "timer_paused", "timer_reset")
+| summarize Starts=countif(name == "timer_started"),
+    Completions=countif(name == "timer_completed"),
+    Pauses=countif(name == "timer_paused"),
+    Resets=countif(name == "timer_reset")
+| extend CompletionRate=round(100.0 * Completions / Starts, 1)
+
+// Modo de Choasis más usado y número habitual de jugadores
+customEvents
+| where name == "choasis_selection_completed"
+| summarize Selections=count(), Users=dcount(user_Id),
+    AveragePlayers=avg(todouble(customMeasurements.playerCount)),
+    P50Players=percentile(todouble(customMeasurements.playerCount), 50),
+    P95Players=percentile(todouble(customMeasurements.playerCount), 95)
+  by Mode=tostring(customDimensions.mode)
+| order by Selections desc
+
+// Preferencias más elegidas: tema, idioma y wake lock
+customEvents
+| where name == "setting_changed"
+| summarize Changes=count(), Users=dcount(user_Id)
+  by Setting=tostring(customDimensions.setting), Value=tostring(customDimensions.value)
+| order by Setting asc, Changes desc
+
+// Uso instalado como PWA frente a navegador
+customEvents
+| where name == "app_loaded"
+| summarize Loads=count(), Users=dcount(user_Id)
+  by DisplayMode=tostring(customDimensions.displayMode)
+| order by Loads desc
+
+// Eventos de producto más frecuentes, excluyendo carga y ajustes
+customEvents
+| where name !in ("app_loaded", "setting_changed")
+| summarize Uses=count(), Users=dcount(user_Id) by Event=name
+| order by Uses desc
+
+// Excepciones más frecuentes por página
+exceptions
+| summarize Occurrences=count(), Users=dcount(user_Id)
+  by Problem=problemId, Page=operation_Name
+| order by Occurrences desc
+```
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

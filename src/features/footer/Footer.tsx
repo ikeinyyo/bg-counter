@@ -9,6 +9,7 @@ import {
 } from "@/context/SettingsContext";
 import { FaGlobe, FaSun, FaMoon, FaComputer } from "react-icons/fa6";
 import { useWakeLock } from "@/hooks/useWakeLock";
+import { trackEvent } from "@/lib/telemetry";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -59,7 +60,10 @@ const Footer = () => {
                   : t("wakeLockInactive")
             }
             disabled={!isSupported}
-            onClick={() => setIsEnabled(!isEnabled)}
+            onClick={() => {
+              trackEvent("setting_changed", { setting: "wakeLock", value: !isEnabled });
+              setIsEnabled(!isEnabled);
+            }}
             className={`relative h-5 w-9 shrink-0 rounded-full border border-white/25 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-40 ${
               isEnabled ? "bg-primary" : "bg-gray-600"
             }`}
@@ -77,7 +81,10 @@ const Footer = () => {
           <select
             aria-label={t("languageLabel")}
             value={language}
-            onChange={(e) => setLanguage(e.target.value as Language)}
+            onChange={(e) => {
+              trackEvent("setting_changed", { setting: "language", value: e.target.value });
+              setLanguage(e.target.value as Language);
+            }}
             className="min-w-0 rounded-md border border-white/20 bg-black text-white px-1 sm:px-2 py-1 text-xs shadow-sm"
           >
             <option value="es">{t("languageEs")}</option>
@@ -92,7 +99,10 @@ const Footer = () => {
           <select
             aria-label={t("themeLabel")}
             value={theme}
-            onChange={(e) => setTheme(e.target.value as Theme)}
+            onChange={(e) => {
+              trackEvent("setting_changed", { setting: "theme", value: e.target.value });
+              setTheme(e.target.value as Theme);
+            }}
             className="min-w-0 rounded-md border border-white/20 bg-black text-white px-1 sm:px-2 py-1 text-xs shadow-sm"
           >
             <option value="light">{t("themeLight")}</option>

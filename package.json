@@ -1,6 +1,6 @@
 {
   "name": "bg-counter",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -21,6 +21,7 @@
   "dependencies": {
     "@faker-js/faker": "^9.9.0",
     "@hello-pangea/dnd": "^18.0.1",
+    "@microsoft/applicationinsights-web": "^3.4.3",
     "@serwist/next": "^9.5.12",
     "next": "15.4.5",
     "react": "19.1.0",
