@@ -50,7 +50,14 @@ test.describe("home, navigation, and help", () => {
       "Tu compañera de mesa",
     );
 
-    const routes = ["/counter", "/choasis", "/timer", "/score-sheet", "/help"];
+    const routes = [
+      "/counter",
+      "/choasis",
+      "/timer",
+      "/score-sheet",
+      "/dice",
+      "/help",
+    ];
 
     for (const route of routes) {
       await page.locator(`a[href="${route}"]`).click();
@@ -67,10 +74,14 @@ test.describe("home, navigation, and help", () => {
       "Counters",
       "Choasis",
       "Temporizador",
+      "Tiradados",
       "Hoja de puntuación",
     ]) {
       await expect(page.getByRole("heading", { level: 2, name: heading })).toBeVisible();
     }
+    await expect(page.getByText(/Vaciar bandeja/)).toBeVisible();
+    await expect(page.getByText(/caras o cruces/)).toBeVisible();
+    await expect(page.getByText(/diez tiradas más recientes/)).toBeVisible();
   });
 });
 
@@ -101,6 +112,7 @@ test.describe("offline PWA", () => {
       "/choasis",
       "/timer",
       "/score-sheet",
+      "/dice",
       "/help",
     ]) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
@@ -121,14 +133,19 @@ test.describe("offline PWA", () => {
     await expect
       .poll(() =>
         page.evaluate(async () => {
-          const [manifest, alarm] = await Promise.all([
+          const [manifest, appleIcon, alarm] = await Promise.all([
             fetch("/manifest.webmanifest"),
+            fetch("/apple-touch-icon.png"),
             fetch("/sounds/universfield-digital-alarm-clock-151927.mp3"),
           ]);
-          return { manifest: manifest.ok, alarm: alarm.ok };
+          return {
+            manifest: manifest.ok,
+            appleIcon: appleIcon.ok,
+            alarm: alarm.ok,
+          };
         }),
       )
-      .toEqual({ manifest: true, alarm: true });
+      .toEqual({ manifest: true, appleIcon: true, alarm: true });
 
     await context.setOffline(false);
   });
@@ -206,6 +223,64 @@ test.describe("timer", () => {
     await page.getByRole("button", { name: "Iniciar", exact: true }).click();
     await expect(page.getByRole("timer")).toHaveText("00:00", { timeout: 3_000 });
     await expect(page.getByText("¡Tiempo finalizado!").first()).toBeVisible();
+  });
+});
+
+test.describe("dice roller", () => {
+  test("combines dice, restores their shapes and resets the configuration", async ({
+    page,
+  }) => {
+    await resetApp(page, "/dice");
+    await page.getByRole("button", { name: "Añadir d6" }).click();
+    await page.getByRole("button", { name: "Añadir d20" }).click();
+    await page.getByRole("button", { name: "Añadir Moneda" }).click();
+    await expect(page.getByRole("button", { name: "Quitar d6" })).toHaveCount(2);
+    await page.getByRole("button", { name: "Lanzar" }).click();
+    await expect(page.getByRole("button", { name: "Tirando..." })).toBeDisabled();
+    await expect(page.getByRole("button", { name: "Lanzar" })).toBeEnabled();
+
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const state = JSON.parse(
+            localStorage.getItem("bg-counter-dice-roller") ?? "{}",
+          );
+          return state.history?.[0] ?? null;
+        }),
+      )
+      .not.toBeNull();
+
+    const persisted = await page.evaluate(() => {
+      const state = JSON.parse(
+        localStorage.getItem("bg-counter-dice-roller") ?? "{}",
+      );
+      return state;
+    });
+    expect(persisted.configuration).toMatchObject({ 6: 2, 20: 1, coin: 1 });
+    expect(persisted.history[0].items).toHaveLength(4);
+    expect(persisted.history[0].total).toBe(
+      persisted.history[0].items.reduce(
+        (sum: number, item: { kind: string; value: number | string }) =>
+          sum + (item.kind === "die" ? Number(item.value) : 0),
+        0,
+      ),
+    );
+
+    await page.reload();
+    await expect(page.getByRole("button", { name: "Quitar d6" })).toHaveCount(2);
+    await expect(page.getByRole("button", { name: "Quitar d20" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Quitar Moneda" })).toBeVisible();
+    await expect(page.getByTestId("dice-total")).toHaveText(
+      String(persisted.history[0].total),
+    );
+    await expect(page.getByLabel(/Resultado d6:/)).toHaveCount(4);
+    await expect(page.getByLabel(/Resultado d20:/)).toHaveCount(2);
+    await expect(page.getByLabel(/Resultado Moneda:/)).toHaveCount(2);
+
+    await page.getByRole("button", { name: "Vaciar bandeja" }).click();
+    await expect(page.getByRole("button", { name: "Lanzar" })).toBeDisabled();
+    await page.reload();
+    await expect(page.getByRole("button", { name: /^Quitar/ })).toHaveCount(0);
   });
 });
 

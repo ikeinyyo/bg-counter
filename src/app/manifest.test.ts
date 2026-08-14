@@ -28,11 +28,13 @@ describe("PWA manifest", () => {
       "/choasis",
       "/timer",
       "/score-sheet",
+      "/dice",
       "/help",
     ]);
     expect(PWA_PRECACHE_URLS).toEqual(
       expect.arrayContaining([
         "/manifest.webmanifest",
+        "/apple-touch-icon.png",
         "/images/logo.png",
         "/sounds/universfield-digital-alarm-clock-151927.mp3",
       ]),

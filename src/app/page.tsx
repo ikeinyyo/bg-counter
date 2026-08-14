@@ -8,6 +8,7 @@ import {
   BsQuestionCircle,
   BsStopwatch,
   BsTable,
+  BsDice5,
 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
@@ -51,6 +52,12 @@ export default function Home() {
       description: t("scoreSheetDescription"),
       href: "/score-sheet",
       icon: BsTable,
+    },
+    {
+      title: t("diceTitle"),
+      description: t("diceDescription"),
+      href: "/dice",
+      icon: BsDice5,
     },
     {
       title: t("helpTitle"),
