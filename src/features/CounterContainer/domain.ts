@@ -93,9 +93,34 @@ const getSizeFromConfig = (
   ).size;
 };
 
+const getCounterRowCount = (
+  counters: CounterConfig[],
+  breakpoint: "xs" | "md" | "lg",
+) => {
+  const field = `${breakpoint}ElementsPerRow` as const;
+  const remainingColumns: number[] = [];
+
+  counters.forEach((counter) => {
+    const elementsPerRow = counter[field];
+    const safeElementsPerRow = [1, 2, 3, 4, 6].includes(elementsPerRow ?? 0)
+      ? (elementsPerRow as number)
+      : breakpoint === "xs"
+        ? 1
+        : 2;
+    const span = 12 / safeElementsPerRow;
+    const availableRow = remainingColumns.findIndex((remaining) => remaining >= span);
+
+    if (availableRow === -1) remainingColumns.push(12 - span);
+    else remainingColumns[availableRow] -= span;
+  });
+
+  return Math.max(remainingColumns.length, 1);
+};
+
 export {
   SIZE_PRESETS,
   getDefaultBySize,
   getExactSizeFromConfig,
   getSizeFromConfig,
+  getCounterRowCount,
 };
