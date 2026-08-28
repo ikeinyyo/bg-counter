@@ -266,16 +266,15 @@ const IncrementDecrement = ({
         </div>
       </button>
 
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 h-full flex items-center justify-center cursor-pointer">
+      <div className="counter-delta-feedback pointer-events-none absolute inset-x-0 z-30 flex justify-center">
         <div
           className={`
-            relative w-full h-full flex items-center justify-center
             transition-opacity duration-300 ease-in-out
             ${showDelta ? "opacity-100" : "opacity-0"}
           `}
         >
           <div
-            className="counter-delta mt-38 font-bold tracking-wide text-white opacity-70"
+            className="counter-delta rounded-full bg-black/15 px-2 py-0.5 font-bold leading-none tracking-wide text-white/85"
           >
             {delta > 0 ? "+" : ""}
             {delta}

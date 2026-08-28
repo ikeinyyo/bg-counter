@@ -85,6 +85,7 @@ body {
 .counter-value {
   font-size: 5rem;
   line-height: 1;
+  transform: translateY(0.625rem);
 }
 
 .counter-step-symbol {
@@ -93,6 +94,10 @@ body {
 
 .counter-delta {
   font-size: 2rem;
+}
+
+.counter-delta-feedback {
+  bottom: max(0.5rem, calc(50% - 6rem));
 }
 
 @media (max-width: 767px) {
@@ -115,6 +120,7 @@ body {
 
   .counter-value {
     font-size: var(--counter-value-size);
+    transform: translateY(var(--counter-value-offset));
   }
 
   .counter-step-symbol {
@@ -122,7 +128,7 @@ body {
   }
 
   .counter-delta {
-    font-size: min(2rem, var(--counter-symbol-size));
+    font-size: var(--counter-delta-size);
   }
 }
 
