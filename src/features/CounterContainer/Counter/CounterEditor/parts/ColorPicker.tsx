@@ -14,17 +14,15 @@ const ColorPicker = ({ label = "Color", colors, value, onChange }: Props) => {
   const { t, resolvedTheme } = useTranslation();
   return (
     <div className="min-w-0">
-      <label className="block text-sm font-medium text-[var(--text-muted)] mb-2">
+      <label className="mb-2 block text-sm font-semibold text-[var(--foreground)]">
         {label}
       </label>
 
       <div
         className="
-        grid grid-rows-2 [grid-auto-flow:column] auto-cols-max gap-2
-        w-full h-24
-        overflow-x-auto overflow-y-hidden
-        pr-1 py-1
-        snap-x snap-mandatory
+        grid grid-cols-[repeat(auto-fill,minmax(3rem,1fr))] gap-x-3 gap-y-4
+        w-full max-h-40 overflow-y-auto rounded-2xl border border-[var(--border)]
+        bg-[var(--surface-muted)] p-4
       "
         role="listbox"
         aria-label={t("colorPickerAria")}
@@ -42,9 +40,8 @@ const ColorPicker = ({ label = "Color", colors, value, onChange }: Props) => {
               key={color.value}
               onClick={() => onChange(color.value)}
               className={`
-              w-10 h-10 rounded-md transition-all box-border
+              aspect-square min-h-12 rounded-xl transition-all box-border
               border-3 ${borderColorClass}
-              snap-start
             `}
               style={{ backgroundColor: color.value }}
               title={color.name}

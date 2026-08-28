@@ -1,15 +1,12 @@
 import { FaPlusCircle } from "react-icons/fa";
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, getColorByKey } from "../CounterContainer/config/colors";
 import {
   layoutTemplates,
   games,
   getGameByLayoutId,
 } from "../CounterContainer/config/templates";
 import { localizeCounters } from "../CounterContainer/config/localize";
-import { faker } from "@faker-js/faker";
-import { CounterConfig, getDefaultBySize } from "../CounterContainer/domain";
-import { ICONS } from "../CounterContainer/config/icons";
+import { CounterConfig } from "../CounterContainer/domain";
 import { FaArrowRotateRight } from "react-icons/fa6";
 import { useTranslation } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
@@ -18,6 +15,7 @@ import { trackEvent } from "@/lib/telemetry";
 type Props = {
   counters: CounterConfig[];
   setCounters: React.Dispatch<React.SetStateAction<CounterConfig[]>>;
+  onAdd: () => void;
 };
 
 type GameSelection =
@@ -28,7 +26,7 @@ type GameSelection =
   | "empty"
   | "custom";
 
-const Bar = ({ counters: _counters, setCounters }: Props) => {
+const Bar = ({ counters: _counters, setCounters, onAdd }: Props) => {
   const { t } = useTranslation();
   const [selectedGame, setSelectedGame] =
     useState<GameSelection>("generic");
@@ -47,6 +45,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
       .map((c) => ({
         id: c.id,
         initialValue: c.initialValue,
+        name: c.name,
         backgroundColor: c.backgroundColor,
         icon: c.icon,
         xs: c.xsElementsPerRow ?? 0,
@@ -58,7 +57,8 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
   const getMatchingTemplateId = (current: CounterConfig[]): string | null => {
     const norm = normalizeCounters(current);
     for (const lt of layoutTemplates) {
-      const tn = normalizeCounters(lt.counters);
+      const tn = normalizeCounters(localizeCounters(lt.id, lt.counters, t));
+      const rawTn = normalizeCounters(lt.counters);
       if (tn.length !== norm.length) continue;
       let same = true;
       for (let i = 0; i < tn.length; i++) {
@@ -67,6 +67,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
         if (
           a.id !== b.id ||
           a.initialValue !== b.initialValue ||
+          (a.name !== b.name && rawTn[i].name !== b.name) ||
           a.backgroundColor !== b.backgroundColor ||
           a.icon !== b.icon ||
           a.xs !== b.xs ||
@@ -218,19 +219,6 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     }
   };
 
-  const generateRandomCounter = (): CounterConfig => {
-    return {
-      id: faker.string.uuid(),
-      initialValue: 0,
-      name: faker.person.firstName(),
-      backgroundColor: getColorByKey(
-        COLORS[Math.floor(Math.random() * COLORS.length)].key,
-      ),
-      icon: ICONS[Math.floor(Math.random() * ICONS.length)].key,
-      ...getDefaultBySize("M"),
-    };
-  };
-
   const resetCounters = () => {
     trackEvent("counters_reset", {}, { counterCount: _counters.length });
     setCounters((prev) =>
@@ -241,10 +229,9 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
     );
   };
 
-  const addRandomCounter = () => {
-    const newCounter = generateRandomCounter();
-    trackEvent("counter_added", { source: "random" }, { counterCount: _counters.length + 1 });
-    setCounters((prev) => [...prev, newCounter]);
+  const addCounter = () => {
+    trackEvent("counter_added", { source: "toolbar" }, { counterCount: _counters.length + 1 });
+    onAdd();
   };
 
   const sortedGameIds = useMemo(() => {
@@ -262,11 +249,12 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
 
   return (
     <NavBar
-      compact
       right={({ requestClose }) => (
         <>
-          <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-2">
-            <span className="text-xs font-medium">{t("gameLabel")}</span>
+          <div className="grid min-w-0 gap-1">
+            <label htmlFor="game" className="text-[0.68rem] font-bold uppercase tracking-wider text-[var(--text-muted)]">
+              {t("gameLabel")}
+            </label>
             <select
               suppressHydrationWarning
               id="game"
@@ -283,7 +271,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
                   requestClose();
                 }
               }}
-              className="w-full truncate rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2 lg:w-36 xl:w-48 2xl:w-56"
+              className="min-h-11 w-full truncate rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm font-medium text-[var(--foreground)] shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
             >
               {selectedGame === "custom" && (
                 <option value="custom" disabled>
@@ -299,10 +287,10 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
             </select>
           </div>
 
-          <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-2">
-            <span className="text-xs font-medium">
+          <div className="grid min-w-0 gap-1">
+            <label htmlFor="template" className="text-[0.68rem] font-bold uppercase tracking-wider text-[var(--text-muted)]">
               {t("distributionLabel")}
-            </span>
+            </label>
             <select
               suppressHydrationWarning
               id="template"
@@ -314,7 +302,7 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
                 handleTemplateChange(e);
                 requestClose();
               }}
-              className="w-full truncate rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--foreground)] shadow-sm transition-colors ease-in-out focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 lg:w-36 xl:w-48 2xl:w-56"
+              className="min-h-11 w-full truncate rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm font-medium text-[var(--foreground)] shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {selectedTemplate === "custom" && (
                 <option value="custom" disabled>
@@ -333,15 +321,15 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
             </select>
           </div>
 
-          <div className="flex flex-col gap-2 lg:flex-row">
+          <div className="mt-1 flex flex-col gap-2 lg:mt-0 lg:flex-row">
             <button
               onClick={() => {
-                addRandomCounter();
+                addCounter();
                 requestClose();
               }}
-              className="flex flex-1 items-center justify-center whitespace-nowrap rounded-md bg-primary px-3 py-2 text-white transition-colors hover:bg-primary/80 lg:flex-none"
+              className="flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-sm transition hover:bg-primary/85 active:scale-[0.98] lg:flex-none"
             >
-              <FaPlusCircle className="h-6 w-6 shrink-0" />
+              <FaPlusCircle className="h-4 w-4 shrink-0" />
               <span className="ml-2">{t("barAddCounter")}</span>
             </button>
             <button
@@ -349,9 +337,10 @@ const Bar = ({ counters: _counters, setCounters }: Props) => {
                 resetCounters();
                 requestClose();
               }}
-              className="flex flex-1 items-center justify-center whitespace-nowrap rounded-md bg-primary px-3 py-2 text-white transition-colors hover:bg-primary/80 lg:flex-none"
+              disabled={_counters.length === 0}
+              className="flex min-h-11 flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-sm font-bold text-[var(--foreground)] shadow-sm transition hover:bg-[var(--surface-muted)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 lg:flex-none"
             >
-              <FaArrowRotateRight className="h-6 w-6 shrink-0" />
+              <FaArrowRotateRight className="h-4 w-4 shrink-0" />
               <span className="ml-2">{t("barReset")}</span>
             </button>
           </div>

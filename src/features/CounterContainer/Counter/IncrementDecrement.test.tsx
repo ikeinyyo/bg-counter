@@ -9,7 +9,6 @@ const renderControl = () => {
     <IncrementDecrement
       onIncrement={onIncrement}
       onDecrement={onDecrement}
-      isSmall={false}
       incrementLabel="Sumar"
       decrementLabel="Restar"
     />,

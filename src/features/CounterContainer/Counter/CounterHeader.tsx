@@ -3,21 +3,18 @@ import { getIconByKey } from "../config/icons";
 
 type Props = {
   localConfig: CounterConfig;
-  isSmall: boolean;
 };
 
-const CounterHeader = ({ localConfig, isSmall }: Props) => {
+const CounterHeader = ({ localConfig }: Props) => {
   const IconComponent = getIconByKey(localConfig.icon);
 
   return (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 text-white">
-      <span className="text-2xl">
+    <div className="absolute left-3 right-14 top-3 flex items-center gap-2 text-white sm:left-4 sm:top-4">
+      <span className="counter-icon shrink-0">
         <IconComponent />
       </span>
       <span
-        className={`text-lg font-semibold text-center line-clamp-2 ${
-          isSmall ? "hidden md:[display:-webkit-box]" : ""
-        }`}
+        className="counter-title truncate font-bold drop-shadow-sm"
       >
         {localConfig.name}
       </span>

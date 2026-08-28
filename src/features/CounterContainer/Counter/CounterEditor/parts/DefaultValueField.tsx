@@ -24,7 +24,7 @@ const DefaultValueField = ({
     <div>
       <label
         htmlFor="counter-default-value"
-        className="block text-sm font-medium text-[var(--text-muted)] mb-2"
+        className="mb-2 block text-sm font-semibold text-[var(--foreground)]"
       >
         {label}
       </label>
@@ -32,7 +32,7 @@ const DefaultValueField = ({
         id="counter-default-value"
         ref={ref}
         type="number"
-        className="w-full rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+        className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-[var(--foreground)] outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         value={Number.isFinite(value) ? value : 0}
         onChange={(e) => {
           const next = e.target.value === "" ? 0 : Number(e.target.value);

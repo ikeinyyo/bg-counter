@@ -7,8 +7,8 @@ type Props = {
 };
 
 const CounterPreview = ({ label = "Preview", children }: Props) => (
-  <div className="w-full flex items-center justify-center flex-col">
-    <label className="block text-sm font-medium  text-[var(--foreground)] mb-2">
+  <div className="counter-preview-frame flex w-full flex-col items-center justify-center">
+    <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
       {label}
     </label>
     {children}

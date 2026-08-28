@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  FaArrowRotateRight,
+  FaEraser,
   FaPlus,
   FaTrashCan,
 } from "react-icons/fa6";
@@ -237,7 +239,15 @@ export default function ScoreSheetPage() {
     <>
       <NavBar
         right={({ requestClose }) => (
-          <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row">
+          <div className="grid w-full gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                {t("scoreSheetMenuTitle")}
+              </p>
+              <p className="mt-1 text-sm leading-5 text-[var(--text-muted)]">
+                {t("scoreSheetMenuDescription")}
+              </p>
+            </div>
             <button
               type="button"
               onClick={() => {
@@ -245,8 +255,9 @@ export default function ScoreSheetPage() {
                 requestClose();
               }}
               disabled={!hasScores}
-              className="w-full whitespace-nowrap rounded-md border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] disabled:cursor-not-allowed disabled:opacity-40 md:w-auto md:border-white/20 md:bg-white/10 md:text-white md:hover:bg-white/20"
+              className="flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-2 text-sm font-bold text-[var(--foreground)] transition-colors hover:bg-[var(--border)] disabled:cursor-not-allowed disabled:opacity-40"
             >
+              <FaEraser aria-hidden />
               {t("scoreSheetClearScores")}
             </button>
             <button
@@ -255,8 +266,9 @@ export default function ScoreSheetPage() {
                 resetScoreSheet();
                 requestClose();
               }}
-              className="w-full whitespace-nowrap rounded-md bg-primary px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/80 md:w-auto"
+              className="flex min-h-11 w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary/80"
             >
+              <FaArrowRotateRight aria-hidden />
               {t("scoreSheetReset")}
             </button>
           </div>

@@ -57,4 +57,29 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.counter-card {
+  height: 14rem;
+}
+
+.counter-title {
+  font-size: 1rem;
+}
+
+.counter-icon {
+  font-size: 1.25rem;
+}
+
+.counter-value {
+  font-size: 5rem;
+  line-height: 1;
+}
+
+.counter-step-symbol {
+  font-size: 3rem;
+}
+
+.counter-delta {
+  font-size: 2rem;
+}
+
 @source inline('{sm:,md:,lg:,xl:,}col-span-{{1..12}}');

@@ -1,41 +1,61 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Counter } from "./Counter/Counter";
 import { CounterConfig } from "./domain";
-import { BsEmojiFrown } from "react-icons/bs";
-import { useBreakpoint } from "../../hooks/useBreakpoint";
+import { BsEmojiFrown, BsPlusCircle } from "react-icons/bs";
 import { useTranslation } from "@/context/SettingsContext";
+import { trackEvent } from "@/lib/telemetry";
 
 type Props = {
   countersDefault: CounterConfig[];
   onDelete: (id: string) => void;
   onUpdate: (updated: CounterConfig) => void;
+  onDuplicate: (counter: CounterConfig) => void;
+  onAdd: () => void;
 };
 
-const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
-  const [counters, setCounters] = useState<CounterConfig[]>(countersDefault);
+const CounterContainer = ({
+  countersDefault,
+  onDelete,
+  onUpdate,
+  onDuplicate,
+  onAdd,
+}: Props) => {
   const { t } = useTranslation();
 
-  useEffect(() => setCounters(countersDefault), [countersDefault]);
-
-  const sizeToClass = (counter: CounterConfig) => {
-    const xsSpan = 12 / (counter.xsElementsPerRow || 2);
-    const mdSpan = 12 / (counter.mdElementsPerRow || 2);
-    const lgSpan = 12 / (counter.lgElementsPerRow || 1);
-    return `col-span-${xsSpan} md:col-span-${mdSpan} lg:col-span-${lgSpan}`;
+  const spans = (elementsPerRow: number | undefined, fallback: number) => {
+    const safe = [1, 2, 3, 4, 6].includes(elementsPerRow ?? 0)
+      ? (elementsPerRow as number)
+      : fallback;
+    return 12 / safe;
   };
 
-  const breakpoint = useBreakpoint();
-
-  const spanBySize = (counter: CounterConfig) => {
-    if (breakpoint.isLg) {
-      return 12 / (counter.lgElementsPerRow || 2);
-    } else if (breakpoint.isMd) {
-      return 12 / (counter.mdElementsPerRow || 2);
-    } else {
-      return 12 / (counter.xsElementsPerRow || 1);
-    }
+  const sizeToClass = (counter: CounterConfig) => {
+    const xsClasses = {
+      2: "col-span-2",
+      3: "col-span-3",
+      4: "col-span-4",
+      6: "col-span-6",
+      12: "col-span-12",
+    } as const;
+    const mdClasses = {
+      2: "md:col-span-2",
+      3: "md:col-span-3",
+      4: "md:col-span-4",
+      6: "md:col-span-6",
+      12: "md:col-span-12",
+    } as const;
+    const lgClasses = {
+      2: "lg:col-span-2",
+      3: "lg:col-span-3",
+      4: "lg:col-span-4",
+      6: "lg:col-span-6",
+      12: "lg:col-span-12",
+    } as const;
+    const xs = spans(counter.xsElementsPerRow, 1) as keyof typeof xsClasses;
+    const md = spans(counter.mdElementsPerRow, 2) as keyof typeof mdClasses;
+    const lg = spans(counter.lgElementsPerRow, 2) as keyof typeof lgClasses;
+    return `${xsClasses[xs]} ${mdClasses[md]} ${lgClasses[lg]}`;
   };
 
   return (
@@ -47,7 +67,7 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
       }}
     >
       <div className="max-w-7xl mx-auto">
-        {counters.length === 0 ? (
+        {countersDefault.length === 0 ? (
           <div
             className="flex items-center justify-center"
             style={{
@@ -66,19 +86,32 @@ const CounterContainer = ({ countersDefault, onDelete, onUpdate }: Props) => {
               <p className="text-sm md:text-base leading-6 text-[var(--text-muted)]">
                 {t("emptyCountersHint")}
               </p>
+              <button
+                type="button"
+                onClick={() => {
+                  trackEvent("counter_added", { source: "empty_state" }, { counterCount: 1 });
+                  onAdd();
+                }}
+                className="mt-2 flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-primary/85 active:scale-[0.98]"
+              >
+                <BsPlusCircle aria-hidden />
+                {t("emptyAddCounter")}
+              </button>
             </div>
           </div>
         ) : (
           <div className="grid grid-cols-12 grid-flow-dense gap-2 md:gap-4 lg:gap-6">
-            {counters.map((counter) => {
-              const span = spanBySize(counter);
+            {countersDefault.map((counter) => {
               return (
-                <div key={counter.id} className={sizeToClass(counter)}>
+                <div
+                  key={counter.id}
+                  className={`counter-cell ${sizeToClass(counter)}`}
+                >
                   <Counter
                     counter={counter}
-                    span={span}
                     onDelete={onDelete}
                     onUpdate={onUpdate}
+                    onDuplicate={onDuplicate}
                   />
                 </div>
               );
