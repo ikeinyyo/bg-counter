@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import {
+  BsArrowDownCircle,
+  BsCompass,
   BsGear,
   BsHandIndexThumb,
   BsHeartPulse,
@@ -26,7 +28,7 @@ export default function HelpPage() {
         className="bg-[var(--background)] px-4 py-6 text-[var(--foreground)]"
         style={{
           minHeight:
-            "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+            "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
         }}
       >
         <div className="mx-auto flex max-w-3xl flex-col gap-6">
@@ -41,6 +43,58 @@ export default function HelpPage() {
 
           <article className="divide-y divide-[var(--border)]">
             <section className="pb-8">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <BsCompass aria-hidden size={21} />
+                </span>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t("helpNavigationTitle")}
+                </h2>
+              </div>
+              <p className="mt-4 leading-7 text-[var(--text-muted)]">
+                {t("helpNavigationText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpNavigationFavoritesTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpNavigationFavoritesText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpNavigationMenuTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpNavigationMenuText")}
+              </p>
+            </section>
+
+            <section className="py-8">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <BsArrowDownCircle aria-hidden size={21} />
+                </span>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {t("helpInstallTitle")}
+                </h2>
+              </div>
+              <p className="mt-4 leading-7 text-[var(--text-muted)]">
+                {t("helpInstallText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpInstallAutomaticTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpInstallAutomaticText")}
+              </p>
+              <h3 className="mt-5 text-lg font-semibold">
+                {t("helpInstallIosTitle")}
+              </h3>
+              <p className="mt-2 leading-7 text-[var(--text-muted)]">
+                {t("helpInstallIosText")}
+              </p>
+            </section>
+
+            <section className="py-8">
               <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                   <BsGear aria-hidden size={21} />
@@ -59,6 +113,7 @@ export default function HelpPage() {
                 <li>{t("helpConfigLanguage")}</li>
                 <li>{t("helpConfigTheme")}</li>
                 <li>{t("helpConfigWakeLock")}</li>
+                <li>{t("helpConfigVersion")}</li>
               </ul>
             </section>
 

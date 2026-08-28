@@ -119,8 +119,6 @@ export default function CounterPage() {
       ) : (
         <CounterLoading />
       )}
-
-      {/* Footer is global in layout now */}
     </div>
   );
 }

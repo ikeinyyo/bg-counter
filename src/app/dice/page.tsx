@@ -348,7 +348,7 @@ export default function DicePage() {
       <NavBar />
       <main
         className="bg-[var(--background)] px-3 py-5 text-[var(--foreground)] sm:px-4 sm:py-6"
-        style={{ minHeight: "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))" }}
+        style={{ minHeight: "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))" }}
       >
         <div className="mx-auto flex max-w-4xl flex-col gap-5">
           <header className="text-center">

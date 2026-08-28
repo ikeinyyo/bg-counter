@@ -7,7 +7,9 @@ describe("PWA manifest", () => {
     const value = manifest();
 
     expect(value).toMatchObject({
-      name: "Juernes de Mesa — Companion",
+      id: "/",
+      name: "Companion",
+      short_name: "Companion",
       start_url: "/",
       scope: "/",
       display: "standalone",
@@ -15,8 +17,8 @@ describe("PWA manifest", () => {
     });
     expect(value.icons).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ sizes: "192x192" }),
-        expect.objectContaining({ sizes: "512x512" }),
+        expect.objectContaining({ src: "/icons/companion-192.png", sizes: "192x192", type: "image/png" }),
+        expect.objectContaining({ src: "/icons/companion-512.png", sizes: "512x512", type: "image/png" }),
       ]),
     );
   });
@@ -30,6 +32,7 @@ describe("PWA manifest", () => {
       "/score-sheet",
       "/dice",
       "/help",
+      "/settings",
     ]);
     expect(PWA_PRECACHE_URLS).toEqual(
       expect.arrayContaining([

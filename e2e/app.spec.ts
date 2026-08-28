@@ -35,12 +35,12 @@ const installWakeLockMock = async (page: Page) => {
 
 const openMenuOnMobile = async (page: Page, projectName: string) => {
   if (projectName.includes("mobile")) {
-    await page.getByRole("button", { name: "Menu" }).click();
+    await page.getByRole("button", { name: "Opciones de la herramienta" }).click();
   }
 };
 
 const openOptionsMenu = async (page: Page) => {
-  await page.getByRole("button", { name: "Menu" }).click();
+  await page.getByRole("button", { name: "Opciones de la herramienta" }).click();
 };
 
 test.beforeEach(async ({ page }) => {
@@ -64,11 +64,32 @@ test.describe("home, navigation, and help", () => {
     ];
 
     for (const route of routes) {
-      await page.locator(`a[href="${route}"]`).click();
+      await page.getByRole("main").locator(`a[href="${route}"]`).last().click();
       await expect(page).toHaveURL(new RegExp(`${route}$`));
       await page.goto("/");
     }
-    await expect(page.getByRole("heading", { name: "Pronto" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Más" })).toBeVisible();
+  });
+
+  test("opens the app menu and remembers the last used tool", async ({ page }) => {
+    await resetApp(page, "/timer");
+    await page.goto("/");
+    await expect(page.getByRole("link", { name: /Continuar.*Temporizador/i })).toBeVisible();
+
+    await page.getByRole("button", { name: "Menú de navegación" }).first().click();
+    const menu = page.getByRole("dialog", { name: "Menú de navegación" });
+    await expect(menu.getByRole("link", { name: "Configuración" })).toBeVisible();
+    await expect(menu.getByRole("link", { name: "Ayuda" })).toBeVisible();
+    await expect(menu.getByRole("link", { name: "Enviar feedback" })).toBeVisible();
+    await menu.getByRole("link", { name: "Tiradados" }).click();
+    await expect(page).toHaveURL(/\/dice$/);
+  });
+
+  test("keeps installation guidance available when the browser has no native prompt", async ({ page }) => {
+    await resetApp(page);
+    await page.getByRole("button", { name: "Instalar aplicación" }).click();
+    await expect(page.getByRole("dialog", { name: "Instalar en iPhone o iPad" })).toBeVisible();
+    await expect(page.getByText(/Añadir a pantalla de inicio/)).toBeVisible();
   });
 
   test("documents all available tools", async ({ page }) => {
@@ -118,6 +139,7 @@ test.describe("offline PWA", () => {
       "/score-sheet",
       "/dice",
       "/help",
+      "/settings",
     ]) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
       await expect(page.locator("main")).toBeVisible();
@@ -157,19 +179,20 @@ test.describe("offline PWA", () => {
 
 test.describe("global settings and wake lock", () => {
   test("persists language and theme across reloads", async ({ page }) => {
-    await resetApp(page);
-    await page.getByRole("combobox", { name: "Idioma" }).selectOption("en");
-    await page.getByRole("combobox", { name: "Theme" }).selectOption("dark");
+    await resetApp(page, "/settings");
+    await page.getByRole("button", { name: "English" }).click();
+    await page.getByRole("button", { name: "Dark" }).click();
 
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await page.reload();
-    await expect(page.getByRole("combobox", { name: "Language" })).toHaveValue("en");
-    await expect(page.getByRole("combobox", { name: "Theme" })).toHaveValue("dark");
+    await expect(page.getByRole("button", { name: "English" })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("button", { name: "Dark" })).toHaveAttribute("aria-pressed", "true");
   });
 
   test("acquires, releases, and restores the saved wake lock preference", async ({ page }) => {
     await resetApp(page);
+    await page.getByRole("button", { name: "Menú de navegación" }).first().click();
     const wakeSwitch = page.getByRole("switch", {
       name: "Mantener la pantalla encendida",
     });
@@ -196,6 +219,7 @@ test.describe("global settings and wake lock", () => {
       )
       .toBeGreaterThan(0);
     await page.reload();
+    await page.getByRole("button", { name: "Menú de navegación" }).first().click();
     await expect(
       page.getByRole("switch", { name: "Mantener la pantalla encendida" }),
     ).not.toBeChecked();

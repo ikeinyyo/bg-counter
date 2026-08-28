@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
-export type Breakpoint = "xs" | "md" | "lg";
+export type Breakpoint = "xs" | "md" | "lg" | "xl";
 
 const useBreakpoint = () => {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>("xs");
 
   const calcBreakpoint = () => {
     const width = window.innerWidth;
+    if (width >= 1280) return "xl";
     if (width >= 1024) return "lg";
     if (width >= 768) return "md";
     return "xs";
@@ -30,6 +31,7 @@ const useBreakpoint = () => {
     isXs: breakpoint === "xs",
     isMd: breakpoint === "md",
     isLg: breakpoint === "lg",
+    isXl: breakpoint === "xl",
   };
 };
 

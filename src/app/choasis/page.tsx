@@ -310,7 +310,7 @@ export default function ChoasisPage() {
         className="bg-[var(--background)] text-[var(--foreground)]"
         style={{
           height:
-            "calc(var(--choasis-vh, 100dvh) - 6.5rem - env(safe-area-inset-bottom))",
+            "calc(var(--choasis-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
         }}
       >
         <div

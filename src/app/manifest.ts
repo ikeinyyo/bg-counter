@@ -2,8 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Juernes de Mesa — Companion",
-    short_name: "Juernes de Mesa",
+    id: "/",
+    name: "Companion",
+    short_name: "Companion",
     description:
       "Utilidades para juegos de mesa: contadores, temporizador, selección de jugadores y hoja de puntuación.",
     start_url: "/",
@@ -15,19 +16,13 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ["games", "utilities"],
     icons: [
       {
-        src: "/icons/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-        purpose: "any",
-      },
-      {
-        src: "/icons/icon-192.png",
+        src: "/icons/companion-192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icons/icon-512.png",
+        src: "/icons/companion-512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
