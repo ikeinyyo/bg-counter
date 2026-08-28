@@ -112,7 +112,7 @@ const Counter = ({ counter, onUpdate, onDelete, onDuplicate, isPreview }: Props)
         />
 
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <span className="counter-value mt-5 font-black tracking-tight text-white drop-shadow-lg">
+          <span className="counter-value font-black tracking-tight text-white drop-shadow-lg">
             {localValue}
           </span>
         </div>

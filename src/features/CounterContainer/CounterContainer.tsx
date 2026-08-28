@@ -26,8 +26,10 @@ const CounterContainer = ({
   const mobileRowCount = getCounterRowCount(countersDefault, "xs");
   const mobileGridStyle = {
     "--counter-row-count": mobileRowCount,
-    "--counter-value-size": mobileRowCount >= 4 ? "3.5rem" : mobileRowCount === 3 ? "4.25rem" : "5rem",
+    "--counter-value-size": mobileRowCount >= 4 ? "3.25rem" : mobileRowCount === 3 ? "4.25rem" : "5rem",
+    "--counter-value-offset": mobileRowCount >= 4 ? "0rem" : mobileRowCount === 3 ? "0.25rem" : "0.625rem",
     "--counter-symbol-size": mobileRowCount >= 4 ? "2.25rem" : mobileRowCount === 3 ? "2.625rem" : "3rem",
+    "--counter-delta-size": mobileRowCount >= 4 ? "1.125rem" : mobileRowCount === 3 ? "1.5rem" : "2rem",
   } as CSSProperties;
 
   const spans = (elementsPerRow: number | undefined, fallback: number) => {
