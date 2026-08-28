@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaBars, FaSliders, FaX } from "react-icons/fa6";
 import { useTranslation } from "@/context/SettingsContext";
 import { APP_TOOLS, useAppNavigation } from "@/features/navigation/AppNavigation";
+import { trackEvent } from "@/lib/telemetry";
 
 type Props = {
   right?: React.ReactNode | ((utils: { requestClose: () => void }) => React.ReactNode);
@@ -45,12 +46,12 @@ const NavBar = ({ right }: Props) => {
     <header className="sticky top-0 z-[150] flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center justify-between border-b border-white/10 bg-[var(--navbar-bg)] px-2 pt-[env(safe-area-inset-top)] text-[var(--navbar-fg)] shadow-sm">
       <div className="relative z-10 flex min-w-0 flex-1 items-center gap-1">
         {isSecondary ? (
-          <button type="button" onClick={() => window.history.length > 1 ? router.back() : router.push("/")} aria-label={t("navigationBack")} className="flex h-10 w-10 items-center justify-center rounded-xl hover:bg-white/10"><FaArrowLeft /></button>
+          <button type="button" onClick={() => { trackEvent("navigation_back", { path: pathname }); if (window.history.length > 1) router.back(); else router.push("/"); }} aria-label={t("navigationBack")} className="flex h-10 w-10 items-center justify-center rounded-xl hover:bg-white/10"><FaArrowLeft /></button>
         ) : (
           <button type="button" onClick={openMenu} aria-label={t("navigationMenu")} className="flex h-10 w-10 items-center justify-center rounded-xl hover:bg-white/10"><FaBars /></button>
         )}
         <button type="button" onClick={openMenu} aria-label={t("navigationMenu")} className={`${isSecondary ? "flex" : "hidden"} h-10 w-10 items-center justify-center rounded-xl hover:bg-white/10`}><FaBars /></button>
-        <Link href="/" aria-label={t("navigationHome")} className="mx-2 hidden shrink-0 md:block">
+        <Link href="/" onClick={() => trackEvent("navigation_link_opened", { path: "/", source: "brand" })} aria-label={t("navigationHome")} className="mx-2 hidden shrink-0 md:block">
           <Image src="/images/logo.png" width={82} height={41} alt={t("logoAlt")} className="h-auto w-[82px] object-contain" />
         </Link>
         <nav className="hidden min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none] md:flex [&::-webkit-scrollbar]:hidden" aria-label={t("homeFavorites")}>
@@ -61,6 +62,7 @@ const NavBar = ({ right }: Props) => {
               <Link
                 key={tool.href}
                 href={tool.href}
+                onClick={() => trackEvent("tool_opened", { path: tool.href, source: "top_navigation" })}
                 aria-current={active ? "page" : undefined}
                 className={`flex h-10 shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-bold transition ${active ? "bg-primary text-white" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
               >
@@ -77,7 +79,7 @@ const NavBar = ({ right }: Props) => {
       </div>
 
       <div className="relative z-10 ml-auto flex min-w-10 shrink-0 items-center justify-end gap-1">
-        {right && <button className="flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3 text-sm font-semibold transition hover:bg-white/15" aria-haspopup="dialog" aria-expanded={open} aria-label={t("navToolActions")} onClick={() => setOpen((value) => !value)}><FaSliders /><span className="hidden lg:inline">{t("navActions")}</span></button>}
+        {right && <button className="flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3 text-sm font-semibold transition hover:bg-white/15" aria-haspopup="dialog" aria-expanded={open} aria-label={t("navToolActions")} onClick={() => setOpen((value) => { const next = !value; if (next) trackEvent("tool_options_opened", { path: pathname }); return next; })}><FaSliders /><span className="hidden lg:inline">{t("navActions")}</span></button>}
       </div>
 
       {open && right && (

@@ -1,11 +1,10 @@
 {
   "name": "bg-counter",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "icons:pwa": "node scripts/generate-pwa-icons.mjs",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
@@ -46,7 +45,6 @@
     "eslint-config-next": "15.4.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "jsdom": "26.1.0",
-    "sharp": "0.34.3",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite": "6.1.0",

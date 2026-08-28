@@ -1,6 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AppNavigationProvider, useAppNavigation } from "./AppNavigation";
+import { AppNavigation, AppNavigationProvider, useAppNavigation } from "./AppNavigation";
+
+const { trackEventMock } = vi.hoisted(() => ({ trackEventMock: vi.fn() }));
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 vi.mock("@/hooks/useWakeLock", () => ({
@@ -13,6 +15,10 @@ vi.mock("@/hooks/useWakeLock", () => ({
     releaseWakeLock: vi.fn(),
   }),
 }));
+vi.mock("@/context/SettingsContext", () => ({
+  useSettings: () => ({ t: (key: string) => key }),
+}));
+vi.mock("@/lib/telemetry", () => ({ trackEvent: trackEventMock }));
 
 function FavoritesHarness() {
   const { favorites, reorderFavorites, toggleFavorite } = useAppNavigation();
@@ -20,7 +26,10 @@ function FavoritesHarness() {
 }
 
 describe("AppNavigationProvider", () => {
-  beforeEach(() => localStorage.clear());
+  beforeEach(() => {
+    localStorage.clear();
+    trackEventMock.mockClear();
+  });
 
   it("reorders four favorites and persists their order", () => {
     render(<AppNavigationProvider><FavoritesHarness /></AppNavigationProvider>);
@@ -42,5 +51,23 @@ describe("AppNavigationProvider", () => {
       "/timer",
       "/score-sheet",
     ]);
+  });
+
+  it("tracks tool openings from the navigation menu", () => {
+    function MenuHarness() {
+      const { openMenu } = useAppNavigation();
+      return <button onClick={openMenu}>Open menu</button>;
+    }
+
+    render(<AppNavigationProvider><MenuHarness /><AppNavigation /></AppNavigationProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    const counterLink = within(screen.getByRole("dialog", { name: "navigationMenu" })).getByRole("link", { name: "counterTitle" });
+    counterLink.addEventListener("click", (event) => event.preventDefault());
+    fireEvent.click(counterLink);
+
+    expect(trackEventMock).toHaveBeenCalledWith("tool_opened", {
+      path: "/counter",
+      source: "navigation_menu",
+    });
   });
 });

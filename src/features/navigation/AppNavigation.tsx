@@ -115,43 +115,52 @@ export function AppNavigationProvider({ children }: { children: ReactNode }) {
     };
   }, [isMenuOpen]);
 
+  const openMenu = useCallback(() => {
+    trackEvent("navigation_menu_opened", { path: pathname });
+    setIsMenuOpen(true);
+  }, [pathname]);
+
   const toggleFavorite = useCallback((href: string) => {
-    setFavorites((current) => {
-      const next = current.includes(href)
-        ? current.filter((item) => item !== href)
-        : current.length >= 4
-          ? current
-          : [...current, href];
+    const removing = favorites.includes(href);
+    if (!removing && favorites.length >= 4) {
       try {
-        localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
       } catch {}
-      return next;
-    });
-  }, []);
+      trackEvent("favorite_limit_reached", { path: href }, { favoriteCount: favorites.length });
+      return;
+    }
+    const next = removing
+      ? favorites.filter((item) => item !== href)
+      : [...favorites, href];
+    setFavorites(next);
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+    } catch {}
+    trackEvent("favorite_changed", { path: href, action: removing ? "removed" : "added" }, { favoriteCount: next.length });
+  }, [favorites]);
 
   const reorderFavorites = useCallback((sourceIndex: number, destinationIndex: number) => {
-    setFavorites((current) => {
-      if (sourceIndex === destinationIndex || sourceIndex < 0 || destinationIndex < 0 || sourceIndex >= current.length || destinationIndex >= current.length) return current;
-      const next = [...current];
-      const [moved] = next.splice(sourceIndex, 1);
-      next.splice(destinationIndex, 0, moved);
-      try {
-        localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
-      } catch {}
-      return next;
-    });
-  }, []);
+    if (sourceIndex === destinationIndex || sourceIndex < 0 || destinationIndex < 0 || sourceIndex >= favorites.length || destinationIndex >= favorites.length) return;
+    const next = [...favorites];
+    const [moved] = next.splice(sourceIndex, 1);
+    next.splice(destinationIndex, 0, moved);
+    setFavorites(next);
+    try {
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+    } catch {}
+    trackEvent("favorites_reordered", { path: moved }, { sourceIndex, destinationIndex });
+  }, [favorites]);
 
   const value = useMemo<NavigationContextValue>(() => ({
     isMenuOpen,
-    openMenu: () => setIsMenuOpen(true),
+    openMenu,
     closeMenu: () => setIsMenuOpen(false),
     favorites,
     toggleFavorite,
     reorderFavorites,
     lastTool,
     wakeLock,
-  }), [favorites, isMenuOpen, lastTool, reorderFavorites, toggleFavorite, wakeLock]);
+  }), [favorites, isMenuOpen, lastTool, openMenu, reorderFavorites, toggleFavorite, wakeLock]);
 
   return <NavigationContext.Provider value={value}>{children}</NavigationContext.Provider>;
 }
@@ -185,7 +194,7 @@ export function AppNavigation() {
             </div>
 
             <nav className="flex-1 overflow-y-auto p-3" aria-label={t("navigationMenu")}>
-              <Link href="/" className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold ${pathname === "/" ? "bg-primary text-white" : "hover:bg-white/10"}`}>
+              <Link href="/" onClick={() => trackEvent("navigation_link_opened", { path: "/", source: "navigation_menu" })} className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold ${pathname === "/" ? "bg-primary text-white" : "hover:bg-white/10"}`}>
                 <BsHouse size={20} /> {t("navigationHome")}
               </Link>
               <p className="mb-2 mt-5 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-white/45">{t("navigationTools")}</p>
@@ -194,7 +203,7 @@ export function AppNavigation() {
                   const Icon = tool.icon;
                   const active = pathname === tool.href;
                   return (
-                    <Link key={tool.href} href={tool.href} className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold transition ${active ? "bg-white/15 text-white" : "text-white/80 hover:bg-white/10"}`}>
+                    <Link key={tool.href} href={tool.href} onClick={() => trackEvent("tool_opened", { path: tool.href, source: "navigation_menu" })} className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold transition ${active ? "bg-white/15 text-white" : "text-white/80 hover:bg-white/10"}`}>
                       <span className="flex h-9 w-9 items-center justify-center rounded-xl" style={{ backgroundColor: `${tool.accent}30`, color: tool.accent }}><Icon size={19} /></span>
                       {t(tool.titleKey)}
                     </Link>
@@ -202,9 +211,9 @@ export function AppNavigation() {
                 })}
               </div>
               <p className="mb-2 mt-5 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-white/45">{t("navigationMore")}</p>
-              <Link href="/settings" className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold ${pathname === "/settings" ? "bg-white/15" : "hover:bg-white/10"}`}><BsGear size={20} /> {t("settingsTitle")}</Link>
-              <Link href="/help" className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold ${pathname === "/help" ? "bg-white/15" : "hover:bg-white/10"}`}><BsQuestionCircle size={20} /> {t("helpTitle")}</Link>
-              <a href="mailto:info@juernesdemesa.com" className="flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold hover:bg-white/10"><BsChatDots size={20} /> {t("feedbackLabel")}</a>
+              <Link href="/settings" onClick={() => trackEvent("navigation_link_opened", { path: "/settings", source: "navigation_menu" })} className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold ${pathname === "/settings" ? "bg-white/15" : "hover:bg-white/10"}`}><BsGear size={20} /> {t("settingsTitle")}</Link>
+              <Link href="/help" onClick={() => trackEvent("navigation_link_opened", { path: "/help", source: "navigation_menu" })} className={`flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold ${pathname === "/help" ? "bg-white/15" : "hover:bg-white/10"}`}><BsQuestionCircle size={20} /> {t("helpTitle")}</Link>
+              <a href="mailto:info@juernesdemesa.com" onClick={() => trackEvent("feedback_opened", { destination: "email", source: "navigation_menu" })} className="flex min-h-12 items-center gap-3 rounded-2xl px-3 font-semibold hover:bg-white/10"><BsChatDots size={20} /> {t("feedbackLabel")}</a>
             </nav>
 
             <div className="border-t border-white/10 p-3">
@@ -230,14 +239,14 @@ export function AppNavigation() {
       )}
 
       <nav className="fixed inset-x-0 bottom-0 z-[120] grid h-[calc(4rem+env(safe-area-inset-bottom))] grid-cols-5 border-t border-[var(--border)] bg-[var(--surface)]/95 px-1 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_25px_rgba(0,0,0,0.12)] backdrop-blur-xl md:hidden" aria-label={t("navigationPrimary")}>
-        <BottomLink href="/" label={t("navigationHome")} active={pathname === "/"} icon={BsHouse} />
-        {favoriteTools.map((tool) => <BottomLink key={tool.href} href={tool.href} label={t(tool.titleKey)} active={pathname === tool.href} icon={tool.icon} />)}
+        <BottomLink href="/" label={t("navigationHome")} active={pathname === "/"} icon={BsHouse} onOpen={() => trackEvent("navigation_link_opened", { path: "/", source: "bottom_navigation" })} />
+        {favoriteTools.map((tool) => <BottomLink key={tool.href} href={tool.href} label={t(tool.titleKey)} active={pathname === tool.href} icon={tool.icon} onOpen={() => trackEvent("tool_opened", { path: tool.href, source: "bottom_navigation" })} />)}
         {Array.from({ length: 4 - favoriteTools.length }, (_, index) => <div key={`empty-${index}`} />)}
       </nav>
     </>
   );
 }
 
-function BottomLink({ href, label, active, icon: Icon }: { href: string; label: string; active: boolean; icon: IconType }) {
-  return <Link href={href} aria-current={active ? "page" : undefined} className={`flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold ${active ? "text-primary" : "text-[var(--text-muted)]"}`}><Icon size={21} /><span className="max-w-full truncate">{label}</span></Link>;
+function BottomLink({ href, label, active, icon: Icon, onOpen }: { href: string; label: string; active: boolean; icon: IconType; onOpen?: () => void }) {
+  return <Link href={href} onClick={onOpen} aria-current={active ? "page" : undefined} className={`flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold ${active ? "text-primary" : "text-[var(--text-muted)]"}`}><Icon size={21} /><span className="max-w-full truncate">{label}</span></Link>;
 }

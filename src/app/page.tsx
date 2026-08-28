@@ -78,6 +78,7 @@ export default function Home() {
 
   const requestInstall = async () => {
     if (!installPrompt) {
+      trackEvent("pwa_install_help_opened", { guide: installGuide });
       setShowInstallHelp(true);
       return;
     }
@@ -115,11 +116,11 @@ export default function Home() {
           </section>
 
           <section>
-            <div className="mb-3 flex items-end justify-between gap-4"><div><h2 className="text-xl font-bold">{t("homeFavorites")}</h2><p className="mt-1 text-sm text-[var(--text-muted)]">{t("homeFavoritesHint")}</p></div><button type="button" onClick={() => setShowFavoriteOrder(true)} className="flex min-h-10 shrink-0 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm font-bold shadow-sm"><BsGripVertical />{t("favoriteReorder")}</button></div>
+            <div className="mb-3 flex items-end justify-between gap-4"><div><h2 className="text-xl font-bold">{t("homeFavorites")}</h2><p className="mt-1 text-sm text-[var(--text-muted)]">{t("homeFavoritesHint")}</p></div><button type="button" onClick={() => { trackEvent("favorites_reorder_opened", { source: "home" }); setShowFavoriteOrder(true); }} className="flex min-h-10 shrink-0 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-sm font-bold shadow-sm"><BsGripVertical />{t("favoriteReorder")}</button></div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {favoriteTools.map((tool) => (
                 <article key={tool.href} className="relative flex min-w-0 items-center overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                  <Link href={tool.href} className="flex min-h-16 min-w-0 flex-1 items-center gap-3 p-3 pr-1"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white" style={{ backgroundColor: tool.accent }}><tool.icon size={20} /></span><h3 className="truncate font-bold">{t(tool.titleKey)}</h3></Link>
+                  <Link href={tool.href} onClick={() => trackEvent("tool_opened", { path: tool.href, source: "home_favorites" })} className="flex min-h-16 min-w-0 flex-1 items-center gap-3 p-3 pr-1"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white" style={{ backgroundColor: tool.accent }}><tool.icon size={20} /></span><h3 className="truncate font-bold">{t(tool.titleKey)}</h3></Link>
                   <button type="button" aria-label={t("favoriteRemove")} onClick={() => toggleFavorite(tool.href)} className="flex h-12 w-11 shrink-0 items-center justify-center text-amber-500"><BsStarFill /></button>
                 </article>
               ))}
@@ -179,5 +180,5 @@ function ToolCard({ tool, favorite, favoriteLimitReached, onToggle, detailed = f
 }
 
 function MoreLink({ href, icon: Icon, label }: { href: string; icon: typeof BsGear; label: string }) {
-  return <Link href={href} className="flex min-h-14 items-center gap-3 border-t border-[var(--border)] px-4 font-semibold first:border-t-0 hover:bg-[var(--surface-muted)]"><Icon className="text-primary" size={20} /><span className="flex-1">{label}</span><BsArrowRight className="text-[var(--text-muted)]" /></Link>;
+  return <Link href={href} onClick={() => trackEvent("navigation_link_opened", { path: href, source: "home_more" })} className="flex min-h-14 items-center gap-3 border-t border-[var(--border)] px-4 font-semibold first:border-t-0 hover:bg-[var(--surface-muted)]"><Icon className="text-primary" size={20} /><span className="flex-1">{label}</span><BsArrowRight className="text-[var(--text-muted)]" /></Link>;
 }

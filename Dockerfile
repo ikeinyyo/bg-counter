@@ -1,16 +1,18 @@
 # ---------- build ----------
 FROM node:20-alpine AS builder
 
+ARG TARGETARCH
 ENV CI=true
 
 WORKDIR /app
 
 RUN apk add --no-cache libc6-compat
-RUN npm i -g pnpm
+RUN npm install --global pnpm@10.14.0
+RUN pnpm config set store-dir /root/.pnpm-store
 
 COPY package.json pnpm-lock.yaml ./
 
-RUN --mount=type=cache,id=pnpm,target=/root/.pnpm-store \
+RUN --mount=type=cache,id=pnpm-${TARGETARCH},target=/root/.pnpm-store \
     pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
