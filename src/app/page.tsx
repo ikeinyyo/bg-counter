@@ -9,14 +9,19 @@ import {
   BsStopwatch,
   BsTable,
   BsDice5,
+  BsChatDots,
 } from "react-icons/bs";
 import { useSettings } from "@/context/SettingsContext";
 import { NavBar } from "@/features/navbar/NavBar";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { trackEvent } from "@/lib/telemetry";
+
+const FEEDBACK_EMAIL_URL = "mailto:info@juernesdemesa.com";
 
 export default function Home() {
   const { t } = useSettings();
+  const [feedbackUrl, setFeedbackUrl] = useState(FEEDBACK_EMAIL_URL);
+  const usesFeedbackForm = feedbackUrl !== FEEDBACK_EMAIL_URL;
 
   const computedTitle = useMemo(
     () => `Juernes de Mesa — ${t("appTitle")}`,
@@ -28,6 +33,28 @@ export default function Home() {
       document.title = computedTitle;
     }
   }, [computedTitle]);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadFeedbackUrl = async () => {
+      try {
+        const response = await fetch("/api/feedback-config", { cache: "no-store" });
+        if (!response.ok) return;
+        const configuration = (await response.json()) as { feedbackUrl?: unknown };
+        if (active && typeof configuration.feedbackUrl === "string") {
+          setFeedbackUrl(configuration.feedbackUrl);
+        }
+      } catch {
+        // Keep the email fallback when runtime configuration is unavailable.
+      }
+    };
+
+    void loadFeedbackUrl();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const tools = [
     {
@@ -65,6 +92,13 @@ export default function Home() {
       description: t("helpDescription"),
       href: "/help",
       icon: BsQuestionCircle,
+    },
+    {
+      title: t("feedbackLabel"),
+      description: t("feedbackDescription"),
+      href: feedbackUrl,
+      icon: BsChatDots,
+      feedback: true,
     },
     {
       title: t("soonTitle"),
@@ -120,6 +154,26 @@ export default function Home() {
 
               if (tool.disabled) {
                 return <div key={tool.title}>{content}</div>;
+              }
+
+              if ("feedback" in tool) {
+                return (
+                  <a
+                    key={tool.title}
+                    href={tool.href}
+                    target={usesFeedbackForm ? "_blank" : undefined}
+                    rel={usesFeedbackForm ? "noopener noreferrer" : undefined}
+                    className="block"
+                    onClick={() => {
+                      trackEvent("tool_opened", { path: "feedback" });
+                      trackEvent("feedback_opened", {
+                        destination: usesFeedbackForm ? "form" : "email",
+                      });
+                    }}
+                  >
+                    {content}
+                  </a>
+                );
               }
 
               return (

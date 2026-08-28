@@ -16,6 +16,20 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Feedback
+
+The main tools menu includes a feedback action. Set the form URL at container
+runtime or in `.env.local`:
+
+```bash
+NEXT_PUBLIC_FEEDBACK_FORM_URL="https://forms.example.com/feedback"
+```
+
+`FEEDBACK_FORM_URL` is also accepted as an alias. The URL is loaded at runtime,
+so changing it only requires restarting the container, not rebuilding the
+image. If it is missing or invalid, the action opens an email addressed to
+`info@juernesdemesa.com`.
+
 ## Application Insights
 
 Copy `.env.example` to `.env.local` and set the connection string from the
