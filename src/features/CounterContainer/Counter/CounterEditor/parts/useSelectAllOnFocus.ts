@@ -10,6 +10,9 @@ type TargetEl = HTMLInputElement | HTMLTextAreaElement;
  */
 export function useSelectAllOnFocus<T extends TargetEl>() {
   const ref = useRef<T | null>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const touchMoved = useRef(false);
+  const suppressFocusUntil = useRef(0);
 
   const isFocused = () => ref.current === document.activeElement;
 
@@ -33,8 +36,10 @@ export function useSelectAllOnFocus<T extends TargetEl>() {
 
   // 1) Foco por teclado (TAB) o focus programático
   const onFocus = useCallback(() => {
-    // Solo seleccionar todo si venimos de "no enfocado"
-    // (Si ya estaba enfocado, el navegador no dispara focus otra vez)
+    if (touchMoved.current || Date.now() < suppressFocusUntil.current) {
+      ref.current?.blur();
+      return;
+    }
     setTimeout(selectAll, 0);
   }, [selectAll]);
 
@@ -50,12 +55,36 @@ export function useSelectAllOnFocus<T extends TargetEl>() {
     [focusAndSelect]
   );
 
-  // 3) Táctil: solo actuar si AÚN no está enfocado (sin preventDefault para no bloquear teclado)
-  const onTouchStart = useCallback(() => {
-    if (!isFocused()) {
-      focusAndSelect();
+  // En táctil esperamos al final del gesto: así un scroll que empieza sobre
+  // el campo no abre el teclado ni selecciona su contenido accidentalmente.
+  const onTouchStart = useCallback((event: React.TouchEvent<T>) => {
+    const touch = event.touches[0];
+    touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    touchMoved.current = false;
+  }, []);
+
+  const onTouchMove = useCallback((event: React.TouchEvent<T>) => {
+    const start = touchStart.current;
+    const touch = event.touches[0];
+    if (
+      start &&
+      touch &&
+      (Math.abs(touch.clientX - start.x) > 8 ||
+        Math.abs(touch.clientY - start.y) > 8)
+    ) {
+      touchMoved.current = true;
     }
-  }, [focusAndSelect]);
+  }, []);
+
+  const onTouchEnd = useCallback((event: React.TouchEvent<T>) => {
+    if (touchMoved.current) {
+      suppressFocusUntil.current = Date.now() + 400;
+      event.preventDefault();
+      ref.current?.blur();
+    }
+    touchStart.current = null;
+    touchMoved.current = false;
+  }, []);
 
   // 4) Blur: sin estado adicional — el propio blur garantiza que el próximo foco será “primero”
   const onBlur = useCallback(() => {
@@ -63,8 +92,15 @@ export function useSelectAllOnFocus<T extends TargetEl>() {
   }, []);
 
   const handlers = useMemo(
-    () => ({ onFocus, onMouseDown, onTouchStart, onBlur }),
-    [onFocus, onMouseDown, onTouchStart, onBlur]
+    () => ({
+      onFocus,
+      onMouseDown,
+      onTouchStart,
+      onTouchMove,
+      onTouchEnd,
+      onBlur,
+    }),
+    [onFocus, onMouseDown, onTouchStart, onTouchMove, onTouchEnd, onBlur]
   );
 
   return { ref, handlers, focusAndSelect, selectAll };

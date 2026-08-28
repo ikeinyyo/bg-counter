@@ -11,6 +11,7 @@ import {
 import { NavBar } from "@/features/navbar/NavBar";
 import { useSettings } from "@/context/SettingsContext";
 import { MdTouchApp } from "react-icons/md";
+import { FaKeyboard } from "react-icons/fa";
 import { trackEvent } from "@/lib/telemetry";
 
 type TouchInfo = {
@@ -276,22 +277,33 @@ export default function ChoasisPage() {
     <>
       <NavBar
         right={({ requestClose }) => (
-          <button
-            onClick={() => {
-              const nextMode = mode === "touch" ? "manual" : "touch";
-              trackEvent("choasis_mode_changed", { mode: nextMode, reason: "user" });
-              setMode(nextMode);
-              resetAll();
-              setManualResult(null);
-              setRaffleActive(false);
-              setHighlightIndex(null);
-              clearRaffle();
-              requestClose();
-            }}
-            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors"
-          >
-            {mode === "touch" ? t("choasisToManual") : t("choasisToTouch")}
-          </button>
+          <div className="grid w-full gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                {t("choasisMenuTitle")}
+              </p>
+              <p className="mt-1 text-sm leading-5 text-[var(--text-muted)]">
+                {t("choasisMenuDescription")}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                const nextMode = mode === "touch" ? "manual" : "touch";
+                trackEvent("choasis_mode_changed", { mode: nextMode, reason: "user" });
+                setMode(nextMode);
+                resetAll();
+                setManualResult(null);
+                setRaffleActive(false);
+                setHighlightIndex(null);
+                clearRaffle();
+                requestClose();
+              }}
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary/80"
+            >
+              {mode === "touch" ? <FaKeyboard aria-hidden /> : <MdTouchApp aria-hidden />}
+              {mode === "touch" ? t("choasisToManual") : t("choasisToTouch")}
+            </button>
+          </div>
         )}
       />
       <main

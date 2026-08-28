@@ -39,6 +39,10 @@ const openMenuOnMobile = async (page: Page, projectName: string) => {
   }
 };
 
+const openOptionsMenu = async (page: Page) => {
+  await page.getByRole("button", { name: "Menu" }).click();
+};
+
 test.beforeEach(async ({ page }) => {
   await installWakeLockMock(page);
 });
@@ -305,7 +309,7 @@ test.describe("score sheet", () => {
     await expect(page.getByRole("textbox", { name: "Jugador 1", exact: true })).toHaveValue("Ana");
     await expect(page.getByRole("textbox", { name: "Concepto 1", exact: true })).toHaveValue("Ronda");
 
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await page.getByRole("button", { name: "Limpiar puntuaciones" }).click();
     await expect(page.getByRole("spinbutton", { name: "Puntuación: Ana, Ronda", exact: true })).toHaveValue("");
     await expect(page.getByRole("textbox", { name: "Jugador 1", exact: true })).toHaveValue("Ana");
@@ -313,7 +317,7 @@ test.describe("score sheet", () => {
 
   test("resets to one player and one concept and protects both", async ({ page }, testInfo) => {
     await resetApp(page, "/score-sheet");
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await page.getByRole("button", { name: "Restablecer tabla" }).click();
     await expect(page.getByPlaceholder("Jugador 1")).toHaveCount(1);
     await expect(page.getByPlaceholder("Concepto 1")).toHaveCount(1);
@@ -327,11 +331,11 @@ test.describe("counters", () => {
     page,
   }, testInfo) => {
     await resetApp(page, "/counter");
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await page.locator("#game:visible").selectOption("empty");
     await expect(page.getByText("No hay contadores")).toBeVisible();
 
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await page.getByRole("button", { name: "Añadir" }).click();
     await expect(page.getByText("No hay contadores")).toBeHidden();
     await expect
@@ -343,7 +347,7 @@ test.describe("counters", () => {
 
   test("persists the selected game and template", async ({ page }, testInfo) => {
     await resetApp(page, "/counter");
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await page.locator("#game:visible").selectOption("magic");
     await page.locator("#template:visible").selectOption("duel");
     await expect
@@ -371,7 +375,7 @@ test.describe("counters", () => {
         ],
       });
     await page.reload();
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await expect(page.locator("#game:visible")).toHaveValue("magic");
     await expect(page.locator("#template:visible")).toHaveValue("duel");
   });
@@ -380,7 +384,7 @@ test.describe("counters", () => {
     page,
   }, testInfo) => {
     await resetApp(page, "/counter");
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await page.locator("#game:visible").selectOption("magic");
     await page.locator("#template:visible").selectOption("duel");
 
@@ -399,7 +403,7 @@ test.describe("counters", () => {
       )
       .toBe(21);
 
-    await openMenuOnMobile(page, testInfo.project.name);
+    await openOptionsMenu(page);
     await page.getByRole("button", { name: "Reiniciar" }).click();
     await expect
       .poll(() =>

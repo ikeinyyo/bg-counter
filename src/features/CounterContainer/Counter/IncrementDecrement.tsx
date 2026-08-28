@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 type Props = {
   onDecrement: (value: number) => void;
   onIncrement: (value: number) => void;
-  isSmall: boolean;
   decrementLabel: string;
   incrementLabel: string;
 };
@@ -15,7 +14,6 @@ const REPEAT_STEP = 10;
 const IncrementDecrement = ({
   onDecrement,
   onIncrement,
-  isSmall,
   decrementLabel,
   incrementLabel,
 }: Props) => {
@@ -31,7 +29,8 @@ const IncrementDecrement = ({
   const isProcessing = useRef(false);
   const eventId = useRef(0);
   const isTouchDevice = useRef(
-    "ontouchstart" in window || navigator.maxTouchPoints > 0,
+    typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0),
   );
 
   const pressTimerRef = useRef<number | null>(null);
@@ -203,9 +202,16 @@ const IncrementDecrement = ({
 
   return (
     <>
-      <div
+      <button
+        type="button"
         aria-label={decrementLabel}
-        className="absolute left-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
+        className="absolute left-0 top-0 flex h-full w-1/2 cursor-pointer items-center justify-center transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/80"
+        onKeyDown={(event) => {
+          if (!event.repeat && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            executeAction("decrement", 1);
+          }
+        }}
         {...(isTouchDevice.current
           ? {
               onTouchStart: handleDecrementTouchStart,
@@ -221,18 +227,23 @@ const IncrementDecrement = ({
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           <div
-            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity mt-8 mr-12 z-20 ${
-              isSmall ? "text-4xl md:text-6xl" : "text-6xl"
-            }`}
+            className="counter-step-symbol z-20 mr-12 mt-8 font-bold text-white opacity-30 transition-opacity hover:opacity-60"
           >
             −
           </div>
         </div>
-      </div>
+      </button>
 
-      <div
+      <button
+        type="button"
         aria-label={incrementLabel}
-        className="absolute right-0 top-0 w-1/2 h-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:bg-opacity-10 active:bg-opacity-20"
+        className="absolute right-0 top-0 flex h-full w-1/2 cursor-pointer items-center justify-center transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/80"
+        onKeyDown={(event) => {
+          if (!event.repeat && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            executeAction("increment", 1);
+          }
+        }}
         {...(isTouchDevice.current
           ? {
               onTouchStart: handleIncrementTouchStart,
@@ -248,14 +259,12 @@ const IncrementDecrement = ({
         <div className="relative w-full h-full flex items-center justify-center">
           <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity z-30" />
           <div
-            className={`text-white font-bold opacity-30 hover:opacity-60 transition-opacity mt-8 ml-12 z-20 ${
-              isSmall ? "text-4xl md:text-6xl" : "text-6xl"
-            }`}
+            className="counter-step-symbol z-20 ml-12 mt-8 font-bold text-white opacity-30 transition-opacity hover:opacity-60"
           >
             +
           </div>
         </div>
-      </div>
+      </button>
 
       <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 h-full flex items-center justify-center cursor-pointer">
         <div
@@ -266,9 +275,7 @@ const IncrementDecrement = ({
           `}
         >
           <div
-            className={`font-bold mt-38 text-white opacity-70 tracking-wide ${
-              isSmall ? "text-3xl md:text-4xl" : "text-4xl"
-            }`}
+            className="counter-delta mt-38 font-bold tracking-wide text-white opacity-70"
           >
             {delta > 0 ? "+" : ""}
             {delta}

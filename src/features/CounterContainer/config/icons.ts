@@ -83,6 +83,22 @@ import {
   FaCloudMoon,
   FaSnowflake,
   FaTemperatureHigh,
+  FaBomb,
+  FaBrain,
+  FaCat,
+  FaCrow,
+  FaDog,
+  FaEye,
+  FaFlag,
+  FaFistRaised,
+  FaHorse,
+  FaInfinity,
+  FaMedal,
+  FaPeace,
+  FaShieldAlt,
+  FaTrophy,
+  FaUserAstronaut,
+  FaUserShield,
 } from "react-icons/fa";
 import {
   FaBurst,
@@ -99,13 +115,58 @@ import {
   FaWandMagicSparkles,
   FaWheatAwn,
 } from "react-icons/fa6";
-import { GiPocketBow } from "react-icons/gi";
+import {
+  GiAngelWings,
+  GiAtomicSlashes,
+  GiBat,
+  GiBatMask,
+  GiBattleAxe,
+  GiBowArrow,
+  GiBroadsword,
+  GiCape,
+  GiCastle,
+  GiCrossedSwords,
+  GiCrownedSkull,
+  GiCrystalBall,
+  GiCrystalGrowth,
+  GiDeathSkull,
+  GiDominoMask,
+  GiDragonHead,
+  GiDwarfFace,
+  GiElfEar,
+  GiEnergyShield,
+  GiFairyWand,
+  GiFallingStar,
+  GiGoldBar,
+  GiHealthPotion,
+  GiHydra,
+  GiJusticeStar,
+  GiLaserBlast,
+  GiMagicSwirl,
+  GiMuscleUp,
+  GiOrcHead,
+  GiPocketBow,
+  GiPotionBall,
+  GiPowerLightning,
+  GiPunch,
+  GiSpartanHelmet,
+  GiSpellBook,
+  GiSpiderMask,
+  GiTeleport,
+  GiTreasureMap,
+  GiVampireCape,
+  GiWebSpit,
+  GiWerewolf,
+  GiWingedEmblem,
+  GiWizardStaff,
+} from "react-icons/gi";
 
 import { PiWarningFill } from "react-icons/pi";
 import { RiSwordFill } from "react-icons/ri";
-import { IconDef } from "../domain";
+import { IconCategory, IconDef } from "../domain";
+import { ADDITIONAL_ICONS } from "./additionalIcons";
 
-const ICONS: IconDef[] = [
+const RAW_ICONS: IconDef[] = [
   { name: "Heart", component: FaHeart, key: "heart" },
   { name: "Warning", component: PiWarningFill, key: "warning" },
   { name: "Star", component: FaStar, key: "star" },
@@ -215,7 +276,88 @@ const ICONS: IconDef[] = [
   { name: "Cloud Sun", component: FaCloudSun, key: "cloudsun" },
   { name: "Cloud Moon", component: FaCloudMoon, key: "cloudmoon" },
   { name: "Temperature High", component: FaTemperatureHigh, key: "temphigh" },
+  { name: "Cape", component: GiCape, key: "cape", category: "superheroes" },
+  { name: "Hero mask", component: GiDominoMask, key: "dominomask", category: "superheroes" },
+  { name: "Spider mask", component: GiSpiderMask, key: "spidermask", category: "superheroes" },
+  { name: "Bat mask", component: GiBatMask, key: "batmask", category: "superheroes" },
+  { name: "Energy shield", component: GiEnergyShield, key: "energyshield", category: "superheroes" },
+  { name: "Power", component: GiPowerLightning, key: "power", category: "superheroes" },
+  { name: "Laser", component: GiLaserBlast, key: "laser", category: "superheroes" },
+  { name: "Punch", component: GiPunch, key: "punch", category: "superheroes" },
+  { name: "Strength", component: GiMuscleUp, key: "strength", category: "superheroes" },
+  { name: "Web", component: GiWebSpit, key: "web", category: "superheroes" },
+  { name: "Winged emblem", component: GiWingedEmblem, key: "wingedemblem", category: "superheroes" },
+  { name: "Justice star", component: GiJusticeStar, key: "justicestar", category: "superheroes" },
+  { name: "Teleport", component: GiTeleport, key: "teleport", category: "superheroes" },
+  { name: "Atomic", component: GiAtomicSlashes, key: "atomic", category: "superheroes" },
+  { name: "Falling star", component: GiFallingStar, key: "fallingstar", category: "superheroes" },
+  { name: "Hero", component: FaUserShield, key: "hero", category: "superheroes" },
+  { name: "Astronaut", component: FaUserAstronaut, key: "astronaut", category: "superheroes" },
+  { name: "Infinity", component: FaInfinity, key: "infinity", category: "superheroes" },
+  { name: "Brain", component: FaBrain, key: "brain", category: "superheroes" },
+  { name: "Eye", component: FaEye, key: "eye", category: "superheroes" },
+  { name: "Broadsword", component: GiBroadsword, key: "broadsword", category: "combat" },
+  { name: "Crossed swords", component: GiCrossedSwords, key: "crossedswords", category: "combat" },
+  { name: "Battle axe", component: GiBattleAxe, key: "battleaxe", category: "combat" },
+  { name: "Bow", component: GiBowArrow, key: "bow", category: "combat" },
+  { name: "Spartan helmet", component: GiSpartanHelmet, key: "spartan", category: "combat" },
+  { name: "Fist", component: FaFistRaised, key: "raisedfist", category: "combat" },
+  { name: "Bomb", component: FaBomb, key: "bomb", category: "combat" },
+  { name: "Magic swirl", component: GiMagicSwirl, key: "magicswirl", category: "fantasy" },
+  { name: "Wizard staff", component: GiWizardStaff, key: "wizardstaff", category: "fantasy" },
+  { name: "Fairy wand", component: GiFairyWand, key: "fairywand", category: "fantasy" },
+  { name: "Potion", component: GiPotionBall, key: "potion", category: "fantasy" },
+  { name: "Health potion", component: GiHealthPotion, key: "healthpotion", category: "fantasy" },
+  { name: "Dragon head", component: GiDragonHead, key: "dragonhead", category: "fantasy" },
+  { name: "Hydra", component: GiHydra, key: "hydra", category: "fantasy" },
+  { name: "Orc", component: GiOrcHead, key: "orc", category: "fantasy" },
+  { name: "Elf", component: GiElfEar, key: "elf", category: "fantasy" },
+  { name: "Dwarf", component: GiDwarfFace, key: "dwarf", category: "fantasy" },
+  { name: "Vampire", component: GiVampireCape, key: "vampire", category: "fantasy" },
+  { name: "Werewolf", component: GiWerewolf, key: "werewolf", category: "fantasy" },
+  { name: "Castle", component: GiCastle, key: "castle", category: "fantasy" },
+  { name: "Spell book", component: GiSpellBook, key: "spellbook", category: "fantasy" },
+  { name: "Crystal ball", component: GiCrystalBall, key: "crystalball", category: "fantasy" },
+  { name: "Crystal", component: GiCrystalGrowth, key: "crystal", category: "fantasy" },
+  { name: "Crowned skull", component: GiCrownedSkull, key: "crownedskull", category: "fantasy" },
+  { name: "Death", component: GiDeathSkull, key: "death", category: "fantasy" },
+  { name: "Angel wings", component: GiAngelWings, key: "angelwings", category: "fantasy" },
+  { name: "Bat", component: GiBat, key: "bat", category: "nature" },
+  { name: "Cat", component: FaCat, key: "cat", category: "nature" },
+  { name: "Dog", component: FaDog, key: "dog", category: "nature" },
+  { name: "Horse", component: FaHorse, key: "horse", category: "nature" },
+  { name: "Crow", component: FaCrow, key: "crow", category: "nature" },
+  { name: "Treasure map", component: GiTreasureMap, key: "treasuremap", category: "objects" },
+  { name: "Gold", component: GiGoldBar, key: "gold", category: "objects" },
+  { name: "Trophy", component: FaTrophy, key: "trophy", category: "objects" },
+  { name: "Medal", component: FaMedal, key: "medal", category: "objects" },
+  { name: "Flag", component: FaFlag, key: "flag", category: "objects" },
+  { name: "Peace", component: FaPeace, key: "peace", category: "objects" },
+  { name: "Classic shield", component: FaShieldAlt, key: "classicshield", category: "combat" },
+  ...ADDITIONAL_ICONS,
 ];
+
+const FAVORITES = new Set(["heart", "warning", "star", "shield", "skull", "fire", "coins", "magic", "d20", "dice"]);
+const SUPERHEROES = new Set(["spider", "dna", "mask", "justice", "leadership", "aggression", "protection", "bolt", "burst", "radiation"]);
+const FANTASY = new Set(["dragon", "dungeon", "wizard", "ring", "scroll", "ghost", "wand", "fort"]);
+const COMBAT = new Set(["sword", "target", "bowarrow", "helmet", "hammer", "ninja", "skullcross"]);
+const NATURE = new Set(["sun", "water", "leaf", "moon", "mountain", "camp", "tree", "seedling", "feather", "paw", "fish", "snowflake", "icicles", "cloud", "rain", "wind", "wheat"]);
+const SCIFI = new Set(["meteor", "biohazard", "bug", "virus", "robot", "rocket", "satellite", "satdish", "towerbroadcast", "tower"]);
+
+const inferCategory = (key: string): IconCategory => {
+  if (FAVORITES.has(key)) return "favorites";
+  if (SUPERHEROES.has(key)) return "superheroes";
+  if (FANTASY.has(key)) return "fantasy";
+  if (COMBAT.has(key)) return "combat";
+  if (NATURE.has(key)) return "nature";
+  if (SCIFI.has(key)) return "scifi";
+  return "objects";
+};
+
+const ICONS: IconDef[] = RAW_ICONS.map((icon) => ({
+  ...icon,
+  category: icon.category ?? inferCategory(icon.key),
+}));
 
 const getIconByKey = (key: string) => {
   return ICONS.find((icon) => icon.key === key)?.component || FaHeart;

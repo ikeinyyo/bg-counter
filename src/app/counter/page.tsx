@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { CounterContainer } from "@/features/CounterContainer/CounterContainer";
-import { CounterConfig } from "@/features/CounterContainer/domain";
+import {
+  CounterConfig,
+  getDefaultBySize,
+} from "@/features/CounterContainer/domain";
+import {
+  COLORS,
+  getColorByKey,
+} from "@/features/CounterContainer/config/colors";
 import { layoutTemplates } from "@/features/CounterContainer/config/templates";
 import { Bar } from "@/features/bar/Bar";
 import { CounterLoading } from "@/features/CounterLoading/CounterLoading";
@@ -61,15 +68,53 @@ export default function CounterPage() {
     );
   };
 
+  const handleDuplicateCounter = (counter: CounterConfig) => {
+    const id =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `counter-${Date.now()}`;
+    setCounters((prev) => [
+      ...prev,
+      { ...counter, id, name: `${counter.name} · ${t("counterCopySuffix")}` },
+    ]);
+  };
+
+  const handleAddCounter = () => {
+    const index = counters.length;
+    const palette = COLORS.slice(0, 11);
+    const favoriteIcons = ["heart", "star", "shield", "bolt", "gem", "sword"];
+    const id =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `counter-${Date.now()}`;
+    setCounters((prev) => [
+      ...prev,
+      {
+        id,
+        initialValue: 0,
+        name: `${t("counterNewName")} ${index + 1}`,
+        backgroundColor: getColorByKey(palette[index % palette.length].key),
+        icon: favoriteIcons[index % favoriteIcons.length],
+        ...getDefaultBySize("M"),
+      },
+    ]);
+  };
+
   return (
     <div className="flex flex-col">
-      <Bar counters={counters} setCounters={setCounters} />
+      <Bar
+        counters={counters}
+        setCounters={setCounters}
+        onAdd={handleAddCounter}
+      />
 
       {mounted ? (
         <CounterContainer
           countersDefault={counters}
           onDelete={handleDeleteCounter}
           onUpdate={handleUpdateCounter}
+          onDuplicate={handleDuplicateCounter}
+          onAdd={handleAddCounter}
         />
       ) : (
         <CounterLoading />

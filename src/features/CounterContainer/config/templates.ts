@@ -18,7 +18,7 @@ const layoutTemplates: Layout[] = [
         icon: "skull",
         xsElementsPerRow: 1,
         mdElementsPerRow: 2,
-        lgElementsPerRow: 3,
+        lgElementsPerRow: 2,
       },
       {
         id: "threat",
@@ -28,7 +28,7 @@ const layoutTemplates: Layout[] = [
         icon: "warning",
         xsElementsPerRow: 1,
         mdElementsPerRow: 2,
-        lgElementsPerRow: 3,
+        lgElementsPerRow: 2,
       },
       {
         id: "hero",
@@ -38,7 +38,7 @@ const layoutTemplates: Layout[] = [
         icon: "heart",
         xsElementsPerRow: 1,
         mdElementsPerRow: 1,
-        lgElementsPerRow: 3,
+        lgElementsPerRow: 1,
       },
     ],
   },

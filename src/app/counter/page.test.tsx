@@ -27,6 +27,10 @@ const translations: Record<string, string> = {
   labelPreview: "Vista previa",
   actionCancel: "Cancelar",
   actionSave: "Guardar",
+  iconSearchPlaceholder: "Buscar iconos",
+  iconCategory_superheroes: "Superhéroes",
+  labelCounterSize: "Tamaño del contador",
+  counterSizePreset_L: "Destacado",
   gameLabel: "Juego",
   distributionLabel: "Distribución",
   game_magic: "Magic",
@@ -82,6 +86,60 @@ describe("CounterPage", () => {
         value: 25,
       });
       expect(localStorage.getItem("selected-template")).toBe("custom");
+    });
+  });
+
+  it("searches the expanded icon library and saves the responsive size", async () => {
+    render(<CounterPage />);
+
+    fireEvent.click(await screen.findByTitle("Opciones"));
+    fireEvent.click(screen.getByRole("button", { name: "Editar" }));
+    fireEvent.change(screen.getByRole("searchbox", { name: "Buscar iconos" }), {
+      target: { value: "Cape" },
+    });
+    fireEvent.click(screen.getByRole("option", { name: "Icono Cape" }));
+    fireEvent.click(screen.getByRole("button", { name: "Destacado (L)" }));
+    fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
+
+    await waitFor(() => {
+      const [persisted] = JSON.parse(localStorage.getItem("current-counters") ?? "[]");
+      expect(persisted).toMatchObject({
+        icon: "cape",
+        xsElementsPerRow: 1,
+        mdElementsPerRow: 1,
+        lgElementsPerRow: 1,
+      });
+    });
+  });
+
+  it("preserves a custom responsive layout when editing another property", async () => {
+    localStorage.setItem(
+      "current-counters",
+      JSON.stringify([
+        {
+          ...storedCounters("life1")[0],
+          xsElementsPerRow: 2,
+          mdElementsPerRow: 2,
+          lgElementsPerRow: 2,
+        },
+      ]),
+    );
+    render(<CounterPage />);
+
+    fireEvent.click(await screen.findByTitle("Opciones"));
+    fireEvent.click(screen.getByRole("button", { name: "Editar" }));
+    fireEvent.change(screen.getByPlaceholderText("Nombre del contador"), {
+      target: { value: "Sin cambiar distribución" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Guardar" }));
+
+    await waitFor(() => {
+      const [persisted] = JSON.parse(localStorage.getItem("current-counters") ?? "[]");
+      expect(persisted).toMatchObject({
+        xsElementsPerRow: 2,
+        mdElementsPerRow: 2,
+        lgElementsPerRow: 2,
+      });
     });
   });
 });
