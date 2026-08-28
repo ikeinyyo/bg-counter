@@ -7,6 +7,18 @@ vi.mock("@/context/SettingsContext", () => ({
 }));
 
 vi.mock("@/features/navbar/NavBar", () => ({ NavBar: () => <nav /> }));
+vi.mock("@/features/navigation/AppNavigation", async () => {
+  const actual = await vi.importActual<typeof import("@/features/navigation/AppNavigation")>("@/features/navigation/AppNavigation");
+  return {
+    ...actual,
+    useAppNavigation: () => ({
+      favorites: ["/counter", "/dice", "/timer"],
+      toggleFavorite: vi.fn(),
+      reorderFavorites: vi.fn(),
+      lastTool: null,
+    }),
+  };
+});
 vi.mock("@/lib/telemetry", () => ({ trackEvent: vi.fn() }));
 
 const translations: Record<string, string> = {

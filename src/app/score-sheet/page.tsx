@@ -278,7 +278,7 @@ export default function ScoreSheetPage() {
         className="bg-[var(--background)] px-2 py-3 text-[var(--foreground)] sm:px-4 sm:py-6"
         style={{
           minHeight:
-            "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+            "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
         }}
       >
         <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:gap-5">

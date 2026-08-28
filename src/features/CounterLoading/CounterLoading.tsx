@@ -7,7 +7,7 @@ const CounterLoading = () => {
       className="flex items-center justify-center bg-[var(--background)]"
       style={{
         minHeight:
-          "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+          "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
       }}
       role="status"
       aria-busy="true"

@@ -63,7 +63,7 @@ const CounterContainer = ({
       className="bg-[var(--surface-muted)] p-2 md:p-4"
       style={{
         minHeight:
-          "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+          "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
       }}
     >
       <div className="max-w-7xl mx-auto">
@@ -72,7 +72,7 @@ const CounterContainer = ({
             className="flex items-center justify-center"
             style={{
               minHeight:
-                "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+                "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
             }}
           >
             <div className="flex flex-col items-center gap-3 px-8 text-center max-w-[92vw] md:max-w-[48rem]">

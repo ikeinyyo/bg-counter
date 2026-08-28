@@ -237,7 +237,7 @@ export default function TimerPage() {
         className="bg-[var(--background)] px-4 py-6 text-[var(--foreground)]"
         style={{
           minHeight:
-            "calc(var(--app-vh, 100dvh) - 3.5rem - 3rem - env(safe-area-inset-bottom))",
+            "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
         }}
       >
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-6">
