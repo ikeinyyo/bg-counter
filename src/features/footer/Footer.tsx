@@ -7,7 +7,7 @@ import {
   type Language,
   type Theme,
 } from "@/context/SettingsContext";
-import { FaGlobe, FaSun, FaMoon, FaComputer } from "react-icons/fa6";
+import { FaComputer, FaGlobe, FaMoon, FaSun } from "react-icons/fa6";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { trackEvent } from "@/lib/telemetry";
 
