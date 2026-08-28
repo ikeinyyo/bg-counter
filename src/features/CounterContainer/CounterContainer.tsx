@@ -1,7 +1,8 @@
 "use client";
 
 import { Counter } from "./Counter/Counter";
-import { CounterConfig } from "./domain";
+import { CounterConfig, getCounterRowCount } from "./domain";
+import type { CSSProperties } from "react";
 import { BsEmojiFrown, BsPlusCircle } from "react-icons/bs";
 import { useTranslation } from "@/context/SettingsContext";
 import { trackEvent } from "@/lib/telemetry";
@@ -22,6 +23,12 @@ const CounterContainer = ({
   onAdd,
 }: Props) => {
   const { t } = useTranslation();
+  const mobileRowCount = getCounterRowCount(countersDefault, "xs");
+  const mobileGridStyle = {
+    "--counter-row-count": mobileRowCount,
+    "--counter-value-size": mobileRowCount >= 4 ? "3.5rem" : mobileRowCount === 3 ? "4.25rem" : "5rem",
+    "--counter-symbol-size": mobileRowCount >= 4 ? "2.25rem" : mobileRowCount === 3 ? "2.625rem" : "3rem",
+  } as CSSProperties;
 
   const spans = (elementsPerRow: number | undefined, fallback: number) => {
     const safe = [1, 2, 3, 4, 6].includes(elementsPerRow ?? 0)
@@ -63,7 +70,7 @@ const CounterContainer = ({
       className="bg-[var(--surface-muted)] p-2 md:p-4"
       style={{
         minHeight:
-          "calc(var(--app-vh, 100dvh) - 3.5rem - var(--app-bottom-space) - env(safe-area-inset-bottom))",
+          "calc(var(--app-vh, 100dvh) - 3.5rem - env(safe-area-inset-top) - var(--app-bottom-space) - env(safe-area-inset-bottom))",
       }}
     >
       <div className="max-w-7xl mx-auto">
@@ -100,7 +107,7 @@ const CounterContainer = ({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-12 grid-flow-dense gap-2 md:gap-4 lg:gap-6">
+          <div className="counter-grid grid grid-flow-dense grid-cols-12 gap-2 md:gap-4 lg:gap-6" style={mobileGridStyle}>
             {countersDefault.map((counter) => {
               return (
                 <div

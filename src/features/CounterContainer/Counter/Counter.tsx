@@ -97,7 +97,7 @@ const Counter = ({ counter, onUpdate, onDelete, onDuplicate, isPreview }: Props)
   }, [showMenu]);
 
   return (
-    <div className="relative w-full">
+    <div className="relative h-full w-full">
       <div
         className="counter-card group relative w-full select-none overflow-hidden rounded-[1.35rem] border border-black/10 shadow-[0_8px_24px_rgba(15,23,42,0.16)]"
         style={{ backgroundColor: counter.backgroundColor }}
