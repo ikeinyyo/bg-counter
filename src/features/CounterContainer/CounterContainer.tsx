@@ -1,6 +1,7 @@
 "use client";
 
 import { Counter } from "./Counter/Counter";
+import { CounterReorder } from "./CounterReorder";
 import { CounterConfig, getCounterRowCount } from "./domain";
 import type { CSSProperties } from "react";
 import { BsEmojiFrown, BsPlusCircle } from "react-icons/bs";
@@ -12,6 +13,9 @@ type Props = {
   onDelete: (id: string) => void;
   onUpdate: (updated: CounterConfig) => void;
   onDuplicate: (counter: CounterConfig) => void;
+  isReordering: boolean;
+  onReorder: (sourceIndex: number, destinationIndex: number) => void;
+  onCloseReorder: () => void;
   onAdd: () => void;
 };
 
@@ -20,6 +24,9 @@ const CounterContainer = ({
   onDelete,
   onUpdate,
   onDuplicate,
+  isReordering,
+  onReorder,
+  onCloseReorder,
   onAdd,
 }: Props) => {
   const { t } = useTranslation();
@@ -108,8 +115,17 @@ const CounterContainer = ({
               </button>
             </div>
           </div>
-        ) : (
-          <div className="counter-grid grid grid-flow-dense grid-cols-12 gap-2 md:gap-4 lg:gap-6" style={mobileGridStyle}>
+        ) : isReordering ? (
+            <CounterReorder
+              counters={countersDefault}
+              onUpdate={onUpdate}
+              onAdd={onAdd}
+              onReorder={onReorder}
+              onClose={onCloseReorder}
+              t={t}
+            />
+          ) : (
+          <div className="counter-grid grid grid-flow-row grid-cols-12 gap-2 md:gap-4 lg:gap-6" style={mobileGridStyle}>
             {countersDefault.map((counter) => {
               return (
                 <div
@@ -126,7 +142,7 @@ const CounterContainer = ({
               );
             })}
           </div>
-        )}
+          )}
       </div>
     </main>
   );
