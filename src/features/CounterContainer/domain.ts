@@ -98,7 +98,8 @@ const getCounterRowCount = (
   breakpoint: "xs" | "md" | "lg",
 ) => {
   const field = `${breakpoint}ElementsPerRow` as const;
-  const remainingColumns: number[] = [];
+  let rowCount = 1;
+  let remainingColumns = 12;
 
   counters.forEach((counter) => {
     const elementsPerRow = counter[field];
@@ -108,13 +109,14 @@ const getCounterRowCount = (
         ? 1
         : 2;
     const span = 12 / safeElementsPerRow;
-    const availableRow = remainingColumns.findIndex((remaining) => remaining >= span);
-
-    if (availableRow === -1) remainingColumns.push(12 - span);
-    else remainingColumns[availableRow] -= span;
+    if (span > remainingColumns) {
+      rowCount += 1;
+      remainingColumns = 12;
+    }
+    remainingColumns -= span;
   });
 
-  return Math.max(remainingColumns.length, 1);
+  return rowCount;
 };
 
 export {

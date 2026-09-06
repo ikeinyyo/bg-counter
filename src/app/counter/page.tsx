@@ -38,6 +38,7 @@ const getInitialCounters = (): CounterConfig[] => {
 export default function CounterPage() {
   const [counters, setCounters] = useState<CounterConfig[]>(getInitialCounters);
   const [mounted, setMounted] = useState(false);
+  const [isReordering, setIsReordering] = useState(false);
   const { t } = useSettings();
 
   useEffect(() => {
@@ -79,6 +80,16 @@ export default function CounterPage() {
     ]);
   };
 
+  const handleReorderCounters = (sourceIndex: number, destinationIndex: number) => {
+    setCounters((previous) => {
+      if (sourceIndex < 0 || destinationIndex < 0 || sourceIndex >= previous.length || destinationIndex >= previous.length || sourceIndex === destinationIndex) return previous;
+      const next = [...previous];
+      const [moved] = next.splice(sourceIndex, 1);
+      next.splice(destinationIndex, 0, moved);
+      return next;
+    });
+  };
+
   const handleAddCounter = () => {
     const index = counters.length;
     const palette = COLORS.slice(0, 11);
@@ -106,6 +117,7 @@ export default function CounterPage() {
         counters={counters}
         setCounters={setCounters}
         onAdd={handleAddCounter}
+        onReorder={() => setIsReordering(true)}
       />
 
       {mounted ? (
@@ -114,6 +126,9 @@ export default function CounterPage() {
           onDelete={handleDeleteCounter}
           onUpdate={handleUpdateCounter}
           onDuplicate={handleDuplicateCounter}
+          isReordering={isReordering}
+          onReorder={handleReorderCounters}
+          onCloseReorder={() => setIsReordering(false)}
           onAdd={handleAddCounter}
         />
       ) : (
